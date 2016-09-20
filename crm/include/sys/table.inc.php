@@ -83,7 +83,11 @@ function theme_table ($table_id, $opts = NULL) {
     }
     $output .= ' class="' . $class . '"';
     $output .= '>';
-    
+
+    if (!empty($table['caption'])) {
+        $output .= '<caption>' . $table['caption'] . '</caption>';
+    }
+
     $output .= "<thead><tr>";
     
     // Loop through headers

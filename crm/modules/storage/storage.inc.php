@@ -402,30 +402,41 @@ function storage_reap_config ($opts) {
     switch ($opts['action']) {
         // Plot management
         case 'Update Months':
-            $newMonths = 0;
-            for ($m=1; $m<12; $m++) {
+            $newMonths = "";
+            for ($m=1; $m<=12; $m++) {
                 if (array_key_exists($m,$opts['reap'])) {
-                    $newMonths = $newMonths + (pow(2,$m-1));
+                    $newMonths .= "1";
+                } else {
+                    $newMonths .= "0";
                 }
             }
             variable_set('storage_reap_months',$newMonths);
             message_register('Reaping months updated');
-            message_register(decbin(var_export($newMonths,true)));
         break;
         
         case 'Update Subject':
+            variable_set('storage_subject',$opts['subject']);
+            message_register('Email subject updated');
             break;
         
         case 'Update Body':
+            variable_set('storage_body',$opts['body']);
+            message_register('Email body updated');
             break;
             
         case 'Update Announce Subject':
+            variable_set('storage_subject_announce',$opts['subject_announce']);
+            message_register('-Announce subject updated');
             break;
             
         case 'Update Announce Body':
+            variable_set('storage_body_announce',$opts['body_announce']);
+            message_register('-Announce body updated');
             break;
         
         case 'Update Storage Admins':
+            variable_set('storage_admin_email',$opts['storage_admin_email']);
+            message_register('Storage Admin emails updated');
             break;
     }
 }
@@ -664,13 +675,21 @@ function storage_reap_table () {
     if (count($storage) < 1) {
         return array();
     }
-    $remainingMonths = 12 - $month;
+    $numUnreaped = count($storage);
+    $reapMonthsVar = variable_get('storage_reap_months',0); // get months variable
+    $reapMonths = str_split($reapMonthsVar,1); // convert to an array
+    $remainingMonths = 0;
+    for ( $i=$month-1; $i<12; $i++) { // from current month to end
+        if ($reapMonths[$i] == 1) {$remainingMonths++;}
+    }
+
     $numToReap = (count($storage)/$remainingMonths);
-    $storage = array_slice($storage, 0, $numToReap - 1);
+    $storage = array_slice($storage, 0, $numToReap);
 
     // Initialize table
     $table = array(
-        'columns' => array(
+        'caption' => "Reaping for $monthName ($numToReap of $numUnreaped remaining)"
+        , 'columns' => array(
             array('title' => 'Plot#')
             , array('title' => 'Description')
             , array('title' => 'Contact')
@@ -868,26 +887,6 @@ function storage_reap_filter_form () {
 
 function storage_reap_email_form() {
     $pidsToReap = join(",", $_SESSION['pids_to_reap']);
-    $emailText['weekOne']['subject'] = $_SESSION['reap_month']." Storage Reaping: First Notice";
-    $emailText['weekOne']['content']= "(One) Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
-    $emailText['weekOne']['subject_announce']= "(One) ".$_SESSION['reap_month']." Storage Cleaning - First Notice";
-    $emailText['weekOne']['content_announce']= "(One) Plots[$pidsToReap] - i3-announce message body";
-
-    $emailText['weekTwo']['subject'] = $_SESSION['reap_month']." Storage Reaping: Second Notice";
-    $emailText['weekTwo']['content'] = "(Two) Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?";
-    $emailText['weekTwo']['subject_announce']= $_SESSION['reap_month']." Storage Cleaning - Second Notice";
-    $emailText['weekTwo']['content_announce']= "(Two) Plots[$pidsToReap] - i3-announce message body";
-
-    $emailText['weekThree']['subject'] = $_SESSION['reap_month']." Storage Reaping: Third Notice";
-    $emailText['weekThree']['content'] = "(Three) At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.";
-    $emailText['weekThree']['subject_announce']= $_SESSION['reap_month']." Storage Cleaning - Third Notice";
-    $emailText['weekThree']['content_announce']= "(Three) Plots[$pidsToReap] - i3-announce message body";
-
-    $emailText['weekFour']['subject'] = $_SESSION['reap_month']." Storage Reaping: Fourth Notice";
-    $emailText['weekFour']['content'] = "(Four) Bacon ipsum dolor amet swine sint andouille velit, tongue voluptate eu labore. Meatball tail shoulder irure. Deserunt kevin shoulder hamburger incididunt in jowl strip steak. Reprehenderit turkey hamburger non incididunt. Reprehenderit ipsum fugiat sausage rump corned beef ex beef ribs. Bacon dolore irure ullamco frankfurter short loin ut sed consequat. Non voluptate laboris, ground round fugiat do shoulder ham hock excepteur swine consequat beef pastrami.";
-    $emailText['weekFour']['subject_announce']= $_SESSION['reap_month']." (Four) Storage Cleaning - Fourth Notice";
-    $emailText['weekFour']['content_announce']= "(Four) Plots[$pidsToReap] - i3-announce message body";
-    
     $thisWeek = empty($_SESSION['reap_filter_option']) ? 'weekOne' : $_SESSION['reap_filter_option'];
     $form = array(
         'type' => 'form'
@@ -903,7 +902,7 @@ function storage_reap_email_form() {
                 'type' => 'textarea'
                 , 'label' => 'Subject - contacts'
                 , 'name' => 'subject'
-                , 'value' => $emailText[$thisWeek]['subject']
+                , 'value' => variable_get('storage_subject','')
                 , 'cols' => '100'
                 , 'rows' => '1'
             )
@@ -911,7 +910,7 @@ function storage_reap_email_form() {
                 'type' => 'textarea'
                 , 'label' => 'Message Body - contacts'
                 , 'name' => 'content'
-                , 'value' => $emailText[$thisWeek]['content']
+                , 'value' => variable_get('storage_body','')
                 , 'cols' => '100'
                 , 'rows' => '20'
             )
@@ -919,7 +918,7 @@ function storage_reap_email_form() {
                 'type' => 'textarea'
                 , 'label' => 'Subject - Announce'
                 , 'name' => 'subject_announce'
-                , 'value' => $emailText[$thisWeek]['subject_announce']
+                , 'value' => variable_get('storage_subject_announce','')
                 , 'cols' => '100'
                 , 'rows' => '1'
             )
@@ -927,7 +926,7 @@ function storage_reap_email_form() {
                 'type' => 'textarea'
                 , 'label' => 'Message Body - Announce'
                 , 'name' => 'content_announce'
-                , 'value' => $emailText[$thisWeek]['content_announce']
+                , 'value' => variable_get('storage_body_announce','')
                 , 'cols' => '100'
                 , 'rows' => '20'
             )
@@ -1079,7 +1078,7 @@ function storage_reap_config_form () {
     // Storage Reap Months
     // // //
 
-    $storage_reap_months = variable_get('storage_reap_months','4095'); // store as binary bitmasks
+    $storage_reap_months = str_split(variable_get('storage_reap_months','000000000000'),1); //convert to array
     // Form table rows and columns
     $columns = array();
     $rows = array();
@@ -1103,7 +1102,7 @@ function storage_reap_config_form () {
             , 'value' => date('F', mktime(0, 0, 0, $m, 10))
         );
         // check bitwise for month to see if set
-        ((pow(2,$m-1)) & $storage_reap_months) ? $checked = true : $checked = false;
+        $storage_reap_months[$m-1] == "1" ? $checked = true : $checked = false;
         $row[] = array(
             'type' => 'checkbox',
             'name' => "reap[$m]",
@@ -1128,28 +1127,89 @@ function storage_reap_config_form () {
                 'name' => 'action',
                 'value' => 'Update Months'
             )
+            , array(
+                'type' => 'message'
+                , 'value' => 'Member Email Subject'
+            )
+            , array(
+                'type' => 'textarea'
+                , 'name' => 'subject'
+                , 'value' => variable_get('storage_subject','')
+                , 'cols' => '100'
+                , 'rows' => '1'
+            )
+            , array(
+                'type' => 'submit',
+                'name' => 'action',
+                'value' => 'Update Subject'
+            )
+            , array(
+                'type' => 'message'
+                , 'value' => 'Member Email Body'
+            )
+            , array(
+                'type' => 'textarea'
+                , 'name' => 'body'
+                , 'value' => variable_get('storage_body','')
+                , 'cols' => '100'
+                , 'rows' => '20'
+            )
+            , array(
+                'type' => 'submit',
+                'name' => 'action',
+                'value' => 'Update Body'
+            )
+            , array(
+                'type' => 'message'
+                , 'value' => '-Announce Email Subject'
+            )
+            , array(
+                'type' => 'textarea'
+                , 'name' => 'subject_announce'
+                , 'value' => variable_get('storage_subject_announce','')
+                , 'cols' => '100'
+                , 'rows' => '1'
+            )
+            , array(
+                'type' => 'submit',
+                'name' => 'action',
+                'value' => 'Update Announce Subject'
+            )
+            , array(
+                'type' => 'message'
+                , 'value' => '-Announce Email Body'
+            )
+            , array(
+                'type' => 'textarea'
+                , 'name' => 'body_announce'
+                , 'value' => variable_get('storage_body_announce','')
+                , 'cols' => '100'
+                , 'rows' => '20'
+            )
+            , array(
+                'type' => 'submit',
+                'name' => 'action',
+                'value' => 'Update Announce Body'
+            )
+            , array(
+                'type' => 'message'
+                , 'value' => 'Storage Admin email addresses'
+            )
+            , array(
+                'type' => 'textarea'
+                , 'name' => 'storage_admin_email'
+                , 'value' => variable_get('storage_admin_email','')
+                , 'cols' => '100'
+                , 'rows' => '3'
+            )
+            , array(
+                'type' => 'submit',
+                'name' => 'action',
+                'value' => 'Update Storage Admins'
+            )
+
         )
     );
-
-    // // //
-    // Member Email Subject
-    // // //
-    
-    // // //
-    // Member email body
-    // // //
-
-    // // //
-    // Announce email subject
-    // // //
-
-    // // //
-    // Announce email body
-    // // //
-
-    // // //
-    // Storage Admin Emails
-    // // //
 
     return $form;
 }
