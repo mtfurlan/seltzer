@@ -4,7 +4,9 @@
     Copyright 2009-2014 Edward L. Platt <ed@elplatt.com>
     
     This file is part of the Seltzer CRM Project
-    debug.inc.php - Various debug functions
+    report_storagelog.inc.php - Full log of the storage module
+    Part of the Reports module
+
     Seltzer is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -19,35 +21,20 @@
     along with Seltzer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/**
- * @return This module's revision number.  Each new release should increment
- * this number.
- */
-function debug_revision () {
-    return 1;
-}
-
+// Installation functions //////////////////////////////////////////////////////
+// No install as this is called by reports module
 
 // Utility functions ///////////////////////////////////////////////////////////
-
-/**
- * Generate debug output
+/*
+ * Set the page content based on report name. Used for autoinclude
  */
+$report_storagelog_theme = 'table';
+$report_storagelog_theme_opts = 'storage_log';
+$report_storagelog_name = "Storage Log";
+$report_storagelog_desc = "Full log of storage changes";
 
-function var_dump_pre() {
-    // check if debugging is enabled
-    $debug = variable_get('debug', 'false');
-    if ($debug = 'true') {
-    // Set output options
-        ini_set('xdebug.var_display_max_depth', 10);
-        ini_set('xdebug.var_display_max_children', 256);
-        ini_set('xdebug.var_display_max_data', 1024);
-        $args = func_get_args();
-        foreach ($args as $arg) {
-            echo '<pre>';
-            var_dump($arg);
-            echo '</pre>';
-        }
-    }
-    return true;
-}
+
+// Themeing ////////////////////////////////////////////////////////////////////
+
+// Pages ///////////////////////////////////////////////////////////////////////
+// No pages

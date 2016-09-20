@@ -320,8 +320,11 @@ function theme_form_textarea ($field) {
         $output .= '<label>' . $field['label'] . '</label>';
     }
     $output .= '<textarea name="' . $field['name'] . '"';
-    if (!empty($classes)) {
-        $output .= ' class="' . join(' ', $classes) . '"';
+    if (!empty($field['rows'])) {
+        $output .= 'rows="' . $field['rows'] . '" ';
+    }
+    if (!empty($field['cols'])) {
+        $output .= 'cols="' . $field['cols'] . '" ';
     }
     $output .= '>';
     $output .= $field['value'];

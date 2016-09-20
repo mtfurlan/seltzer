@@ -102,7 +102,7 @@ function theme_table ($table_id, $opts = NULL) {
         $output .= '</th>';
     }
     $output .= "</tr>";
-    if (array_key_exists('show_export', $opts)) {
+    if (isset($opts) && array_key_exists('show_export', $opts)) {
         if ($opts['show_export']) {
             $output .= '<tr class="subhead"><td colspan="' . $column_count . '">';
             $output .= $row_count . ' results, export: <a href="' . $export . '">csv</a>';
@@ -145,7 +145,7 @@ function theme_table ($table_id, $opts = NULL) {
         $output .= '</tr>';
     }
     
-    if (array_key_exists('show_export', $opts)) {
+    if (isset($opts) && array_key_exists('show_export', $opts)) {
         if ($opts['show_export']) {
             $output .= '<tr class="subhead"><td colspan="' . $column_count . '">';
             $output .= $row_count . ' results, export: <a href="' . $export . '">csv</a>';
