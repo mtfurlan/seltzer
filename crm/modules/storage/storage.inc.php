@@ -49,26 +49,29 @@ function storage_install($old_revision = 0) {
     if ($old_revision < 1) {
 // create master list table
         $sql = 'CREATE TABLE IF NOT EXISTS `storage_plot` (
-                    `pid` mediumint(8) unsigned NOT NULL,
-                    `desc` varchar(255) NOT NULL,
-                    `cid` varchar(255) NOT NULL,
-                    `reapdate` date NOT NULL,
-                    UNIQUE (`pid`),
-                    PRIMARY KEY (`pid`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-                ';
+            `pid` mediumint(8) unsigned NOT NULL,
+            `desc` varchar(255) NOT NULL,
+            `cid` varchar(255) NOT NULL,
+            `email` varchar(255),
+            `reapmonth` mediumint(8) unsigned NOT NULL default 1,
+            `reapdate` date NOT NULL,
+            UNIQUE (`pid`),
+            PRIMARY KEY (`pid`)
+            ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+        ';
         $res = mysql_query($sql);
         if (!$res) die(mysql_error());
 // create storage log
-        $sql = '
-            CREATE TABLE IF NOT EXISTS `storage_log` (
-                `timestamp` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                `user` varchar(255) NOT NULL,
-                `action` varchar(255) NOT NULL,
-                `pid` mediumint(8) unsigned NOT NULL,
-                `desc` varchar(255) NOT NULL,
-                `cid` varchar(255) NOT NULL,
-                `reapdate` date NOT NULL,
+        $sql = 'CREATE TABLE IF NOT EXISTS `storage_log` (
+            `timestamp` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            `user` varchar(255) NOT NULL,
+            `action` varchar(255) NOT NULL,
+            `pid` mediumint(8) unsigned NOT NULL,
+            `desc` varchar(255) NOT NULL,
+            `cid` varchar(255) NOT NULL,
+            `email` varchar(255),
+            `reapmonth` mediumint(8) unsigned NOT NULL default `1`,
+            `reapdate` date NOT NULL,
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
         ';
         $res = mysql_query($sql);
@@ -100,12 +103,58 @@ function storage_install($old_revision = 0) {
                 }
             }
         }
-    variable_set('storage_reap_months', '1:0/2:0/3:0/4:0/5:0/6:0/7:0/8:0/9:0/10:0/11:0/12:0');
     }
 }
 
 // Utility functions ///////////////////////////////////////////////////////////
 
+function text_replace ($opts) {
+    // message_register('text_replace($opts)='.var_export($opts,true));
+
+    $repFrom = array();
+    $repTo = array();
+    
+    // {{plotlist}} - list plot numbers in comma-separated format
+    if (strpos($opts['text'], '{{plotlist}}') !== false) {
+        $pidsToReap = preg_replace(array('/,/','/,([^,]*)$/'), array(', ',' and\1'), $opts['pidsToReap']);
+        $repFrom[] = '/{{plotlist}}/';  $repTo[] = $pidsToReap;
+    }
+
+    // {{plotowners}} List plots as "pid - owner" format on separate lines
+    if (strpos($opts['text'], '{{plotowners}}') !== false) {
+        $pidsToReap = explode(",", $opts['pidsToReap']);
+        $contact_data = crm_get_data('contact', $contact_opts);
+        $cid_to_contact = crm_map($contact_data, 'cid');
+        foreach ($pidsToReap as $pid) {
+            $plot = crm_get_one('storage',array('pid'=>$pid));
+            // var_dump_pre($plot);
+            $contact = $cid_to_contact[$plot['cid']];
+            // var_dump_pre($contact);
+            if (!empty($contact)) {
+                $owner = theme('contact_name', $contact, false, !$export);
+            } else {
+                $owner = $plot['cid'];
+            }
+            $plotOwnersList .= "$pid - ".preg_replace('/\'/','',(var_export($owner,true)))."\n"; // remove ' from results
+        }
+    $repFrom[] = '/{{plotowners}}/';  $repTo[] = $plotOwnersList;
+    }
+
+    // {{month}} - name of reaping month
+    if (strpos($opts['text'], '{{month}}') !== false) {
+        // if today is before the 4th Thursday, show this month, otherwise show next month
+        $fourthThu = date('d', strtotime('fourth thursday of this month'));
+        if (date('d') > $fourthThu) {
+            $monthName = date('F', strtotime('next month'));
+        } else {
+            $monthName = date('F');
+        }
+        $repFrom[] = '/{{month}}/';  $repTo[] = $monthName;
+    }        
+
+    // message_register('preg_replace('.var_export($repFrom,true).', '.var_export($repTo,true).', '.$opts['text'].')');
+    return preg_replace($repFrom, $repTo, $opts['text']);
+}
 // DB to Object mapping ////////////////////////////////////////////////////////
 
 /**
@@ -121,11 +170,7 @@ function storage_install($old_revision = 0) {
 function storage_data ($opts = array()) {
 // Query database
     $sql = "
-        SELECT
-        pid
-        , `desc`
-        , cid
-        , reapdate
+        SELECT * 
         FROM storage_plot
         WHERE 1 ";
     if (!empty($opts['pid']) || $opts['pid'] != 0 ) {
@@ -140,6 +185,10 @@ function storage_data ($opts = array()) {
         if(empty($opts['reapbefore'])) { $esc_reapbefore = mysql_real_escape_string(date('Y-m-d', strtotime('Dec 31'))); }
         if(empty($opts['reapafter'])) { $esc_reapafter = mysql_real_escape_string('0000-00-00'); }
         $sql .= " AND reapdate BETWEEN '" . $esc_reapbefore . "' AND '" . $esc_reapafter . "'";
+    }
+    if (!empty($opts['reapmonth'])) {
+        $esc_reapmonth = mysql_real_escape_string($opts['reapmonth']);
+        $sql .= " AND reapmonth='" . $esc_reapmonth . "'";
     }
 
     $sql .= "ORDER BY pid ASC";
@@ -201,8 +250,9 @@ function storage_add ($plot) {
         $esc_pid = mysql_real_escape_string($plot['pid']);
         $esc_desc = mysql_real_escape_string($plot['desc']);
         $esc_reapdate = mysql_real_escape_string($plot['reapdate']);
-        $sql = "INSERT INTO storage_plot (pid, `desc`, reapdate) ";
-        $sql .="VALUES ('" . $esc_pid . "', '" . $esc_desc . "', '" . $esc_reapdate . "') ";
+        $esc_reapmonth = mysql_real_escape_string($plot['reapmonth']);
+        $sql = "INSERT INTO storage_plot (pid, `desc`, reapdate, reapmonth) ";
+        $sql .="VALUES ('" . $esc_pid . "', '" . $esc_desc . "', '" . $esc_reapdate . "', '" . $esc_reapmonth . "') ";
         $res = mysql_query($sql);
         if (!$res) {
             message_register('ERROR: ' . mysql_error());
@@ -220,7 +270,7 @@ function storage_add ($plot) {
  * @return The plot structure as it now exists in the database.
  */
 function storage_edit ($opts) {
-
+// message_register(var_export($opts,true));
     if (isset($opts['pid'])) {
         // Get current info
         $plot = crm_get_one('storage', array('pid'=>$opts['pid']));
@@ -229,27 +279,41 @@ function storage_edit ($opts) {
         $esc_pid = mysql_real_escape_string($opts['pid']);
         $sql = "UPDATE storage_plot ";
         $sql .= "SET ";
+        $sql_opts = array();
         if (isset($opts['desc'])) {
             $esc_desc = mysql_real_escape_string($opts['desc']);
-            $sql .="`desc` = '" . $esc_desc . "' ,";
+            $sql_opts[] = "`desc` = '" . $esc_desc . "'";
         }
-        if (isset($opts['cid'])) {
+        if (isset($opts['cid']) && $opts['cid'] != '0') {
             $esc_cid = mysql_real_escape_string($opts['cid']);
-            $sql .="cid = '" . $esc_cid . "' ,";
+            $sql_opts[] = "cid = '" . $esc_cid . "'";
+            $sql_opts[] = "email = ''";
+        } else {
+            if (isset($opts['contact_name'])) {
+                $esc_name = mysql_real_escape_string($opts['contact_name']);
+                $sql_opts[] = "cid = '" . $esc_name . "'";
+            }
+            if (isset($opts['contact_email'])) {
+                $esc_email = mysql_real_escape_string($opts['contact_email']);
+                $sql_opts[] = "email = '" . $esc_email . "'";
+            }
         }
         if (isset($opts['reapdate'])) {
             $esc_reapdate = mysql_real_escape_string($opts['reapdate']);
-            $sql .="reapdate = '" . $esc_reapdate . "'";
+            $sql_opts[] = "reapdate = '" . $esc_reapdate . "'";
         }
+        if (isset($opts['reapmonth'])) {
+            $esc_reapmonth = mysql_real_escape_string($opts['reapmonth']);
+            $sql_opts[] = "reapmonth = '" . $esc_reapmonth . "'";
+        }
+        $sql .= implode(", ", $sql_opts);
         $sql .= "WHERE pid = '" . $esc_pid . "' ";
         $res = mysql_query($sql);
-        // if (!$res) die(mysql_error());
-        // message_register('Secret updated');
         if (!$res) {
            message_register('SQL: ' . $sql . '<br>ERROR: ' . mysql_error());
         } else {
             storage_log($opts);
-            if (!isset($opts['reapdate'])) { message_register('Storage Plot updated'); } // multiple calls for reaping, skip notice
+            if (!isset($opts['quiet'] )) { message_register('Storage Plot updated'); } // multiple calls for reaping, skip notice
         }
         return crm_get_one('storage', array('pid'=>$pid));
     }
@@ -311,14 +375,24 @@ function storage_log ($opts) {
         } else {
             $esc_cid = mysql_real_escape_string($plot['cid']);
         }
+        if (!empty($opts['email'])) {
+            $esc_email = mysql_real_escape_string($opts['email']);
+        } else {
+            $esc_email = mysql_real_escape_string($plot['email']);
+        }
         if (isset($opts['reapdate'])) {
             $esc_reapdate = mysql_real_escape_string($opts['reapdate']);
         } else {
             $esc_reapdate = mysql_real_escape_string($plot['reapdate']);
         }
+        if (isset($opts['reapmonth'])) {
+            $esc_reapmonth = mysql_real_escape_string($opts['reapmonth']);
+        } else {
+            $esc_reapmonth = mysql_real_escape_string($plot['reapmonth']);
+        }
 
-        $sql = "INSERT INTO storage_log (user, action, pid, `desc`, cid, reapdate) ";
-        $sql .= "VALUES (".$esc_myid.",'".$esc_action."',".$esc_pid.",'".$esc_desc."','".$esc_cid."','".$esc_reapdate."');";
+        $sql = "INSERT INTO storage_log (user, action, pid, `desc`, cid, email, reapdate, reapmonth) ";
+        $sql .= "VALUES (".$esc_myid.",'".$esc_action."',".$esc_pid.",'".$esc_desc."','".$esc_cid."','".$esc_email."','".$esc_reapdate."','".$esc_reapmonth."');";
         $res = mysql_query($sql);
         // if (!$res) die(mysql_error());
         // message_register('Secret updated');
@@ -336,20 +410,25 @@ function storage_reap ($opts) {
         foreach ($plots as $plot) {
             $plotinfo = crm_get_one('storage', array('pid'=>$plot['pid']));
             $contact = crm_get_one('contact', array('cid'=>$plotinfo['cid']));
-            if (!empty($contact)) { $contact_email[] = $contact['email']; }
-            
+            if (!empty($contact)) { 
+                $contact_email[] = $contact['email']; 
+            } else if (!empty($plot['email'])) {
+                $comtact_email[] = $plot['email'];
+            }
+
             if ($_SESSION['reap_filter_option'] == 'weekThree') {
-                storage_edit(array('pid'=>$plot['pid'],'reapdate'=>$today));
+                storage_edit(array('pid'=>$plot['pid'],'reapdate'=>$today, 'quiet'=>true));
             }
         }
         if (!empty($contact_email)) {
-            $to = implode(",", $contact_email);
+            $to = '';
             $subject = $opts['subject'];
             $message = $opts['content'];
             $fromheader = "From: \"i3Detroit CRM\" <crm@i3detroit.org>\r\n";
             $contentheader = "Content-Type: text/html; charset=ISO-8859-1\r\n";
-            $ccheader = "Cc: ".variable_get('storage_admins','')."\r\n";
-            $headers = $fromheader.$contentheader.$ccheader;
+            $ccheader = "Cc: ".variable_get('storage_admin_email','')."\r\n";
+            $bccheader = "Bcc: ".implode(",", $contact_email)."\r\n";
+            $headers = $fromheader.$contentheader.$ccheader.$bccheader;
             message_register("Sending email:");
             message_register("To:".$to);
             message_register("Subject:".$subject);
@@ -361,13 +440,13 @@ function storage_reap ($opts) {
                 message_register("email failure");
             }
             // -announce email
-            $to = "i3-annouce@groups.google.com";
+            $to = "i3-announce@groups.google.com";
             $subject = $opts['subject_announce'];
             $message = $opts['content_announce'];
             $fromheader = "From: \"i3Detroit CRM\" <crm@i3detroit.org>\r\n";
             $contentheader = "Content-Type: text/html; charset=ISO-8859-1\r\n";
-            $ccheader = "Cc: ".variable_get('storage_admins','')."\r\n";
-            $headers = $fromheader.$contentheader.$ccheader;
+            $ccheader = "Cc: ".variable_get('storage_admin_email','')."\r\n";
+            $headers = $fromheader.$contentheader.$ccheader.$bccheader;
             message_register("Sending email:");
             message_register("To:".$to);
             message_register("Subject:".$subject);
@@ -397,8 +476,8 @@ function reaping_options () {
 }
 
 function storage_reap_config ($opts) {
-    // message_register(var_export($opts,true));
-    
+    // message_register('storage_reap_config($opts)='.var_export($opts,true));
+
     switch ($opts['action']) {
         // Plot management
         case 'Update Months':
@@ -414,24 +493,106 @@ function storage_reap_config ($opts) {
             message_register('Reaping months updated');
         break;
         
-        case 'Update Subject':
-            variable_set('storage_subject',$opts['subject']);
-            message_register('Email subject updated');
-            break;
+        case 'Recalculate All Plots':
+            $storage = crm_get_data('storage');
+            if (count($storage) < 1) {
+                return array();
+            }
+            // count the number of months we reap things
+            $storage_reap_months = str_split(variable_get('storage_reap_months','000000000000'),1); //convert to array
+            $num_reap_months = substr_count (variable_get('storage_reap_months','000000000000'), "1" );
+            $plots_per_month = intval(count($storage)/$num_reap_months); // grab integer portion
+            $leftover_plots = count($storage)%$num_reap_months; // grab remainder
+            // message_register('total plots'.count($storage).' | months: '.$num_reap_months.' | per month: '.$plots_per_month.' | leftover: '.$leftover_plots);
+                       
+            // TODO: Figure out how to update the reapmonth based on calucation of number plots per month and active reap months
+            $myMonthList = array();
+            for ($i=0;$i<=12;$i++) {
+                if ($storage_reap_months[$i] == 1) { $myMonthList[] = $i+1; } // list of active storage months
+            }
+            $myMonth = 0;
+            $myCount = 1;
+            // message_register(var_export($myMonthList,true));
+            foreach ($storage as $plot) {
+                // message_register(var_export($plot,true));
+                if ($myMonth < $leftover_plots ) { // les than becuase month is offset one
+                    // add one since we have leftovers to deal with
+                    $plots_this_month = $plots_per_month + 1;
+                } else {
+                    // no more leftovers
+                    $plots_this_month = $plots_per_month;
+                }   
+                storage_edit(array('pid'=>$plot['pid'],'reapmonth'=>$myMonthList[$myMonth], 'quiet'=>true));
+                // message_register("storage_edit(array('pid'=>".$plot['pid'].",'reapmonth'=>".$myMonthList[$myMonth].", 'quiet'=>true))");
+                $myCount++;
+                if ($myCount > $plots_this_month) {
+                    $myCount = 1;
+                    $myMonth++;
+                }
+            }
+            message_register('All storage plot reap months have been recalculated.');
+        break;
         
-        case 'Update Body':
-            variable_set('storage_body',$opts['body']);
-            message_register('Email body updated');
-            break;
+        case 'Recalculate Unreaped Plots':
+            $year = date('Y') - 1;
+            $beforedate = $year.'12-31';
+            // message_register(var_export($beforedate,true));
             
-        case 'Update Announce Subject':
-            variable_set('storage_subject_announce',$opts['subject_announce']);
-            message_register('-Announce subject updated');
-            break;
-            
-        case 'Update Announce Body':
-            variable_set('storage_body_announce',$opts['body_announce']);
-            message_register('-Announce body updated');
+            $storage = crm_get_data('storage', array('reapbefore'=>$beforedate));
+            if (count($storage) < 1) {
+                return array();
+            }
+            // message_register(var_export($storage,true));
+            // count the number of months we reap things
+            $fourthThu = date('d', strtotime('fourth thursday of this month'));
+            if (date('d') > $fourthThu) {
+                $fromdate = date('Y-m-d', strtotime('fourth tuesday of next month'));
+                $month = date('m', strtotime('next month'));
+                $monthName = date('F', strtotime('next month'));
+            } else {
+                $fromdate = date('Y-m-d', strtotime('fourth tuesday of this month'));
+                $month = date('m');
+                $monthName = date('F');
+            }
+
+            $var_storage_reap_months = variable_get('storage_reap_months','000000000000');
+            $storage_reap_months = str_split($var_storage_reap_months,1); //convert to array
+            $num_reap_months = substr_count(substr(variable_get('storage_reap_months','000000000000'),$month-1), "1" );
+            $plots_per_month = intval(count($storage)/$num_reap_months); // grab integer portion
+            $leftover_plots = count($storage)%$num_reap_months; // grab remainder
+            // message_register('unreaped plots'.count($storage).' | months: '.$num_reap_months.' | per month: '.$plots_per_month);
+                       
+            $myMonthList = array();
+            for ($i=$month-1;$i<=12;$i++) {
+                if ($storage_reap_months[$i] == 1) { $myMonthList[] = $i+1; } // list of active storage months
+            }
+            $myMonth = 0;
+            $myCount = 1;
+            // message_register(var_export($myMonthList,true));
+            foreach ($storage as $plot) {
+                if ($myMonth < $leftover_plots ) { // les than becuase month is offset one
+                    // add one since we have leftovers to deal with
+                    $plots_this_month = $plots_per_month + 1;
+                } else {
+                    // no more leftovers
+                    $plots_this_month = $plots_per_month;
+                }   
+                storage_edit(array('pid'=>$plot['pid'],'reapmonth'=>$myMonthList[$myMonth], 'quiet'=>true));
+                $myCount++;
+                if ($myCount > $plots_this_month) {
+                    $myCount = 1;
+                    $myMonth++;
+                }
+            }
+            message_register('All unreaped storage plot reap months have been recalculated.');
+        break;
+        
+        case 'Update Email':
+            variable_set('storage_subject_'.$opts['thisweek'], $opts['subject_'.$opts['thisweek']]);
+            variable_set('storage_body_'.$opts['thisweek'], $opts['body_'.$opts['thisweek']]);
+            variable_set('storage_subject_announce_'.$opts['thisweek'], $opts['subject_announce_'.$opts['thisweek']]);
+            variable_set('storage_body_announce_'.$opts['thisweek'], $opts['body_announce_'.$opts['thisweek']]);
+            message_register('Email templates updated');
             break;
         
         case 'Update Storage Admins':
@@ -464,6 +625,7 @@ function storage_table () {
             array('title' => 'Plot#')
             , array('title' => 'Description')
             , array('title' => 'Contact')
+            , array('title' => 'Reap Month')
             , array('title' => 'Last Reaping')
         )
         , 'rows' => array()
@@ -487,11 +649,12 @@ function storage_table () {
                     $cid_to_contact = crm_map($contact_data, 'cid');
                     $row[] = theme('contact_name', $cid_to_contact[$plot['cid']], !$export);
                 } else {
-                    $row[] = $plot['cid'];
+                   $row[] = empty($plot['email']) ? $plot['cid'] : '<a href="mailto:'.$plot['email'].'">'.$plot['cid'].'</a>';
                 }
             } else {
                 $row[] = '';
             }
+            $row[] = date('F', mktime(0, 0, 0, $plot['reapmonth'], 10));
             $row[] = $plot['reapdate'];
        }
         // Construct ops array
@@ -537,6 +700,8 @@ function storage_log_table ($opts) {
             , array('title' => 'Plot#')
             , array('title' => 'Description')
             , array('title' => 'Contact')
+            , array('title' => 'Email')
+            , array('title' => 'Reap Month')
             , array('title' => 'Last Reaping')
         )
         , 'rows' => array()
@@ -561,12 +726,16 @@ function storage_log_table ($opts) {
                 if ($crm_user) {
                     $cid_to_contact = crm_map($contact_data, 'cid');
                     $row[] = theme('contact_name', $cid_to_contact[$log['cid']], !$export);
+                    $row[] = '';
                 } else {
                     $row[] = $log['cid'];
+                    $row[] = $log['email'];
                 }
             } else {
                 $row[] = '';
+                $row[] = '';
             }
+            $row[] = date('F', mktime(0, 0, 0, $plot['reapmonth'], 10));
             $row[] = $log['reapdate'];
         }
     $table['rows'][] = $row;  
@@ -605,6 +774,7 @@ function storage_plot_table ($opts) {
         $table['columns'][] = array("title"=>'Name', 'class'=>'', 'id'=>'');
         $table['columns'][] = array("title"=>'Plot#', 'class'=>'', 'id'=>'');
         $table['columns'][] = array("title"=>'Description', 'class'=>'', 'id'=>'');
+        $table['columns'][] = array("title"=>'Reap Month', 'class'=>'', 'id'=>'');
         $table['columns'][] = array("title"=>'Last Reaping', 'class'=>'', 'id'=>'');
     }
 
@@ -623,6 +793,7 @@ function storage_plot_table ($opts) {
             if ( isset($plot['pid'])) {
                 $row[] = $plot['pid'];
                 $row[] = $plot['desc'];
+                $row[] = date('F', mktime(0, 0, 0, $plot['reapmonth'], 10));
                 $row[] = $plot['reapdate'];
             } else {
                 $row[] = '';
@@ -659,32 +830,14 @@ function storage_reap_table () {
     // }
 
     // Get data
-    // if today is before the 4th Thursday, show this month, otherwise show next month
-    $fourthThu = date('d', strtotime('fourth thursday of this month'));
-    if (date('d') > $fourthThu) {
-        $fromdate = date('Y-m-d', strtotime('fourth tuesday of next month'));
-        $month = date('m', strtotime('next month'));
-        $monthName = date('F', strtotime('next month'));
-    } else {
-        $fromdate = date('Y-m-d', strtotime('fourth tuesday of this month'));
-        $month = date('m');
-        $monthName = date('F');
-    }
-
-    $storage = crm_get_data('storage', array('reapsince'=>$fromdate));
+    $monthNum = $_SESSION['reap_month_filter_option'];
+    $monthName = date("F", mktime(0, 0, 0, $monthNum, 10));
+    
+    $storage = crm_get_data('storage', array('reapmonth'=>$monthNum));
     if (count($storage) < 1) {
         return array();
     }
     $numUnreaped = count($storage);
-    $reapMonthsVar = variable_get('storage_reap_months',0); // get months variable
-    $reapMonths = str_split($reapMonthsVar,1); // convert to an array
-    $remainingMonths = 0;
-    for ( $i=$month-1; $i<12; $i++) { // from current month to end
-        if ($reapMonths[$i] == 1) {$remainingMonths++;}
-    }
-
-    $numToReap = (count($storage)/$remainingMonths);
-    $storage = array_slice($storage, 0, $numToReap);
 
     // Initialize table
     $table = array(
@@ -693,6 +846,7 @@ function storage_reap_table () {
             array('title' => 'Plot#')
             , array('title' => 'Description')
             , array('title' => 'Contact')
+            , array('title' => 'Reap Month')
             , array('title' => 'Last Reaping')
         )
         , 'rows' => array()
@@ -710,14 +864,14 @@ function storage_reap_table () {
             $crm_user = crm_get_one('contact',array('cid'=>$plot['cid']));
             if ($crm_user) {
                 $cid_to_contact = crm_map($contact_data, 'cid');
-                $contact = theme('contact_name', $cid_to_contact[$plot['cid']], !$export);
+                $row[] = theme('contact_name', $cid_to_contact[$plot['cid']], !$export);
             } else {
-                $contact = $plot['cid'];
+                $row[] = empty($plot['email']) ? $plot['cid'] : '<a href="mailto:'.$plot['email'].'">'.$plot['cid'].'</a>';
             }
         } else {
-            $contact= "";
+            $row[] = '';
         }
-        $row[] = $contact;
+        $row[] = date('F', mktime(0, 0, 0, $plot['reapmonth'], 10));
         $row[] = $plot['reapdate'];
         // }
         $rows[] = $row;
@@ -736,7 +890,11 @@ function storage_add_form () {
     if (!user_access('storage_edit')) {
         return NULL;
     }
-    
+    $months = array(
+        1 => "January" , 2 => "February", 3 => "March", 4 => "April", 5 => "May", 6 => "June",
+        7 => "July", 8 => "August", 9 => "Sepember", 10 => "October", 11 => "November", 12 => "December"
+    );
+
     // Create form structure
     $form = array(
         'type' => 'form',
@@ -759,6 +917,13 @@ function storage_add_form () {
                         'type' => 'text',
                         'label' => 'Description',
                         'name' => 'desc'
+                    ),
+                    array(
+                        'type' => 'select'
+                        , 'label' => 'Reap Month'
+                        , 'name' => 'reapmonth'
+                        , 'options' => $months
+                        , 'selected' => '1'
                     ),
                     array(
                        'type' => 'text'
@@ -789,8 +954,22 @@ function storage_edit_form ($name) {
     if (empty($data['pid']) || count($data['pid']) < 1) {
         return array();
     }
+    $months = array(
+        1 => "January" , 2 => "February", 3 => "March", 4 => "April", 5 => "May", 6 => "June",
+        7 => "July", 8 => "August", 9 => "Sepember", 10 => "October", 11 => "November", 12 => "December"
+    );
 
+    // Get list of active users to populate dropdown
+    $contactlist = array('0'=>'');
+    $contacts = member_data(array('filter'=>array('active'=>true)));
+    // message_register(count($contacts));
+    // message_register(var_export($contacts,true));
+    foreach ($contacts as $contact) {
+        $contactlist[$contact['cid']] = member_name($contact['contact']['firstName'], $contact['contact']['middleName'], $contact['contact']['lastName']);
+    }
+    // message_register(var_export($contactlist,true));
     
+
     // Create form structure
     $form = array(
         'type' => 'form',
@@ -816,17 +995,37 @@ function storage_edit_form ($name) {
                         'name' => 'desc',
                         'value' => $data['desc'],
                     ),
+                  array(
+                        'type' => 'select'
+                        , 'label' => 'Member'
+                        , 'name' => 'cid'
+                        , 'options' => $contactlist
+                        , 'selected' => $data['cid']
+                    ),
                     array(
                         'type' => 'text',
-                        'label' => 'Contact',
-                        'name' => 'cid',
+                        'label' => 'Custom Contact',
+                        'name' => 'contact_name',
                         'value' => $data['cid'],
+                    ),
+                    array(
+                        'type' => 'text',
+                        'label' => 'Custom Contact Email',
+                        'name' => 'contact_email',
+                        'value' => $data['email'],
+                    ),
+                  array(
+                        'type' => 'select'
+                        , 'label' => 'Reap Month'
+                        , 'name' => 'reapmonth'
+                        , 'options' => $Months
+                        , 'selected' => $data['reapmonth']
                     ),
                     array(
                        'type' => 'text'
                         , 'label' => 'Last Reaping'
                         , 'name' => 'reapdate'
-                        , 'value' => date('Y-m-d')
+                        , 'value' => $data['reapdate']
                         , 'class' => 'date float'
                     ),
                     array(
@@ -841,7 +1040,7 @@ function storage_edit_form ($name) {
     return $form;
 }
 
-function storage_reap_filter_form () {
+function storage_reap_filter_form ($opts) {
     // Available filters
     $filters = array(
         'weekOne' => 'Initial Notification (Monday before 1st Tuesday)'
@@ -858,15 +1057,22 @@ function storage_reap_filter_form () {
     foreach ($_GET as $key=>$val) {
         $hidden[$key] = $val;
     }
+    switch ($opts['tab']) {
+        case 'reap' : 
+            $myTitle = 'Storage Reaping for '.$_SESSION['reap_filter_option'].' of '.$_SESSION['reap_month'];
+            break;
+        case 'config' :
+            $myTitle = 'Notification Emails for '.$selected;
+    }
     $form = array(
         'type' => 'form'
         , 'method' => 'get'
-        , 'command' => 'reap_filter'
+        , 'command' => 'reap_filter_'.$opts['tab']
         , 'hidden' => $hidden,
         'fields' => array(
             array(
                 'type' => 'fieldset'
-                , 'label' => 'Storage Reaping for month of '.$_SESSION['reap_month']
+                , 'label' => $myTitle
                 ,'fields' => array(
                     array(
                         'type' => 'select'
@@ -885,9 +1091,62 @@ function storage_reap_filter_form () {
     return $form;
 }
 
+function storage_reap_month_filter_form () {
+
+    $monthNames = array(
+        1 => "January" , 2 => "February", 3 => "March", 4 => "April", 5 => "May", 6 => "June",
+        7 => "July", 8 => "August", 9 => "Sepember", 10 => "October", 11 => "November", 12 => "December"
+    );
+    
+    $storage_reap_months = str_split(variable_get('storage_reap_months','000000000000'),1); //convert to array
+    $months = array();
+    for ($i=0;$i<12;$i++) {
+        if ($storage_reap_months[$i] == 1) {
+            $months[$i+1] = $monthNames[$i+1];
+        }
+    }
+// Default filter
+    
+
+    // Construct hidden fields to pass GET params
+    $hidden = array();
+    foreach ($_GET as $key=>$val) {
+        $hidden[$key] = $val;
+    }
+
+    $form = array(
+        'type' => 'form'
+        , 'method' => 'get'
+        , 'command' => 'reap_month_filter'
+        , 'hidden' => $hidden,
+        'fields' => array(
+            array(
+                'type' => 'fieldset'
+                , 'label' => 'Storage Reaping for month of '.$months[$_SESSION['reap_month_filter_option']]
+                ,'fields' => array(
+                    array(
+                        'type' => 'select'
+                        , 'name' => 'monthfilter'
+                        , 'options' => $months
+                        , 'selected' => $_SESSION['reap_month_filter_option']
+                    ),
+                    array(
+                        'type' => 'submit'
+                        , 'value' => 'Select'
+                    )
+                )
+            )
+        )
+    );
+    return $form;
+}
+
 function storage_reap_email_form() {
     $pidsToReap = join(",", $_SESSION['pids_to_reap']);
     $thisWeek = empty($_SESSION['reap_filter_option']) ? 'weekOne' : $_SESSION['reap_filter_option'];
+    $storage_body = text_replace(array('text'=>variable_get('storage_body_'.$thisWeek,''),'pidsToReap'=>$pidsToReap));
+    $storage_body_announce = text_replace(array('text'=>variable_get('storage_body_announce_'.$thisWeek,''),'pidsToReap'=>$pidsToReap));
+    
     $form = array(
         'type' => 'form'
         , 'method' => 'post'
@@ -896,13 +1155,14 @@ function storage_reap_email_form() {
         , 'hidden' => array(
             'action' => 'Reap'
             , 'pidsToReap' => $pidsToReap
+            , 'thisweek' => $thisWeek
         )
         , 'fields' => array(
             array(
                 'type' => 'textarea'
                 , 'label' => 'Subject - contacts'
                 , 'name' => 'subject'
-                , 'value' => variable_get('storage_subject','')
+                , 'value' => variable_get('storage_subject_'.$thisWeek,'')
                 , 'cols' => '100'
                 , 'rows' => '1'
             )
@@ -910,15 +1170,15 @@ function storage_reap_email_form() {
                 'type' => 'textarea'
                 , 'label' => 'Message Body - contacts'
                 , 'name' => 'content'
-                , 'value' => variable_get('storage_body','')
+                , 'value' => $storage_body
                 , 'cols' => '100'
-                , 'rows' => '20'
+                , 'rows' => '10'
             )
             , array(
                 'type' => 'textarea'
                 , 'label' => 'Subject - Announce'
                 , 'name' => 'subject_announce'
-                , 'value' => variable_get('storage_subject_announce','')
+                , 'value' => variable_get('storage_subject_announce_'.$thisWeek,'')
                 , 'cols' => '100'
                 , 'rows' => '1'
             )
@@ -926,9 +1186,9 @@ function storage_reap_email_form() {
                 'type' => 'textarea'
                 , 'label' => 'Message Body - Announce'
                 , 'name' => 'content_announce'
-                , 'value' => variable_get('storage_body_announce','')
+                , 'value' => $storage_body_announce
                 , 'cols' => '100'
-                , 'rows' => '20'
+                , 'rows' => '10'
             )
             , array(
                 'type' => 'submit',
@@ -1068,7 +1328,7 @@ function user_plot_vacate_form ($opts) {
     return $form;
 }
 
-function storage_reap_config_form () {
+function storage_reap_config_months_form () {
     // Ensure user is allowed to edit keys
     if (!user_access('storage_edit')) {
         return NULL;
@@ -1084,23 +1344,26 @@ function storage_reap_config_form () {
     $rows = array();
 
     // Add column titles
-    $columns[] = array('title' => 'Month');
-    $columns[] = array('title' => 'Month');
-    $columns[] = array('title' => 'Reaping');
+    // $columns[] = array('title' => 'Month');
+    // $columns[] = array('title' => 'Month');
+    // $columns[] = array('title' => 'Reaping');
+
+    for ($m = 1; $m <= 12; $m++) {
+        $columns[] = array('title' => date('F', mktime(0, 0, 0, $m, 10)));
+    }
     
     // Process rows
-    $reap = array();
+    $row = array();
     for ($m = 1; $m <= 12; $m++) {
 
-        $row = array();
-        $row[] = array(
-            'type' => 'message'
-            , 'value' => $m
-        );
-        $row[] = array(
-            'type' => 'message'
-            , 'value' => date('F', mktime(0, 0, 0, $m, 10))
-        );
+        // $row[] = array(
+        //     'type' => 'message'
+        //     , 'value' => $m
+        // );
+        // $row[] = array(
+        //     'type' => 'message'
+        //     , 'value' => date('F', mktime(0, 0, 0, $m, 10))
+        // );
         // check bitwise for month to see if set
         $storage_reap_months[$m-1] == "1" ? $checked = true : $checked = false;
         $row[] = array(
@@ -1108,8 +1371,8 @@ function storage_reap_config_form () {
             'name' => "reap[$m]",
             'checked' => $checked
         );
-        $rows[] = $row;
     }
+    $rows[] = $row;
 
     // Create form structure
      $form = array(
@@ -1128,68 +1391,101 @@ function storage_reap_config_form () {
                 'value' => 'Update Months'
             )
             , array(
+                'type' => 'submit',
+                'name' => 'action',
+                'value' => 'Recalculate Unreaped Plots'
+            )
+            , array(
+                'type' => 'submit',
+                'name' => 'action',
+                'value' => 'Recalculate All Plots'
+            )
+
+        )
+    );
+    return $form;
+}
+
+function storage_reap_config_email_form () {
+    // Ensure user is allowed to edit keys
+    if (!user_access('storage_edit')) {
+        return NULL;
+    }
+
+    $thisWeek = empty($_SESSION['reap_filter_option']) ? 'weekOne' : $_SESSION['reap_filter_option'];
+
+    $form = array(
+        'type' => 'form'
+        , 'method' => 'post'
+        , 'command' => 'storage_reap_config'
+        , 'hidden' => array(
+            'thisweek' => $thisWeek
+            , 'tab' => 'config'
+        )
+         , 'fields' => array(
+           array(
                 'type' => 'message'
                 , 'value' => 'Member Email Subject'
             )
             , array(
                 'type' => 'textarea'
-                , 'name' => 'subject'
-                , 'value' => variable_get('storage_subject','')
+                , 'name' => 'subject_'.$thisWeek
+                , 'value' => variable_get('storage_subject_'.$thisWeek,'')
                 , 'cols' => '100'
                 , 'rows' => '1'
             )
-            , array(
-                'type' => 'submit',
-                'name' => 'action',
-                'value' => 'Update Subject'
-            )
+            // , array(
+            //     'type' => 'submit',
+            //     'name' => 'action',
+            //     'value' => 'Update Subject'
+            // )
             , array(
                 'type' => 'message'
                 , 'value' => 'Member Email Body'
             )
             , array(
                 'type' => 'textarea'
-                , 'name' => 'body'
-                , 'value' => variable_get('storage_body','')
+                , 'name' => 'body_'.$thisWeek
+                , 'value' => variable_get('storage_body_'.$thisWeek,'')
                 , 'cols' => '100'
-                , 'rows' => '20'
+                , 'rows' => '10'
             )
-            , array(
-                'type' => 'submit',
-                'name' => 'action',
-                'value' => 'Update Body'
-            )
+            // , array(
+            //     'type' => 'submit',
+            //     'name' => 'action',
+            //     'value' => 'Update Body'
+            // )
             , array(
                 'type' => 'message'
                 , 'value' => '-Announce Email Subject'
             )
             , array(
                 'type' => 'textarea'
-                , 'name' => 'subject_announce'
-                , 'value' => variable_get('storage_subject_announce','')
+                , 'name' => 'subject_announce_'.$thisWeek
+                , 'value' => variable_get('storage_subject_announce_'.$thisWeek,'')
                 , 'cols' => '100'
                 , 'rows' => '1'
             )
-            , array(
-                'type' => 'submit',
-                'name' => 'action',
-                'value' => 'Update Announce Subject'
-            )
+            // , array(
+            //     'type' => 'submit',
+            //     'name' => 'action',
+            //     'value' => 'Update Announce Subject'
+            // )
             , array(
                 'type' => 'message'
                 , 'value' => '-Announce Email Body'
             )
             , array(
                 'type' => 'textarea'
-                , 'name' => 'body_announce'
-                , 'value' => variable_get('storage_body_announce','')
+                , 'name' => 'body_announce_'.$thisWeek
+                , 'value' => variable_get('storage_body_announce_'.$thisWeek,'')
                 , 'cols' => '100'
-                , 'rows' => '20'
+                , 'rows' => '10'
             )
             , array(
                 'type' => 'submit',
                 'name' => 'action',
-                'value' => 'Update Announce Body'
+                'value' => 'Update Email'
             )
             , array(
                 'type' => 'message'
@@ -1213,6 +1509,7 @@ function storage_reap_config_form () {
 
     return $form;
 }
+
 
 // Themeing ////////////////////////////////////////////////////////////////////
 
@@ -1244,7 +1541,15 @@ function theme_storage_reap_filter_form ($opts) {
     return theme('form', crm_get_form('storage_reap_filter'), $opts);
 }
 
-function theme_storage_reap_config_form ($opts) {
+function theme_storage_reap_month_filter_form ($opts) {
+    return theme('form', crm_get_form('storage_reap_month_filter'), $opts);
+}
+
+function theme_storage_reap_config_months_form ($opts) {
+    return theme('form', crm_get_form('storage_reap_config'), $opts);
+}
+
+function theme_storage_reap_config_email_form ($opts) {
     return theme('form', crm_get_form('storage_reap_config'), $opts);
 }
 
@@ -1285,17 +1590,24 @@ function storage_page (&$page_data, $page_name, $options) {
             
             // Reap tab
             if (user_access('storage_edit')) {
+                // set current month
+                if (!array_key_exists('reap_month_filter_option', $_SESSION)) {
+                    $_SESSION['reap_month_filter_option'] = date('m');
+                }
                 $thisWeek = array_key_exists('reap_filter', $_SESSION) ? $_SESSION['reap_filter'] : array('week'=>'weekOne');
-                // $reap_content = theme('form', storage_reap_form());
-                $reap_content = theme('table', 'storage_reap', array('show_export'=>true));
-                $reap_content .= theme('form', crm_get_form('storage_reap_filter'));
+
+                $reap_content = theme('form', crm_get_form('storage_reap_month_filter', array('tab'=>'reap')));
+                $reap_content .= theme('table', 'storage_reap', array('show_export'=>true));
+                $reap_content .= theme('form', crm_get_form('storage_reap_filter', array('tab'=>'reap')));
                 $reap_content .= theme('form', crm_get_form('storage_reap_email'));
                 page_add_content_top($page_data, $reap_content, 'Reap');
             }
             
             // Config tab
             if (user_access('storage_edit')) {
-                $config_content = theme('form', crm_get_form('storage_reap_config'));
+                $config_content = theme('form', crm_get_form('storage_reap_config_months'));
+                $config_content .= theme('form', crm_get_form('storage_reap_filter', array('tab'=>'config')));
+                $config_content .= theme('form', crm_get_form('storage_reap_config_email'));
                 page_add_content_top($page_data, $config_content, 'Config');
             }
  
@@ -1445,7 +1757,7 @@ function command_storage_reap_config() {
     return crm_url('storage&tab=config');
 }
 
-function command_reap_filter () {
+function command_reap_filter_reap () {
     // Set filter in session
     $_SESSION['reap_filter_option'] = $_GET['filter'];
     // Set filter
@@ -1461,5 +1773,30 @@ function command_reap_filter () {
     if ($_GET['filter'] == 'weekFour') {
         $_SESSION['reap_filter'] = array('week'=>'four');
     }
+    return crm_url('storage&tab=reap');
+}
+
+function command_reap_filter_config () {
+    // Set filter in session
+    $_SESSION['reap_filter_option'] = $_GET['filter'];
+    // Set filter
+    if ($_GET['filter'] == 'weekOne') {
+        $_SESSION['reap_filter'] = array('week'=>'one');
+    }
+    if ($_GET['filter'] == 'weekTwo') {
+        $_SESSION['reap_filter'] = array('week'=>'two');
+    }
+    if ($_GET['filter'] == 'weekThree') {
+        $_SESSION['reap_filter'] = array('week'=>'three');
+    }
+    if ($_GET['filter'] == 'weekFour') {
+        $_SESSION['reap_filter'] = array('week'=>'four');
+    }
+    return crm_url('storage&tab=config');
+}
+
+function command_reap_month_filter () {
+    // Set filter in session
+    $_SESSION['reap_month_filter_option'] = $_GET['monthfilter'];
     return crm_url('storage&tab=reap');
 }
