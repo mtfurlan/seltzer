@@ -60,6 +60,7 @@ function member_data ($opts = array()) {
         $filter = $opts['filter'];
         if (isset($filter['active'])) {
             if ($filter['active']) {
+                $sql .= " AND (`membership`.`pid` = '6' OR `membership`.`pid` = '10') ";
                 $sql .= " AND (`membership`.`start` IS NOT NULL AND `membership`.`end` IS NULL)";
             } else {
                 $sql .= " AND (`membership`.`start` IS NULL OR `membership`.`end` IS NOT NULL)";

@@ -1,0 +1,8 @@
+/* custom CSS by matt huber to add zebra striping to sorted tables.*/
+
+table.sortable tbody tr:nth-child(2n) td {
+  background: #eeeeff;
+}
+table.sortable tbody tr:nth-child(2n+1) td {
+  background: #fffffff;
+}

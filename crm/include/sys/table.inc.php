@@ -50,6 +50,7 @@ function crm_get_table ($table_id, $opts = array()) {
 */
 function theme_table ($table_id, $opts = NULL) {
     
+    // $opts['show_export'] = false;
     // Check if $table_name is a string
     if (is_string($table_id)) {
         $table = crm_get_table($table_id, $opts);
@@ -106,31 +107,32 @@ function theme_table ($table_id, $opts = NULL) {
         $output .= '</th>';
     }
     $output .= "</tr>";
-    if (isset($opts) && array_key_exists('show_export', $opts)) {
-        if ($opts['show_export']) {
-            $output .= '<tr class="subhead"><td colspan="' . $column_count . '">';
-            $output .= $row_count . ' results, export: <a href="' . $export . '">csv</a>';
-            $output .= "</td></tr>";
-        }
-    }
+    // if (isset($opts) && array_key_exists('show_export', $opts)) {
+    //     if ($opts['show_export']) {
+    //         $output .= '<tr class="subhead"><td colspan="' . $column_count . '">';
+    //         $output .= $row_count . ' results, export: <a href="' . $export . '">csv</a>';
+    //         $output .= "</td></tr>";
+    //     }
+    // }
     $output .= "</thead>";
     
     // Output table body
     $output .= "<tbody>";
     
     // Initialize zebra striping
-    $zebra = 1;
+    // Stripped out and moved to sorttable.css
+    // $zebra = 1;
     
     // Loop through rows
     foreach ($table['rows'] as $row) {
         
         $output .= '<tr';
-        if ($zebra % 2 === 0) {
-            $output .= ' class="even"';
-        } else {
-            $output .= ' class="odd"';
-        }
-        $zebra++;
+        // if ($zebra % 2 === 0) {
+        //     $output .= ' class="even"';
+        // } else {
+        //     $output .= ' class="odd"';
+        // }
+        // $zebra++;
         $output .= '>';
         
         foreach ($row as $i => $cell) {
@@ -148,16 +150,18 @@ function theme_table ($table_id, $opts = NULL) {
         
         $output .= '</tr>';
     }
-    
+    $output .= "</tbody>";
+   
     if (isset($opts) && array_key_exists('show_export', $opts)) {
         if ($opts['show_export']) {
+            $output .= '<tfoot>';
             $output .= '<tr class="subhead"><td colspan="' . $column_count . '">';
             $output .= $row_count . ' results, export: <a href="' . $export . '">csv</a>';
             $output .= "</td></tr>";
+            $output .= '</tfoot>';
         }
     }
     
-    $output .= "</tbody>";
     $output .= "</table>";
     
     return $output;

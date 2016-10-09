@@ -113,6 +113,11 @@ function text_replace ($opts) {
 
     $repFrom = array();
     $repTo = array();
+    $monthNames = array(
+        1 => "January" , 2 => "February", 3 => "March", 4 => "April", 5 => "May", 6 => "June",
+        7 => "July", 8 => "August", 9 => "Sepember", 10 => "October", 11 => "November", 12 => "December"
+    );
+    $monthName = $monthNames[$_SESSION['reap_month_filter_option']];
     
     // {{plotlist}} - list plot numbers in comma-separated format
     if (strpos($opts['text'], '{{plotlist}}') !== false) {
@@ -137,20 +142,29 @@ function text_replace ($opts) {
             }
             $plotOwnersList .= "$pid - ".preg_replace('/\'/','',(var_export($owner,true)))."\n"; // remove ' from results
         }
-    $repFrom[] = '/{{plotowners}}/';  $repTo[] = $plotOwnersList;
+        $repFrom[] = '/{{plotowners}}/';  $repTo[] = $plotOwnersList;
     }
 
     // {{month}} - name of reaping month
     if (strpos($opts['text'], '{{month}}') !== false) {
-        // if today is before the 4th Thursday, show this month, otherwise show next month
-        $fourthThu = date('d', strtotime('fourth thursday of this month'));
-        if (date('d') > $fourthThu) {
-            $monthName = date('F', strtotime('next month'));
-        } else {
-            $monthName = date('F');
-        }
+        
         $repFrom[] = '/{{month}}/';  $repTo[] = $monthName;
     }        
+
+    // {{date to be out by}} - third Tuesday of month
+    if (strpos($opts['text'], '{{outby}}') !== false) {
+        $repFrom[] = '/{{outby}}/';  $repTo[] = date('l jS \of F Y', strtotime('third tuesday of '.$monthName));
+    }
+    
+    // {{first day to return}} - fourth Tuesday if month
+        if (strpos($opts['text'], '{{returnon}}') !== false) {
+        $repFrom[] = '/{{returnon}}/';  $repTo[] = date('l jS \of F Y', strtotime('fourth tuesday of '.$monthName));
+    }    
+
+    // {{last day to return}} - last day of the month
+        if (strpos($opts['text'], '{{returnby}}') !== false) {
+        $repFrom[] = '/{{returnby}}/';  $repTo[] = date('l jS \of F Y', strtotime('last day of '.$monthName));
+    }    
 
     // message_register('preg_replace('.var_export($repFrom,true).', '.var_export($repTo,true).', '.$opts['text'].')');
     return preg_replace($repFrom, $repTo, $opts['text']);
@@ -439,23 +453,25 @@ function storage_reap ($opts) {
             } else {
                 message_register("email failure");
             }
-            // -announce email
-            $to = "i3-announce@groups.google.com";
-            $subject = $opts['subject_announce'];
-            $message = $opts['content_announce'];
-            $fromheader = "From: \"i3Detroit CRM\" <crm@i3detroit.org>\r\n";
-            $contentheader = "Content-Type: text/html; charset=ISO-8859-1\r\n";
-            $ccheader = "Cc: ".variable_get('storage_admin_email','')."\r\n";
-            $headers = $fromheader.$contentheader.$ccheader.$bccheader;
-            message_register("Sending email:");
-            message_register("To:".$to);
-            message_register("Subject:".$subject);
-            message_register("Message:".$message);
-            message_register("Headers:".$headers);
-            if(mail($to, $subject, $message, $headers)) {
-                message_register("email sent successfully");
-            } else {
-                message_register("email failure");
+            if (!empty($opts['subject_announce'])) {
+                // -announce email
+                $to = "i3-announce@groups.google.com";
+                $subject = $opts['subject_announce'];
+                $message = $opts['content_announce'];
+                $fromheader = "From: \"i3Detroit CRM\" <crm@i3detroit.org>\r\n";
+                $contentheader = "Content-Type: text/html; charset=ISO-8859-1\r\n";
+                $ccheader = "Cc: ".variable_get('storage_admin_email','')."\r\n";
+                $headers = $fromheader.$contentheader.$ccheader.$bccheader;
+                message_register("Sending email:");
+                message_register("To:".$to);
+                message_register("Subject:".$subject);
+                message_register("Message:".$message);
+                message_register("Headers:".$headers);
+                if(mail($to, $subject, $message, $headers)) {
+                    message_register("-Announce email sent successfully");
+                } else {
+                    message_register("-Announce email failure");
+                }
             }
 
         } else {
@@ -588,6 +604,8 @@ function storage_reap_config ($opts) {
         break;
         
         case 'Update Email':
+            variable_set('storage_send_announce', $opts['send_announce']);
+            variable_set('storage_announce_address', $opts['announce_address']);
             variable_set('storage_subject_'.$opts['thisweek'], $opts['subject_'.$opts['thisweek']]);
             variable_set('storage_body_'.$opts['thisweek'], $opts['body_'.$opts['thisweek']]);
             variable_set('storage_subject_announce_'.$opts['thisweek'], $opts['subject_announce_'.$opts['thisweek']]);
@@ -1018,7 +1036,7 @@ function storage_edit_form ($name) {
                         'type' => 'select'
                         , 'label' => 'Reap Month'
                         , 'name' => 'reapmonth'
-                        , 'options' => $Months
+                        , 'options' => $months
                         , 'selected' => $data['reapmonth']
                     ),
                     array(
@@ -1147,6 +1165,34 @@ function storage_reap_email_form() {
     $storage_body = text_replace(array('text'=>variable_get('storage_body_'.$thisWeek,''),'pidsToReap'=>$pidsToReap));
     $storage_body_announce = text_replace(array('text'=>variable_get('storage_body_announce_'.$thisWeek,''),'pidsToReap'=>$pidsToReap));
     
+    if (variable_get('storage_send_announce',true)) {
+        $announce_subject = array(
+            'type' => 'textarea'
+            , 'label' => 'Subject - Announce'
+            , 'name' => 'subject_announce'
+            , 'value' => variable_get('storage_subject_announce_'.$thisWeek,'')
+            , 'cols' => '100'
+            , 'rows' => '1'
+        );
+        $announce_body = array(
+            'type' => 'textarea'
+            , 'label' => 'Message Body - Announce'
+            , 'name' => 'content_announce'
+            , 'value' => $storage_body_announce
+            , 'cols' => '100'
+            , 'rows' => '10'
+        );
+    } else {
+        $announce_subject = array(
+            'type' => 'message'
+            , 'value' => 'NO e-mail will be sent to -Announce, check box in config page to change'
+        );
+        $announce_body = array(
+            'type' => 'message'
+            , 'value' => ''
+        );
+    }
+    
     $form = array(
         'type' => 'form'
         , 'method' => 'post'
@@ -1160,7 +1206,7 @@ function storage_reap_email_form() {
         , 'fields' => array(
             array(
                 'type' => 'textarea'
-                , 'label' => 'Subject - contacts'
+                , 'label' => 'Subject - Contacts'
                 , 'name' => 'subject'
                 , 'value' => variable_get('storage_subject_'.$thisWeek,'')
                 , 'cols' => '100'
@@ -1168,34 +1214,21 @@ function storage_reap_email_form() {
             )
             , array(
                 'type' => 'textarea'
-                , 'label' => 'Message Body - contacts'
+                , 'label' => 'Message Body - Contacts'
                 , 'name' => 'content'
                 , 'value' => $storage_body
                 , 'cols' => '100'
                 , 'rows' => '10'
             )
-            , array(
-                'type' => 'textarea'
-                , 'label' => 'Subject - Announce'
-                , 'name' => 'subject_announce'
-                , 'value' => variable_get('storage_subject_announce_'.$thisWeek,'')
-                , 'cols' => '100'
-                , 'rows' => '1'
-            )
-            , array(
-                'type' => 'textarea'
-                , 'label' => 'Message Body - Announce'
-                , 'name' => 'content_announce'
-                , 'value' => $storage_body_announce
-                , 'cols' => '100'
-                , 'rows' => '10'
-            )
+            , $announce_subject
+            , $announce_body
             , array(
                 'type' => 'submit',
                 'value' => 'REAP!'
             )
         )
     );
+    // var_dump_pre($form);
     return $form;
 }
 
@@ -1456,6 +1489,23 @@ function storage_reap_config_email_form () {
             //     'value' => 'Update Body'
             // )
             , array(
+                'type' => 'checkbox',
+                'label' => 'Send Reaping email to -Announce',
+                'name' => 'send_announce',
+                'checked' => variable_get('storage_send_announce',true)
+            )
+            , array(
+                'type' => 'message'
+                , 'value' => '-Announce Email Address'
+            )
+            , array(
+                'type' => 'textarea'
+                , 'name' => 'announce_address'
+                , 'value' => variable_get('storage_announce_address','')
+                , 'cols' => '100'
+                , 'rows' => '1'
+            )
+            , array(
                 'type' => 'message'
                 , 'value' => '-Announce Email Subject'
             )
@@ -1503,7 +1553,16 @@ function storage_reap_config_email_form () {
                 'name' => 'action',
                 'value' => 'Update Storage Admins'
             )
-
+            , array(
+                'type' => 'message',
+                'value' => 'List of valid email variable substitutions:<br>
+                    {{plotlist}} - list plot numbers in comma-separated format<br>
+                    {{plotowners}}  - list plots as "pid - owner" format on separate lines<br>
+                    {{month}} - name of reaping month<br>
+                    {{outby}} - date to vacate plot (3rd tuesday)<br>
+                    {{returnon}} - first date to return to plot (4th tuesday)<br>
+                    {{returnby}} - last date to return to plot (last day of month)<br>'
+            )
         )
     );
 
@@ -1742,6 +1801,7 @@ function command_storage_reap() {
         error_register('Permission denied: storage_edt');
         return crm_url('storage&tab=reap');
     }
+    message_register(var_export($_POST,true));
     storage_reap($_POST);
     return crm_url('storage&tab=reap');
 }
