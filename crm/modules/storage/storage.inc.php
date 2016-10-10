@@ -71,7 +71,7 @@ function storage_install($old_revision = 0) {
             `cid` varchar(255) NOT NULL,
             `email` varchar(255),
             `reapmonth` mediumint(8) unsigned NOT NULL default 1,
-            `reapdate` date NOT NULL,
+            `reapdate` date NOT NULL
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
         ';
         $res = mysql_query($sql);
