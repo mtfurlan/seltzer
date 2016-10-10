@@ -70,7 +70,7 @@ function storage_install($old_revision = 0) {
             `desc` varchar(255) NOT NULL,
             `cid` varchar(255) NOT NULL,
             `email` varchar(255),
-            `reapmonth` mediumint(8) unsigned NOT NULL default `1`,
+            `reapmonth` mediumint(8) unsigned NOT NULL default 1,
             `reapdate` date NOT NULL,
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
         ';
