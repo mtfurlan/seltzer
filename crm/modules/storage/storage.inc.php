@@ -363,7 +363,7 @@ function user_plot_vacate ($opts) {
 if (isset($opts['pid'])) {
         // $plot = crm_get_one('storage', array('pid'=>$opts['pid']));
         $esc_name = mysql_real_escape_string($opts['pid']);
-        $sql = "UPDATE storage_plot SET cid = 0 WHERE pid = '" . $esc_name . "'";
+        $sql = "UPDATE storage_plot SET cid = NULL WHERE pid = '" . $esc_name . "'";
         $res = mysql_query($sql);
         if (!$res) die(mysql_error());
         if (mysql_affected_rows() > 0) {
