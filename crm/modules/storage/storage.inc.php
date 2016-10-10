@@ -1138,7 +1138,11 @@ function storage_reap_month_filter_form () {
     foreach ($_GET as $key=>$val) {
         $hidden[$key] = $val;
     }
-
+    if ( isset($_SESSION['reap_month_filter_option'])) {
+        $selection = $months[$_SESSION['reap_month_filter_option']];
+    } else {
+        $selection = $months[1];
+    }
     $form = array(
         'type' => 'form'
         , 'method' => 'get'
