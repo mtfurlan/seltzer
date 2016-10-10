@@ -128,15 +128,19 @@ function text_replace ($opts) {
     // {{plotowners}} List plots as "pid - owner" format on separate lines
     if (strpos($opts['text'], '{{plotowners}}') !== false) {
         $pidsToReap = explode(",", $opts['pidsToReap']);
-        $contact_data = crm_get_data('contact', $contact_opts);
+        $contact_data = crm_get_data('contact', '');
         $cid_to_contact = crm_map($contact_data, 'cid');
+        $plotOwnersList = '';
         foreach ($pidsToReap as $pid) {
             $plot = crm_get_one('storage',array('pid'=>$pid));
-            // var_dump_pre($plot);
-            $contact = $cid_to_contact[$plot['cid']];
+            if (!empty($plot['cid']) && array_key_exists($plot['cid'],$cid_to_contact)) {
+                $contact = $cid_to_contact[$plot['cid']];
+            } else {
+                $contact = '';
+            }
             // var_dump_pre($contact);
             if (!empty($contact)) {
-                $owner = theme('contact_name', $contact, false, !$export);
+                $owner = theme('contact_name', $contact, false);
             } else {
                 $owner = $plot['cid'];
             }
@@ -187,7 +191,8 @@ function storage_data ($opts = array()) {
         SELECT * 
         FROM storage_plot
         WHERE 1 ";
-    if (!empty($opts['pid']) || $opts['pid'] != 0 ) {
+    
+    if (!empty($opts['pid']) && $opts['pid'] != '0' ) {
         $esc_name = mysql_real_escape_string($opts['pid']);
         $sql .= " AND pid='" . $esc_name . "'";
     }
@@ -632,7 +637,7 @@ function storage_table () {
     //     }
     // }
     // Get storage data
-    $storage = crm_get_data('storage');
+    $storage = crm_get_data('storage', '');
     if (count($storage) < 1) {
         return array();
     }
@@ -653,7 +658,7 @@ function storage_table () {
         $table['columns'][] = array('title'=>'Ops','class'=>'');
     }
     // Add rows
-    $contact_data = crm_get_data('contact', $contact_opts);
+    $contact_data = crm_get_data('contact', '');
     foreach ($storage as $plot) {
         // Add storage data
         $row = array();
@@ -860,7 +865,7 @@ function storage_reap_table () {
 
     // Initialize table
     $table = array(
-        'caption' => "Reaping for $monthName ($numToReap of $numUnreaped remaining)"
+        'caption' => "Reaping for $monthName"
         , 'columns' => array(
             array('title' => 'Plot#')
             , array('title' => 'Description')
@@ -871,7 +876,7 @@ function storage_reap_table () {
         , 'rows' => array()
     );
 
-    $contact_data = crm_get_data('contact', $contact_opts);
+    $contact_data = crm_get_data('contact', '');
     $toReap = array();
     foreach ($storage as $plot) {
         // var_dump_pre($plot);
@@ -1069,7 +1074,8 @@ function storage_reap_filter_form ($opts) {
     );
     
     // Default filter
-    $selected = empty($_SESSION['reap_filter_option']) ? 'weekOne' : $_SESSION['reap_filter_option'];
+    if (empty($_SESSION['reap_filter_option'])) { $_SESSION['reap_filter_option'] = 'weekOne'; }
+    $selected = $_SESSION['reap_filter_option'];
     
     // Construct hidden fields to pass GET params
     $hidden = array();
@@ -1078,7 +1084,7 @@ function storage_reap_filter_form ($opts) {
     }
     switch ($opts['tab']) {
         case 'reap' : 
-            $myTitle = 'Storage Reaping for '.$_SESSION['reap_filter_option'].' of '.$_SESSION['reap_month'];
+            $myTitle = 'Storage Reaping for '.$selected.' of '.$_SESSION['reap_month'];
             break;
         case 'config' :
             $myTitle = 'Notification Emails for '.$selected;
@@ -1416,6 +1422,7 @@ function storage_reap_config_months_form () {
         , 'fields' => array(
             array(
                 'type' => 'table'
+                , 'id' => 'storage_reap_config_months'
                 , 'columns' => $columns
                 , 'rows' => $rows
             )

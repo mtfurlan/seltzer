@@ -71,6 +71,9 @@ function theme_table ($table_id, $opts = NULL) {
     // Generate url for export
     $new_opts = $opts;
     $new_opts['export'] = true;
+    if (!is_string($table_id)) {
+        $table_id = $table_id['id'];
+    }
     $export = 'export-csv.php?name=' . $table_id . '&opts=' . urlencode(json_encode($new_opts));
     
     // Open table
