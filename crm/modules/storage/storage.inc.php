@@ -726,7 +726,7 @@ function storage_log_table ($opts) {
     );
 
    // Add rows
-    $contact_data = crm_get_data('contact', $contact_opts);
+    $contact_data = crm_get_data('contact', '');
     foreach ($storage_log as $log) {
         // Add storage data
         $row = array();
@@ -753,7 +753,7 @@ function storage_log_table ($opts) {
                 $row[] = '';
                 $row[] = '';
             }
-            $row[] = date('F', mktime(0, 0, 0, $plot['reapmonth'], 10));
+            $row[] = date('F', mktime(0, 0, 0, $log['reapmonth'], 10));
             $row[] = $log['reapdate'];
         }
     $table['rows'][] = $row;  
@@ -814,6 +814,7 @@ function storage_plot_table ($opts) {
                 $row[] = date('F', mktime(0, 0, 0, $plot['reapmonth'], 10));
                 $row[] = $plot['reapdate'];
             } else {
+                $row[] = '';
                 $row[] = '';
                 $row[] = '';
                 $row[] = '';
