@@ -1286,7 +1286,7 @@ function user_plot_assign_form ($opts) {
     $esc_cid = mysql_real_escape_string($opts['cid']);
     // Get available plots
     $sql = "SELECT pid, `desc` from storage_plot ";
-    $sql .= "WHERE (cid = '')";
+    $sql .= "WHERE ( cid is NULL or cid = '' ) ";
     $sql .= "ORDER by pid;";
     $res = mysql_query($sql);
     if (!$res) die(mysql_error());
@@ -1334,7 +1334,7 @@ function user_plot_vacate_form ($opts) {
     // Get plot
     $data = crm_get_data('storage', array('pid' => $opts['pid']));
     // Create form structure
-var_dump_pre($data);
+
     $form = array(
         'type' => 'form',
         'method' => 'post',
