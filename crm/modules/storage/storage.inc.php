@@ -361,7 +361,7 @@ function storage_delete ($opts) {
 
 function user_plot_vacate ($opts) {
 if (isset($opts['pid'])) {
-        $plot = crm_get_one('storage', array('pid'=>$opts['pid']));
+        // $plot = crm_get_one('storage', array('pid'=>$opts['pid']));
         $esc_name = mysql_real_escape_string($opts['pid']);
         $sql = "UPDATE storage_plot SET cid = 0 WHERE pid = '" . $esc_name . "'";
         $res = mysql_query($sql);
@@ -1084,7 +1084,7 @@ function storage_reap_filter_form ($opts) {
     }
     switch ($opts['tab']) {
         case 'reap' : 
-            $myTitle = 'Storage Reaping for '.$selected.' of '.$_SESSION['reap_month'];
+            $myTitle = 'Storage Reaping for '.$selected .' of '.$_SESSION['reap_month'];
             break;
         case 'config' :
             $myTitle = 'Notification Emails for '.$selected;
@@ -1283,11 +1283,6 @@ function storage_delete_form ($plot) {
 }
 
 function user_plot_assign_form ($opts) {
-    // Get plot
-    $data = crm_get_data('storage', array('pid'=>$opts['pid']));
-    // if (!empty($data['pid']) ) {
-    //      $openplots[] = $data['pid'];
-    // }
     $esc_cid = mysql_real_escape_string($opts['cid']);
     // Get available plots
     $sql = "SELECT pid, `desc` from storage_plot ";
@@ -1339,6 +1334,7 @@ function user_plot_vacate_form ($opts) {
     // Get plot
     $data = crm_get_data('storage', array('pid' => $opts['pid']));
     // Create form structure
+var_dump_pre($data);
     $form = array(
         'type' => 'form',
         'method' => 'post',
@@ -1347,8 +1343,8 @@ function user_plot_vacate_form ($opts) {
         'hidden' => array(
             'pid' => $opts['pid'],
             'cid' => $opts['cid'],
-            'desc' => $opts['desc'],
-            'reapdate' => $opts['reapdate'],
+            // 'desc' => $data['desc'],
+            // 'reapdate' => $opts['reapdate'],
             'action' => 'Vacate'
         ),
         'fields' => array(
