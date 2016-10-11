@@ -138,7 +138,6 @@ function text_replace ($opts) {
             } else {
                 $contact = '';
             }
-            // var_dump_pre($contact);
             if (!empty($contact)) {
                 $owner = theme('contact_name', $contact, false);
             } else {
@@ -191,23 +190,25 @@ function storage_data ($opts = array()) {
         SELECT * 
         FROM storage_plot
         WHERE 1 ";
-    
-    if (!empty($opts['pid']) && $opts['pid'] != '0' ) {
+    if (array_key_exists('pid', $opts) && !empty($opts['pid'])) {
         $esc_name = mysql_real_escape_string($opts['pid']);
         $sql .= " AND pid='" . $esc_name . "'";
     }
-    if (!empty($opts['cid'])) {
+    if (array_key_exists('cid', $opts) && !empty($opts['cid'])) {
         $esc_name = mysql_real_escape_string($opts['cid']);
         $sql .= " AND cid='" . $esc_name . "'";
     }
-    if (!empty($opts['reapafter']) || (!empty($opts['reapbefore']))) {
-        if(empty($opts['reapbefore'])) { $esc_reapbefore = mysql_real_escape_string(date('Y-m-d', strtotime('Dec 31'))); }
-        if(empty($opts['reapafter'])) { $esc_reapafter = mysql_real_escape_string('0000-00-00'); }
-        $sql .= " AND reapdate BETWEEN '" . $esc_reapbefore . "' AND '" . $esc_reapafter . "'";
+    if (array_key_exists('reapbefore', $opts) && !empty($opts['reapbefore'])) { 
+        $esc_reapbefore = mysql_real_escape_string($opts['reapbefore']);
+        $sql .= " AND reapdate < '" . $esc_reapbefore . "' ";
     }
-    if (!empty($opts['reapmonth'])) {
+    if (array_key_exists('reapafter', $opts) && !empty($opts['reapafter'])) { 
+        $esc_reapafter = mysql_real_escape_string($opts['reapafter']); 
+        $sql .= " AND reapdate > '" . $esc_reapafter . "' ";
+    }
+    if (array_key_exists('reapmonth', $opts) && !empty($opts['reapmonth'])) {
         $esc_reapmonth = mysql_real_escape_string($opts['reapmonth']);
-        $sql .= " AND reapmonth='" . $esc_reapmonth . "'";
+        $sql .= " AND reapmonth='" . $esc_reapmonth . "' ";
     }
 
     $sql .= "ORDER BY pid ASC";
@@ -528,7 +529,7 @@ function storage_reap_config ($opts) {
                        
             // TODO: Figure out how to update the reapmonth based on calucation of number plots per month and active reap months
             $myMonthList = array();
-            for ($i=0;$i<=12;$i++) {
+            for ($i=0;$i<=11;$i++) {
                 if ($storage_reap_months[$i] == 1) { $myMonthList[] = $i+1; } // list of active storage months
             }
             $myMonth = 0;
@@ -543,7 +544,7 @@ function storage_reap_config ($opts) {
                     // no more leftovers
                     $plots_this_month = $plots_per_month;
                 }   
-                storage_edit(array('pid'=>$plot['pid'],'reapmonth'=>$myMonthList[$myMonth], 'quiet'=>true));
+                storage_edit(array('pid'=>$plot['pid'],'reapmonth'=>$myMonthList[$myMonth], 'action'=>'recalc','quiet'=>true));
                 // message_register("storage_edit(array('pid'=>".$plot['pid'].",'reapmonth'=>".$myMonthList[$myMonth].", 'quiet'=>true))");
                 $myCount++;
                 if ($myCount > $plots_this_month) {
@@ -556,9 +557,8 @@ function storage_reap_config ($opts) {
         
         case 'Recalculate Unreaped Plots':
             $year = date('Y') - 1;
-            $beforedate = $year.'12-31';
-            // message_register(var_export($beforedate,true));
-            
+            $beforedate = $year.'-12-31';
+
             $storage = crm_get_data('storage', array('reapbefore'=>$beforedate));
             if (count($storage) < 1) {
                 return array();
@@ -584,7 +584,7 @@ function storage_reap_config ($opts) {
             // message_register('unreaped plots'.count($storage).' | months: '.$num_reap_months.' | per month: '.$plots_per_month);
                        
             $myMonthList = array();
-            for ($i=$month-1;$i<=12;$i++) {
+            for ($i=$month-1;$i<=11;$i++) {
                 if ($storage_reap_months[$i] == 1) { $myMonthList[] = $i+1; } // list of active storage months
             }
             $myMonth = 0;
@@ -598,7 +598,7 @@ function storage_reap_config ($opts) {
                     // no more leftovers
                     $plots_this_month = $plots_per_month;
                 }   
-                storage_edit(array('pid'=>$plot['pid'],'reapmonth'=>$myMonthList[$myMonth], 'quiet'=>true));
+                storage_edit(array('pid'=>$plot['pid'],'reapmonth'=>$myMonthList[$myMonth], 'action'=>'recalc', 'quiet'=>true));
                 $myCount++;
                 if ($myCount > $plots_this_month) {
                     $myCount = 1;
@@ -637,7 +637,7 @@ function storage_table () {
     //     }
     // }
     // Get storage data
-    $storage = crm_get_data('storage', '');
+    $storage = crm_get_data('storage', array());
     if (count($storage) < 1) {
         return array();
     }
@@ -1130,17 +1130,12 @@ function storage_reap_month_filter_form () {
             $months[$i+1] = $monthNames[$i+1];
         }
     }
-// Default filter
-    
 
     // Construct hidden fields to pass GET params
     $hidden = array();
     foreach ($_GET as $key=>$val) {
         $hidden[$key] = $val;
     }
-
-    if (empty($_SESSION['reap_month_filter_option'])) { $_SESSION['reap_month_filter_option'] = '1'; }
-    $selection = $months[$_SESSION['reap_month_filter_option']];
 
     $form = array(
         'type' => 'form'
@@ -1156,7 +1151,7 @@ function storage_reap_month_filter_form () {
                         'type' => 'select'
                         , 'name' => 'monthfilter'
                         , 'options' => $months
-                        , 'selected' => $selection
+                        , 'selected' => $_SESSION['reap_month_filter_option']
                     ),
                     array(
                         'type' => 'submit'
