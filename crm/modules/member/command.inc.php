@@ -311,13 +311,13 @@ function command_member_membership_update () {
  * @return The url to display on completion.
  */
 function command_member_filter () {
-    
+
     // Set filter in session
     $_SESSION['member_filter_option'] = $_GET['filter'];
     
     // Set filter
     if ($_GET['filter'] == 'all') {
-        $_SESSION['member_filter'] = array();
+        $_SESSION['member_filter'] = array('all'=>true);
     }
     if ($_GET['filter'] == 'active') {
         $_SESSION['member_filter'] = array('active'=>true);

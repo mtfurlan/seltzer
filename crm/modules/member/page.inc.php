@@ -57,6 +57,10 @@ function member_page (&$page_data, $page_name, $options) {
             // Add view tab
             if (user_access('member_view')) {
                 $view = theme('member_filter_form');
+                // default to 'active'
+                var_dump_pre(count($_SESSION['member_filter']));
+                if (count($_SESSION['member_filter']) == 0) { $_SESSION['member_filter'] = array('active'=>true);}
+
                 $opts = array(
                     'filter'=>$_SESSION['member_filter']
                     , 'show_export'=>true

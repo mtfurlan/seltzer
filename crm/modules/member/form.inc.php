@@ -509,7 +509,7 @@ function member_filter_form () {
     );
     
     // Default filter
-    $selected = empty($_SESSION['member_filter_option']) ? 'all' : $_SESSION['member_filter_option'];
+    $selected = empty($_SESSION['member_filter_option']) ? 'active' : $_SESSION['member_filter_option'];
     
     // Construct hidden fields to pass GET params
     $hidden = array();
