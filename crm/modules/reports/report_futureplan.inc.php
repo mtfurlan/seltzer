@@ -42,7 +42,7 @@ function get_cids_with_future_plan () {
 
     // Query contacts who have no plans associated
     $sql = "
-        SELECT c.cid, p.name, m.start
+        SELECT c.cid, p.name, m.start, m.end
             FROM contact c, plan p, membership m
             WHERE m.start > NOW()
             AND m.cid = c.cid 
@@ -78,13 +78,14 @@ function futureplan_table () {
         'columns' => array(
             array('title' => 'Name'),
             array('title' => 'Plan'),
-            array('title' => 'Start')
+            array('title' => 'Start'),
+            array('title' => 'End')
         )
         , 'rows' => array()
     );
 
     // Add rows
-    foreach ($futureplan_cids as list($cid,$plan,$date)) {
+    foreach ($futureplan_cids as list($cid,$plan,$date,$end)) {
         // Add secrets data
         $row = array();
         
@@ -98,6 +99,7 @@ function futureplan_table () {
         $row[] = $name;
         $row[] = $plan;
         $row[] = $date;
+        $row[] = $end;
 
         $table['rows'][] = $row;  
 
