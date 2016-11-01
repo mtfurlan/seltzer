@@ -88,6 +88,7 @@ function keysnoplan_table () {
             , array ('title' => 'Plan Start')
             , array ('title' => 'Plan End')
             , array ('title' => 'Key')
+            , array ('title' => 'Slot')
             , array ('title' => 'Key Start')
             , array ('title' => 'Key End')
             
@@ -115,6 +116,7 @@ function keysnoplan_table () {
         $row[] = $recentPlan['end'];
         //key
         $row[] = $cid['serial'];
+        $row[] = $cid['slot'];
         $row[] = $cid['start'];
         $row[] = $cid['end'];
         
