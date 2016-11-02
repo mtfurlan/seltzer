@@ -1167,7 +1167,9 @@ function storage_reap_month_filter_form () {
 function storage_reap_email_form() {
     $pidsToReap = join(",", $_SESSION['pids_to_reap']);
     $thisWeek = empty($_SESSION['reap_filter_option']) ? 'weekOne' : $_SESSION['reap_filter_option'];
+    $storage_subject = text_replace(array('text'=>variable_get('storage_subject_'.$thisWeek,'')));
     $storage_body = text_replace(array('text'=>variable_get('storage_body_'.$thisWeek,''),'pidsToReap'=>$pidsToReap));
+    $storage_subject_announce = text_replace(array('text'=>variable_get('storage_subject_announce_'.$thisWeek,'')));
     $storage_body_announce = text_replace(array('text'=>variable_get('storage_body_announce_'.$thisWeek,''),'pidsToReap'=>$pidsToReap));
     
     if (variable_get('storage_send_announce',true)) {
@@ -1175,7 +1177,7 @@ function storage_reap_email_form() {
             'type' => 'textarea'
             , 'label' => 'Subject - Announce'
             , 'name' => 'subject_announce'
-            , 'value' => variable_get('storage_subject_announce_'.$thisWeek,'')
+            , 'value' => $storage_subject_announce
             , 'cols' => '100'
             , 'rows' => '1'
         );
@@ -1213,7 +1215,7 @@ function storage_reap_email_form() {
                 'type' => 'textarea'
                 , 'label' => 'Subject - Contacts'
                 , 'name' => 'subject'
-                , 'value' => variable_get('storage_subject_'.$thisWeek,'')
+                , 'value' => $storage_subject
                 , 'cols' => '100'
                 , 'rows' => '1'
             )
