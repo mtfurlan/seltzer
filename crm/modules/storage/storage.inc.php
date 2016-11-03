@@ -445,15 +445,21 @@ function storage_reap ($opts) {
             $subject = $opts['subject'];
             $message = $opts['content'];
             $fromheader = "From: \"i3Detroit CRM\" <crm@i3detroit.org>\r\n";
-            $contentheader = "Content-Type: text/html; charset=ISO-8859-1\r\n";
+            if (variable_get('storage_send_html',false)) {
+                $contentheader = "Content-Type: text/plain; charset=ISO-8859-1\r\n";
+            } else {
+                $contentheader = "Content-Type: text/html; charset=ISO-8859-1\r\n";
+            }
             $ccheader = "Cc: ".variable_get('storage_admin_email','')."\r\n";
             $bccheader = "Bcc: ".implode(",", $contact_email)."\r\n";
             $headers = $fromheader.$contentheader.$ccheader.$bccheader;
-            message_register("Sending email:");
-            message_register("To:".$to);
-            message_register("Subject:".$subject);
-            message_register("Message:".$message);
-            message_register("Headers:".$headers);
+            if (variable_get('storage_email_headers',false)) {
+                message_register("Sending email:");
+                message_register("To:".$to);
+                message_register("Subject:".$subject);
+                message_register("Message:".$message);
+                message_register("Headers:".$headers);
+            }
             if(mail($to, $subject, $message, $headers)) {
                 message_register("email sent successfully");
             } else {
@@ -465,14 +471,20 @@ function storage_reap ($opts) {
                 $subject = $opts['subject_announce'];
                 $message = $opts['content_announce'];
                 $fromheader = "From: \"i3Detroit CRM\" <crm@i3detroit.org>\r\n";
-                $contentheader = "Content-Type: text/html; charset=ISO-8859-1\r\n";
+                if (variable_get('storage_send_html',false)) {
+                    $contentheader = "Content-Type: text/plain; charset=ISO-8859-1\r\n";
+                } else {
+                    $contentheader = "Content-Type: text/html; charset=ISO-8859-1\r\n";
+                }
                 $ccheader = "Cc: ".variable_get('storage_admin_email','')."\r\n";
                 $headers = $fromheader.$contentheader.$ccheader.$bccheader;
-                message_register("Sending email:");
-                message_register("To:".$to);
-                message_register("Subject:".$subject);
-                message_register("Message:".$message);
-                message_register("Headers:".$headers);
+                if (variable_get('storage_email_headers',false)) {
+                    message_register("Sending email:");
+                    message_register("To:".$to);
+                    message_register("Subject:".$subject);
+                    message_register("Message:".$message);
+                    message_register("Headers:".$headers);
+                }
                 if(mail($to, $subject, $message, $headers)) {
                     message_register("-Announce email sent successfully");
                 } else {
@@ -609,6 +621,8 @@ function storage_reap_config ($opts) {
         break;
         
         case 'Update Email':
+            variable_set('storage_send_html', $opts['storage_send_html']);
+            variable_set('storage_email_headers', $opts['storage_email_headers']);
             variable_set('storage_send_announce', $opts['send_announce']);
             variable_set('storage_announce_address', $opts['announce_address']);
             variable_set('storage_subject_'.$opts['thisweek'], $opts['subject_'.$opts['thisweek']]);
@@ -1426,18 +1440,35 @@ function storage_reap_config_months_form () {
                 'type' => 'submit',
                 'name' => 'action',
                 'value' => 'Update Months'
+                , 'class' => 'float'
             )
+            , array(
+                'type' => 'message'
+                , 'value' => '&nbsp'
+                , 'class' => 'float'
+             )
             , array(
                 'type' => 'submit',
                 'name' => 'action',
                 'value' => 'Recalculate Unreaped Plots'
+                , 'class' => 'float'
             )
+            , array(
+                'type' => 'message'
+                , 'value' => '&nbsp'
+                , 'class' => 'float'
+             )
             , array(
                 'type' => 'submit',
                 'name' => 'action',
                 'value' => 'Recalculate All Plots'
+                , 'class' => 'float'
             )
-
+            , array(
+                'type' => 'message'
+                , 'value' => '&nbsp'
+             )
+ 
         )
     );
     return $form;
@@ -1460,7 +1491,19 @@ function storage_reap_config_email_form () {
             , 'tab' => 'config'
         )
          , 'fields' => array(
-           array(
+            array(
+                'type' => 'checkbox',
+                'label' => 'Send email as HTML (unchecked is plain text)',
+                'name' => 'storage_send_html',
+                'checked' => variable_get('storage_send_html',false)
+            )
+            ,array(
+                'type' => 'checkbox',
+                'label' => 'Show full email headers',
+                'name' => 'storage_email_headers',
+                'checked' => variable_get('storage_email_headers',false)
+            )
+            , array(
                 'type' => 'message'
                 , 'value' => 'Member Email Subject'
             )
@@ -1805,7 +1848,6 @@ function command_storage_reap() {
         error_register('Permission denied: storage_edt');
         return crm_url('storage&tab=reap');
     }
-    message_register(var_export($_POST,true));
     storage_reap($_POST);
     return crm_url('storage&tab=reap');
 }
