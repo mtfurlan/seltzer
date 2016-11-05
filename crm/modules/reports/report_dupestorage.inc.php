@@ -28,10 +28,10 @@
 /*
  * Set the page content based on report name. Used for autoinclude
  */
-$report_storagedupe_theme = 'table';
-$report_storagedupe_theme_opts = 'storagedupe';
-$report_storagedupe_name = "Duplicate Plots";
-$report_storagedupe_desc = "List of contacts with multiple storage plots";
+$report_dupestorage_theme = 'table';
+$report_dupestorage_theme_opts = 'dupestorage';
+$report_dupestorage_name = "Duplicate Plots";
+$report_dupestorage_desc = "List of contacts with multiple storage plots";
 
 /**
  * @return A comma-separated list of user emails.
@@ -65,7 +65,7 @@ function get_dupe_storage () {
 }
 
 // Tables ///////////////////////////////////////////////////////////////////////
-function storagedupe_table () {
+function dupestorage_table () {
     // Determine settings
     $export = false;
     // foreach ($opts as $option => $value) {
@@ -105,7 +105,11 @@ function storagedupe_table () {
             $data = member_data(array('cid'=>$plot['cid']));
             $member = $data[0];
         }
-        $contact = $member['contact'];
+        if (isset($member['contact'])) {
+            $contact = $member['contact'];
+        } else {
+            $contact = array();
+        }
         if ( $plot['cid'] ) {
             $crm_user = crm_get_one('contact',array('cid'=>$plot['cid']));
             if ($crm_user) {
