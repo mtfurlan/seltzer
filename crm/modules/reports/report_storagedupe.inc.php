@@ -100,10 +100,11 @@ function storagedupe_table () {
         // Get info on member
         if ($plot['cid'] == 0) {
             $data = array();
+            $member = array(array());
         } else {
             $data = member_data(array('cid'=>$plot['cid']));
+            $member = $data[0];
         }
-        $member = $data[0];
         $contact = $member['contact'];
         if ( $plot['cid'] ) {
             $crm_user = crm_get_one('contact',array('cid'=>$plot['cid']));

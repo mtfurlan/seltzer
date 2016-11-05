@@ -319,7 +319,10 @@ function theme_form_textarea ($field) {
     if (!empty($field['label'])) {
         $output .= '<label>' . $field['label'] . '</label>';
     }
-    $output .= '<textarea name="' . $field['name'] . '"';
+    $output .= '<textarea name="' . $field['name'] . '" ';
+    if (!empty($field['markdown'])) {
+        $output .= 'data-provide="markdown" ';
+    }
     if (!empty($field['rows'])) {
         $output .= 'rows="' . $field['rows'] . '" ';
     }
