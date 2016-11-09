@@ -72,14 +72,14 @@ function keysnoplan_table () {
     // }
     
     $inactive_members = member_data(array('filter'=>array('active'=>false))); // Get inactive members
-
+// var_dump_pre($inactive_members);
     // build cid index
     $cidlist = array();
     foreach ($inactive_members as $member) {
         $cidlist[] = $member['cid'];
     }
     $keysnoplan = get_keys_for_cids($cidlist);
-
+// var_dump_pre($keysnoplan);
      // Initialize table
     $table = array(
         'columns' => array(
@@ -97,12 +97,12 @@ function keysnoplan_table () {
     );
 
     // Add rows
-    foreach ($keysnoplan as $cid) {
+    foreach ($keysnoplan as $key) {
         // Add secrets data
         $row = array();
         
         // Get info on member
-        $data = member_data(array('cid'=>$cid));
+        $data = member_data(array('cid'=>$key['cid']));
         $member = $data[0];
         // name
         $contact = $member['contact'];
@@ -115,10 +115,10 @@ function keysnoplan_table () {
         $row[] = $recentPlan['start'];
         $row[] = $recentPlan['end'];
         //key
-        $row[] = $cid['serial'];
-        $row[] = $cid['slot'];
-        $row[] = $cid['start'];
-        $row[] = $cid['end'];
+        $row[] = $key['serial'];
+        $row[] = $key['slot'];
+        $row[] = $key['start'];
+        $row[] = $key['end'];
         
         $table['rows'][] = $row;  
 
