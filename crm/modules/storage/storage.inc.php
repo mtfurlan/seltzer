@@ -445,10 +445,11 @@ function storage_reap ($opts) {
             $subject = $opts['subject'];
             $message = $opts['content'];
             $fromheader = "From: \"i3Detroit CRM\" <crm@i3detroit.org>\r\n";
-            if (variable_get('storage_send_html',false)) {
-                $contentheader = "Content-Type: text/plain; charset=ISO-8859-1\r\n";
-            } else {
+            $sendHTML = variable_get('storage_send_html',false);
+            if ($sendHTML) {
                 $contentheader = "Content-Type: text/html; charset=ISO-8859-1\r\n";
+            } else {
+                $contentheader = "Content-Type: text/text; charset=ISO-8859-1\r\n";
             }
             $ccheader = "Cc: ".variable_get('storage_admin_email','')."\r\n";
             $bccheader = "Bcc: ".implode(",", $contact_email)."\r\n";
@@ -465,16 +466,16 @@ function storage_reap ($opts) {
             } else {
                 message_register("email failure");
             }
-            if (!empty($opts['subject_announce'])) {
+            if (variable_get('storage_send_announce',false)) {
                 // -announce email
-                $to = "i3-announce@groups.google.com";
+                $to = variable_get('storage_announce_address','');
                 $subject = $opts['subject_announce'];
                 $message = $opts['content_announce'];
                 $fromheader = "From: \"i3Detroit CRM\" <crm@i3detroit.org>\r\n";
-                if (variable_get('storage_send_html',false)) {
-                    $contentheader = "Content-Type: text/plain; charset=ISO-8859-1\r\n";
+                if ($sendHTML) {
+                     $contentheader = "Content-Type: text/html; charset=ISO-8859-1\r\n";
                 } else {
-                    $contentheader = "Content-Type: text/html; charset=ISO-8859-1\r\n";
+                     $contentheader = "Content-Type: text/plain; charset=ISO-8859-1\r\n";
                 }
                 $ccheader = "Cc: ".variable_get('storage_admin_email','')."\r\n";
                 $headers = $fromheader.$contentheader.$ccheader.$bccheader;
@@ -870,6 +871,7 @@ function storage_reap_table () {
     // Get data
     $monthNum = $_SESSION['reap_month_filter_option'];
     $monthName = date("F", mktime(0, 0, 0, $monthNum, 10));
+    $_SESSION['reap_month'] = $monthName;
     
     $storage = crm_get_data('storage', array('reapmonth'=>$monthNum));
     if (count($storage) < 1) {
@@ -916,7 +918,6 @@ function storage_reap_table () {
         $table['rows'][] = $row;  
     }
     $_SESSION['pids_to_reap'] = $toReap;
-    $_SESSION['reap_month'] = $monthName;
     return $table;
 }
 // Forms ///////////////////////////////////////////////////////////////////////
