@@ -124,9 +124,9 @@ function plannokeys_table () {
         $row[] = $recentPlan['start'];
         $row[] = $recentPlan['end'];
         //key
-        $row[] = $cid['serial'];
-        $row[] = $cid['start'];
-        $row[] = $cid['end'];
+        $row[] = isset($cid['serial']) ? $cid['serial'] : '';
+        $row[] = isset($cid['start']) ? $cid['start'] : '';
+        $row[] = isset($cid['end']) ? $cid['end'] : '';
         
         $table['rows'][] = $row;  
 
