@@ -432,8 +432,8 @@ function storage_reap ($opts) {
             $contact = crm_get_one('contact', array('cid'=>$plotinfo['cid']));
             if (!empty($contact)) { 
                 $contact_email[] = $contact['email']; 
-            } else if (!empty($plot['email'])) {
-                $comtact_email[] = $plot['email'];
+            } else if (!empty($plotinfo['email'])) {
+                $contact_email[] = $plotinfo['email'];
             }
 
             if ($_SESSION['reap_filter_option'] == 'weekThree') {
@@ -478,7 +478,7 @@ function storage_reap ($opts) {
                      $contentheader = "Content-Type: text/plain; charset=ISO-8859-1\r\n";
                 }
                 $ccheader = "Cc: ".variable_get('storage_admin_email','')."\r\n";
-                $headers = $fromheader.$contentheader.$ccheader.$bccheader;
+                $headers = $fromheader.$contentheader.$ccheader;
                 if (variable_get('storage_email_headers',false)) {
                     message_register("Sending email:");
                     message_register("To:".$to);
