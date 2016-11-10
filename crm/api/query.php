@@ -40,7 +40,8 @@ function testPin($cid,$pin=0000) {
 
 function testMemberActive($cid) {
 // This function will test if the given CID is an active member
-    if (member_data(array('cid'=>$memberID,'filter'=>array('active'=>true)))) {
+    $isActive = member_data(array('cid'=>$cid,'filter'=>array('active'=>true)));
+    if ($isActive) {
         return true;
     } else {
         return false;
@@ -190,19 +191,21 @@ function authCheck($opts = array())
 		    or die(json_encode(array('auth'=>false,'message'=>mysqli_error($con))));
 
  	//if no rows returned then that key wasn't even found in the DB
- 	if(mysqli_num_rows($result) == 0) { return array('auth'=>false,'message'=>'rfid not found'); }
+ 	if(mysqli_num_rows($result) == 0) { return array('auth'=>false,'name'=>'','message'=>'rfid not found'); }
 
     // Get member info from returned CID
 	$row = mysqli_fetch_assoc($result); 	
  	$memberID = $row["cid"];
-
-    if (testMemberActive($memberID)) { return array('auth'=>false,'message'=>'inactive account'); }
+    $memberName = theme_contact_name($memberID);
+    
+    // check if member is Active
+    if (!testMemberActive($memberID)) { return array('auth'=>false,'user'=>$memberName,'message'=>'inactive account'); }
     
     // If pin submitted, check if it's valid
-    if (isset($opts['pin']) || !testPin($memberID,$opts['pin'])) { return array('auth'=>false,'message'=>'invalid pin'); }
+    if (isset($opts['pin']) && !testPin($memberID,$opts['pin'])) { return array('auth'=>false,'user'=>$memberName,'message'=>'invalid pin'); }
  
     // All checks passed, return 'true' and user name
-    return array('auth'=>true,'message'=>$memberActive[0]['contact']['lastName'].",".$memberActive[0]['contact']['firstName']);
+    return array('auth'=>true,'user'=>$memberName,'message'=>'authorized');
 }
 
 
