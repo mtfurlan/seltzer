@@ -170,17 +170,8 @@ function theme_table ($table_id, $opts = NULL) {
     $output .= "</table>";
     
     if (array_key_exists('filter', $table)) {
-        $skip_cols = array();
-        for ($col=1; $col <= $column_count; $col++){
-            if (!in_array($col, $table['filter'])) {
-                $skip_cols[] = $col-1;
-            }
-        }
         $output .= "<script>
-            var options = {
-                skipFilterColumns: [".join(",",$skip_cols)."]
-            }
-            jQuery('#".$table['id']."').ddTableFilter(options);
+            jQuery('#".$table['id']."').ddTableFilter();
             </script>";
     }
     return $output;
