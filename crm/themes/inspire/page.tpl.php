@@ -6,12 +6,14 @@
     <link rel="stylesheet" type="text/css" href="<?php print path_to_theme(); ?>/css/ui-lightness/jquery-ui-1.8.14.custom.css"/>
     <link rel="stylesheet" type="text/css" href="<?php print path_to_theme(); ?>/css/ui-lightness/nv.d3.css"/>
     <link rel="stylesheet" type="text/css" href="<?php print path_to_theme(); ?>/css/ui-lightness/sorttable.css"/>
+    <link rel="stylesheet" type="text/css" href="<?php print path_to_theme(); ?>/css/ui-lightness/ddtf.css"/>
     <?php print $stylesheets; ?>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
     <script type="text/javascript" src="<?php print path_to_theme(); ?>/js/jquery-ui-1.8.14.custom.min.js"></script>
     <script type="text/javascript" src="<?php print path_to_theme(); ?>/js/d3.min.js"></script>
     <script type="text/javascript" src="<?php print path_to_theme(); ?>/js/nv.d3.min.js"></script>
     <script type="text/javascript" src="<?php print path_to_theme(); ?>/js/sorttable.js"></script>
+    <script type="text/javascript" src="<?php print path_to_theme(); ?>/js/ddtf.js"></script>
     <script type="text/javascript" src="<?php print path_to_theme(); ?>/script.js"></script>
     <?php print $scripts; ?>
     <title><?php print $title; ?></title>
