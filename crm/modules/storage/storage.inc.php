@@ -660,13 +660,14 @@ function storage_table () {
     // Initialize table
     $table = array(
         'columns' => array(
-            array('title' => 'Plot#')
+            array('title' => 'Plot#', 'class' => 'skip-filter')
             , array('title' => 'Description')
             , array('title' => 'Contact')
             , array('title' => 'Reap Month')
-            , array('title' => 'Last Reaping')
+            , array('title' => 'Last Reaping', 'class' => 'skip-filter')
         )
         , 'rows' => array()
+        , 'filter' => true
     );
 
     if (user_access('storage_edit') || user_access('storage_delete')) {
