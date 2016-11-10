@@ -441,30 +441,32 @@ function storage_reap ($opts) {
             }
         }
         if (!empty($contact_email)) {
-            $to = '';
-            $subject = $opts['subject'];
-            $message = $opts['content'];
-            $fromheader = "From: \"i3Detroit CRM\" <crm@i3detroit.org>\r\n";
-            $sendHTML = variable_get('storage_send_html',false);
-            if ($sendHTML) {
-                $contentheader = "Content-Type: text/html; charset=ISO-8859-1\r\n";
-            } else {
-                $contentheader = "Content-Type: text/text; charset=ISO-8859-1\r\n";
-            }
-            $ccheader = "Cc: ".variable_get('storage_admin_email','')."\r\n";
-            $bccheader = "Bcc: ".implode(",", $contact_email)."\r\n";
-            $headers = $fromheader.$contentheader.$ccheader.$bccheader;
-            if (variable_get('storage_email_headers',false)) {
-                message_register("Sending email:");
-                message_register("To:".$to);
-                message_register("Subject:".$subject);
-                message_register("Message:".$message);
-                message_register("Headers:".$headers);
-            }
-            if(mail($to, $subject, $message, $headers)) {
-                message_register("email sent successfully");
-            } else {
-                message_register("email failure");
+            if (variable_get('storage_send_members',true)) {
+                $to = '';
+                $subject = $opts['subject'];
+                $message = $opts['content'];
+                $fromheader = "From: \"i3Detroit CRM\" <crm@i3detroit.org>\r\n";
+                $sendHTML = variable_get('storage_send_html',false);
+                if ($sendHTML) {
+                    $contentheader = "Content-Type: text/html; charset=ISO-8859-1\r\n";
+                } else {
+                    $contentheader = "Content-Type: text/text; charset=ISO-8859-1\r\n";
+                }
+                $ccheader = "Cc: ".variable_get('storage_admin_email','')."\r\n";
+                $bccheader = "Bcc: ".implode(",", $contact_email)."\r\n";
+                $headers = $fromheader.$contentheader.$ccheader.$bccheader;
+                if (variable_get('storage_email_headers',false)) {
+                    message_register("Sending email:");
+                    message_register("To:".$to);
+                    message_register("Subject:".$subject);
+                    message_register("Message:".$message);
+                    message_register("Headers:".$headers);
+                }
+                if(mail($to, $subject, $message, $headers)) {
+                    message_register("email sent successfully");
+                } else {
+                    message_register("email failure");
+                }
             }
             if (variable_get('storage_send_announce',false)) {
                 // -announce email
@@ -624,6 +626,7 @@ function storage_reap_config ($opts) {
         case 'Update Email':
             variable_set('storage_send_html', $opts['storage_send_html']);
             variable_set('storage_email_headers', $opts['storage_email_headers']);
+            variable_set('storage_send_members', $opts['send_members']);
             variable_set('storage_send_announce', $opts['send_announce']);
             variable_set('storage_announce_address', $opts['announce_address']);
             variable_set('storage_subject_'.$opts['thisweek'], $opts['subject_'.$opts['thisweek']]);
@@ -1188,6 +1191,34 @@ function storage_reap_email_form() {
     $storage_subject_announce = text_replace(array('text'=>variable_get('storage_subject_announce_'.$thisWeek,'')));
     $storage_body_announce = text_replace(array('text'=>variable_get('storage_body_announce_'.$thisWeek,''),'pidsToReap'=>$pidsToReap));
     
+    if (variable_get('storage_send_members',true)) {
+        $member_subject = array(
+            'type' => 'textarea'
+            , 'label' => 'Subject - Contacts'
+            , 'name' => 'subject'
+            , 'value' => $storage_subject
+            , 'cols' => '100'
+            , 'rows' => '1'
+        );
+        $member_body = array(
+            'type' => 'textarea'
+            , 'label' => 'Message Body - Contacts'
+            , 'name' => 'content'
+            , 'value' => $storage_body
+            , 'cols' => '100'
+            , 'rows' => '10'
+        );
+    } else {
+        $member_subject = array(
+            'type' => 'message'
+            , 'value' => 'NO e-mail will be sent to members, check box in config page to change'
+        );
+        $member_body = array(
+            'type' => 'message'
+            , 'value' => ''
+        );
+    }
+    
     if (variable_get('storage_send_announce',true)) {
         $announce_subject = array(
             'type' => 'textarea'
@@ -1227,22 +1258,8 @@ function storage_reap_email_form() {
             , 'thisweek' => $thisWeek
         )
         , 'fields' => array(
-            array(
-                'type' => 'textarea'
-                , 'label' => 'Subject - Contacts'
-                , 'name' => 'subject'
-                , 'value' => $storage_subject
-                , 'cols' => '100'
-                , 'rows' => '1'
-            )
-            , array(
-                'type' => 'textarea'
-                , 'label' => 'Message Body - Contacts'
-                , 'name' => 'content'
-                , 'value' => $storage_body
-                , 'cols' => '100'
-                , 'rows' => '10'
-            )
+            $member_subject
+            , $member_body
             , $announce_subject
             , $announce_body
             , array(
@@ -1504,6 +1521,12 @@ function storage_reap_config_email_form () {
                 'label' => 'Show full email headers',
                 'name' => 'storage_email_headers',
                 'checked' => variable_get('storage_email_headers',false)
+            )
+            , array(
+                'type' => 'checkbox',
+                'label' => 'Send Reaping email to members',
+                'name' => 'send_announce',
+                'checked' => variable_get('storage_send_members',true)
             )
             , array(
                 'type' => 'message'
