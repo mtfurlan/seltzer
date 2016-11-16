@@ -327,6 +327,7 @@ function amazon_payment_page (&$page_data, $page_name, $options) {
                 page_add_content_top($page_data, $content, 'Amazon');
                 if (function_exists('billing_revision')) {
                     page_add_content_top($page_data, theme('form', crm_get_form('amazon_payment_email_bills')), 'Billing');
+                    page_add_content_bottom($page_data, theme('form', crm_get_form('amazon_payment_email_bills_100')), 'Billing');
                 }
             }
             break;
@@ -499,10 +500,12 @@ function amazon_payment_email_bills_form () {
                         , 'value' => $threshold
                     ),
                     array(
-                        'type' => 'text'
+                        'type' => 'textarea'
                         , 'label' => 'Subject'
                         , 'name' => 'subject'
                         , 'value' => 'Overdue Dues - i3Detroit'
+                        , 'cols' => '100'
+                        , 'rows' => '1'
                     ),
                     array(
                         'type' => 'textarea'
@@ -517,6 +520,76 @@ If there are unusual situations, please email me.
 Thank you
 Terry Wynn
 treasurer@i3detroit.org'
+                        , 'cols' => '100'
+                        , 'rows' => '10'
+                    ),
+                    array(
+                        'type' => 'readonly',
+                        'class' => 'date',
+                        'label' => 'Last Emailed',
+                        'name' => 'last_emailed',
+                        'value' => $from_label
+                    ),
+                    array(
+                        'type' => 'submit'
+                        , 'value' => 'Send Emails'
+                    )
+                )
+            )
+        )
+    );
+    
+    return $form;
+}
+
+function amazon_payment_email_bills_100_form () {
+    $threshold = 10000;
+    $count = sizeof(payment_contact_filter(array('balance'=>$threshold)));
+    $email_date = variable_get('amazon_payment_last_email', '');
+    $from_label = empty($email_date) ? 'never' : $email_date;
+    // Create form structure
+    $form = array(
+        'type' => 'form'
+        , 'method' => 'post'
+        , 'command' => 'amazon_payment_email_100'
+        , 'fields' => array(
+            array(
+                'type' => 'fieldset'
+                , 'label' => 'Send >$100 Billing Emails'
+                , 'fields' => array(
+                    array(
+                        'type' => 'message',
+                        'value' => 'This will send an email with a payment button to the ' . $count . ' members with a balance greater than $' . $threshold/100 . '.'
+                        ),
+                    array(
+                        'type' => 'hidden'
+                        , 'label' => 'threshold'
+                        , 'name' => 'Threshold'
+                        , 'value' => $threshold
+                    ),
+                    array(
+                        'type' => 'textarea'
+                        , 'label' => 'Subject'
+                        , 'name' => 'subject'
+                        , 'value' => 'Overdue Dues - i3Detroit'
+                        , 'cols' => '100'
+                        , 'rows' => '1'
+                    ),
+                    array(
+                        'type' => 'textarea'
+                        , 'label' => 'Message'
+                        , 'name' => 'message'
+                        , 'value' => 'Our records (below) indicate that you exited last month with overdue dues.  If you think we made an error, please email me treasurer@i3detroit.org.
+
+Please bring your account current.  This is notice that if your account is not brought current within 30 days, i3 Detroit may teminate your membership.
+You may make your payment online by PayPal or Amazon below.
+If there are unusual situations, please email me.
+
+Thank you
+Terry Wynn
+treasurer@i3detroit.org'
+                        , 'cols' => '100'
+                        , 'rows' => '10'
                     ),
                     array(
                         'type' => 'readonly',
@@ -669,6 +742,43 @@ function command_amazon_payment_email () {
     $custom_message = $_POST['message'];
     // Get balances and contacts
     $threshold = 4901;
+    $cids = payment_contact_filter(array('balance'=>$threshold));
+    $balances = payment_accounts(array('cid'=>$cids));
+    $contacts = crm_get_data('contact', array('cid'=>$cids));
+    $cidToContact = crm_map($contacts, 'cid');
+    // Email each contact with a balance
+    foreach ($balances as $cid => $balance) {
+        // Construct button
+        $params = array(
+            'referenceId' => $cid
+            , 'amount' => $balance['code'] . ' ' . payment_format_currency($balance, false) 
+            , 'description' => 'CRM Dues Payment'
+        );
+        $amount = payment_format_currency($balance);
+        $contactName = $cidToContact[$cid]['firstName'];
+        $button = '<script src="//cdn.foxycart.com/i3detroit/loader.js" async="" defer="defer"></script><table class="amazon-payments" width="100%"><thead></thead><tbody><tr><th style="background: transparent;">Membership $49/mo</th><td><form accept-charset="utf-8" action="https://i3detroit.foxycart.com/cart" method="post"><input class="submit" type="submit" value="Set up Automatic Payments" /><input name="sub_frequency" type="hidden" value="1m" /><input name="name" type="hidden" value="Dues Subscription" /><input name="cid" type="hidden" value="' . $cid . '" /><input name="price" type="hidden" value="49" /><input name="code" type="hidden" value="Dues" /></form></td><td>or<form accept-charset="utf-8" action="https://i3detroit.foxycart.com/cart" method="post"><input class="submit" type="submit" value="One-Time Payment" /><input name="name" type="hidden" value="Dues Payment" /><input name="price" type="text" value="' . $amount . '" /><input name="code" type="hidden" value="Dues" /><input name="cid" type="hidden" value="' . $cid . '" /></form></td><td></td></tr><tr><td colspan="4"></td></tr></tbody></table>';
+        $account = theme('table', 'payment_history', array('cid' => $cid, 'output' => "email"));
+        // Send email
+        $to = $cidToContact[$cid]['email'];
+        $from = $config_email_from;
+        $headers = "Content-type: text/html\r\nFrom: $from\r\nBcc: $from\r\n";
+        $custom_message = str_replace("\n\n", "</p><p>", $custom_message);
+        $custom_message = str_replace("\n", "<br />", $custom_message);
+        $message = "<p>Hello, $contactName.</p><p>$custom_message</p>$account<p><strong>Payment options:</strong></p>$button";
+        $res = mail($to, $subject, $message, $headers);
+    }
+    message_register('E-mails have been sent');
+    variable_set('amazon_payment_last_email', date('Y-m-d'));
+    return crm_url('payments', array('query'=>array('tab'=>'billing')));
+}
+
+function command_amazon_payment_email_100 () {
+    global $config_email_from;
+    global $config_site_title;
+    $subject = $_POST['subject'];
+    $custom_message = $_POST['message'];
+    // Get balances and contacts
+    $threshold = 10000;
     $cids = payment_contact_filter(array('balance'=>$threshold));
     $balances = payment_accounts(array('cid'=>$cids));
     $contacts = crm_get_data('contact', array('cid'=>$cids));
