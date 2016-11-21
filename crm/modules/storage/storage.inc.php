@@ -453,7 +453,7 @@ function storage_reap ($opts) {
                 if ($sendHTML) {
                     $contentheader = "Content-Type: text/html; charset=ISO-8859-1\r\n";
                 } else {
-                    $contentheader = "Content-Type: text/text; charset=ISO-8859-1\r\n";
+                    $contentheader = "Content-Type: text/plain; charset=ISO-8859-1\r\n";
                 }
                 $ccheader = "Cc: ".variable_get('storage_admin_email','')."\r\n";
                 $bccheader = "Bcc: ".implode(",", $contact_email)."\r\n";
