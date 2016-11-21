@@ -662,7 +662,8 @@ function command_login () {
     
     if ($valid) {
         user_login($user['cid']);
-        $next = crm_url();
+        $next = crm_url('contact',array('query'=>array('cid'=>$user['cid'])));
+        // $next = crm_url();
     } else {
         error_register('Invalid username/password');
         $next = crm_url('login');
