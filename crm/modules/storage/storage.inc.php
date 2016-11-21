@@ -1525,7 +1525,7 @@ function storage_reap_config_email_form () {
             , array(
                 'type' => 'checkbox',
                 'label' => 'Send Reaping email to members',
-                'name' => 'send_announce',
+                'name' => 'send_members',
                 'checked' => variable_get('storage_send_members',true)
             )
             , array(
