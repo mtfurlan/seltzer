@@ -277,6 +277,7 @@ function storage_add ($plot) {
         if (!$res) {
             message_register('ERROR: ' . mysql_error());
         } else {
+            $plot['action'] = 'Add';
             storage_log($plot);
             message_register('Storage Plot Added');
         }
@@ -332,6 +333,7 @@ function storage_edit ($opts) {
         if (!$res) {
            message_register('SQL: ' . $sql . '<br>ERROR: ' . mysql_error());
         } else {
+            if (!array_key_exists('action',$opts)) { $opts['action'] = 'Edit'; }
             storage_log($opts);
             if (!isset($opts['quiet'] )) { message_register('Storage Plot updated'); } // multiple calls for reaping, skip notice
         }
@@ -368,6 +370,7 @@ if (isset($opts['pid'])) {
         $res = mysql_query($sql);
         if (!$res) die(mysql_error());
         if (mysql_affected_rows() > 0) {
+            $opts['action'] = 'Vacate';
             storage_log($opts);
             message_register('Storage Plot '.$esc_name.' vacated.');
         }
@@ -437,7 +440,7 @@ function storage_reap ($opts) {
             }
 
             if ($_SESSION['reap_filter_option'] == 'weekThree') {
-                storage_edit(array('pid'=>$plot['pid'],'reapdate'=>$today, 'quiet'=>true));
+                storage_edit(array('pid'=>$plot['pid'],'reapdate'=>$today, 'quiet'=>true, 'action'=>'Reap'));
             }
         }
         if (!empty($contact_email)) {
