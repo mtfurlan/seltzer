@@ -148,6 +148,14 @@ function text_replace ($opts) {
         $repFrom[] = '/{{plotowners}}/';  $repTo[] = $plotOwnersList;
     }
 
+    // {{name}} replace with full name of plot owner
+    if (strpos($opts['text'], '{{name}}') !== false) {
+        if (array_key_exists('cid', $opts)) {
+            $contact = !empty(crm_get_data('contact', array('cid'=>$opts['cid']))) ? theme_contact_name($opts['cid']) : $opts['cid'];
+            $repFrom[] = '/{{name}}/';  $repTo[] = $contact;
+        }
+    }
+
     // {{month}} - name of reaping month
     if (strpos($opts['text'], '{{month}}') !== false) {
         
@@ -433,74 +441,64 @@ function storage_reap ($opts) {
         foreach ($plots as $plot) {
             $plotinfo = crm_get_one('storage', array('pid'=>$plot['pid']));
             $contact = crm_get_one('contact', array('cid'=>$plotinfo['cid']));
-            if (!empty($contact)) { 
-                $contact_email[] = $contact['email']; 
+            if (!empty($contact)) { // get email from contact name, or from email field
+                $contact_email = $contact['email']; 
             } else if (!empty($plotinfo['email'])) {
-                $contact_email[] = $plotinfo['email'];
+                $contact_email = $plotinfo['email'];
             }
 
             if ($_SESSION['reap_filter_option'] == 'weekThree') {
+                // update reap date on week three reaping
                 storage_edit(array('pid'=>$plot['pid'],'reapdate'=>$today, 'quiet'=>true, 'action'=>'Reap'));
             }
-        }
-        if (!empty($contact_email)) {
-            if (variable_get('storage_send_members',true)) {
-                $to = '';
+            
+            if (!empty($contact_email) && variable_get('storage_send_members',true)) {
+                $to = $contact_email;
                 $subject = $opts['subject'];
-                $message = $opts['content'];
+                $message = text_replace(array('text'=>$opts['content'],'cid'=>$plotinfo['cid']));
                 $fromheader = "From: \"i3Detroit CRM\" <crm@i3detroit.org>\r\n";
-                $sendHTML = variable_get('storage_send_html',false);
-                if ($sendHTML) {
+                if (variable_get('storage_send_html',false)) {
                     $contentheader = "Content-Type: text/html; charset=ISO-8859-1\r\n";
                 } else {
                     $contentheader = "Content-Type: text/plain; charset=ISO-8859-1\r\n";
                 }
                 $ccheader = "Cc: ".variable_get('storage_admin_email','')."\r\n";
-                $bccheader = "Bcc: ".implode(",", $contact_email)."\r\n";
+                // $bccheader = "Bcc: ".implode(",", $contact_email)."\r\n";
                 $headers = $fromheader.$contentheader.$ccheader.$bccheader;
                 if (variable_get('storage_email_headers',false)) {
-                    message_register("Sending email:");
-                    message_register("To:".$to);
-                    message_register("Subject:".$subject);
-                    message_register("Message:".$message);
-                    message_register("Headers:".$headers);
+                    message_register("Sending email: [To:$to] [Subject:$subject] [Message:$message] [Headers:$headers]");
                 }
                 if(mail($to, $subject, $message, $headers)) {
                     message_register("email sent successfully");
+                    storage_log(array('pid'=>$plot['pid'], 'cid'=>$plotinfo['cid'], 'action'=>'email'));
                 } else {
                     message_register("email failure");
                 }
             }
-            if (variable_get('storage_send_announce',false)) {
-                // -announce email
-                $to = variable_get('storage_announce_address','');
-                $subject = $opts['subject_announce'];
-                $message = $opts['content_announce'];
-                $fromheader = "From: \"i3Detroit CRM\" <crm@i3detroit.org>\r\n";
-                if ($sendHTML) {
-                     $contentheader = "Content-Type: text/html; charset=ISO-8859-1\r\n";
-                } else {
-                     $contentheader = "Content-Type: text/plain; charset=ISO-8859-1\r\n";
-                }
-                $ccheader = "Cc: ".variable_get('storage_admin_email','')."\r\n";
-                $headers = $fromheader.$contentheader.$ccheader;
-                if (variable_get('storage_email_headers',false)) {
-                    message_register("Sending email:");
-                    message_register("To:".$to);
-                    message_register("Subject:".$subject);
-                    message_register("Message:".$message);
-                    message_register("Headers:".$headers);
-                }
-                if(mail($to, $subject, $message, $headers)) {
-                    message_register("-Announce email sent successfully");
-                } else {
-                    message_register("-Announce email failure");
-                }
-            }
-
-        } else {
-            error_register("No emails found for selected plots, nothing sent.");
         }
+        if (variable_get('storage_send_announce',false)) {
+            // -announce email
+            $to = variable_get('storage_announce_address','');
+            $subject = $opts['subject_announce'];
+            $message = $opts['content_announce'];
+            $fromheader = "From: \"i3Detroit CRM\" <crm@i3detroit.org>\r\n";
+            if ($sendHTML) {
+                 $contentheader = "Content-Type: text/html; charset=ISO-8859-1\r\n";
+            } else {
+                 $contentheader = "Content-Type: text/plain; charset=ISO-8859-1\r\n";
+            }
+            $ccheader = "Cc: ".variable_get('storage_admin_email','')."\r\n";
+            $headers = $fromheader.$contentheader.$ccheader;
+            if (variable_get('storage_email_headers',false)) {
+                    message_register("Sending -announce email: [To:$to] [Subject:$subject] [Message:$message] [Headers:$headers]");
+            }
+            if(mail($to, $subject, $message, $headers)) {
+                message_register("-Announce email sent successfully");
+            } else {
+                message_register("-Announce email failure");
+            }
+        }
+
 }
 
 /**
@@ -1187,7 +1185,8 @@ function storage_reap_month_filter_form () {
 }
 
 function storage_reap_email_form() {
-    $pidsToReap = join(",", $_SESSION['pids_to_reap']);
+    // if no pids to reap then empty the $pidsToReap variable
+    $pidsToReap = array_key_exists('pids_to_reap', $_SESSION) ? join(",", $_SESSION['pids_to_reap']) : '';
     $thisWeek = empty($_SESSION['reap_filter_option']) ? 'weekOne' : $_SESSION['reap_filter_option'];
     $storage_subject = text_replace(array('text'=>variable_get('storage_subject_'.$thisWeek,'')));
     $storage_body = text_replace(array('text'=>variable_get('storage_body_'.$thisWeek,''),'pidsToReap'=>$pidsToReap));
@@ -1631,6 +1630,7 @@ function storage_reap_config_email_form () {
             , array(
                 'type' => 'message',
                 'value' => 'List of valid email variable substitutions:<br>
+                    {{name}} - replaces with individual owner name on email send<br>
                     {{plotlist}} - list plot numbers in comma-separated format<br>
                     {{plotowners}}  - list plots as "pid - owner" format on separate lines<br>
                     {{month}} - name of reaping month<br>
