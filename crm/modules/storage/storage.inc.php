@@ -1145,9 +1145,9 @@ function storage_reap_month_filter_form () {
     
     $storage_reap_months = str_split(variable_get('storage_reap_months','000000000000'),1); //convert to array
     $months = array();
-    for ($i=0;$i<12;$i++) {
-        if ($storage_reap_months[$i] == 1) {
-            $months[$i+1] = $monthNames[$i+1];
+    for ($i=1;$i<=12;$i++) {
+        if ($storage_reap_months[$i-1] == 1) {
+            $months[$i] = $monthNames[$i];
         }
     }
 
