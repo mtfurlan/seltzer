@@ -178,6 +178,9 @@ function theme_form ($form) {
     case 'checkbox':
         $output .= theme('form_checkbox', $form);
         break;
+    case 'radio':
+        $output .= theme('form_radio', $form);
+        break;
     case 'select':
         $output .= theme('form_select', $form);
         break;
@@ -291,6 +294,9 @@ function theme_form_text ($field) {
             $output .= ' value="' . $field['description'] . '"';
         }
     }
+    if (!empty($field['size'])) {
+        $output .= 'size="' . $field['size'] . '" ';
+    }
     $output .= '/>';
     if (array_key_exists('autocomplete', $field) && !empty($field['autocomplete'])) {
         $val = array_key_exists('value', $field) ? $field['value'] : '';
@@ -352,6 +358,32 @@ function theme_form_checkbox ($field) {
     $output .= '/>';
     if (!empty($field['label'])) {
         $output .= '<label>' . $field['label'] . '</label>';
+    }
+    $output .= '</fieldset>';
+    return $output;
+}
+
+/**
+ * Themes a list of radio buttons in a form.
+ *
+ * @param $field the buttons.
+ * @return The themed html for the checkbox.
+ */
+function theme_form_radio ($field) {
+    if (!array_key_exists('class', $field)) { $field['class'] = ''; }
+    $output = '<fieldset class="form-row' . $field['class'] . '">';
+    if (!empty($field['label'])) {
+        $output .= '<label>' . $field['label'] . '</label>';
+    }
+    foreach ($field['button'] as $value => $option) {
+        $output .= '<input type="radio" name="' . $field['name'] . '" value="' . $value . '"';
+        if (array_key_exists('checked', $field) && $field['checked']) {
+            $output .= ' checked';
+        }
+        $output .= '>' . $option;
+        if (array_key_exists('layout', $field) && $field['layout'] == 'vertical') {
+            $output .= '<br>';
+        }
     }
     $output .= '</fieldset>';
     return $output;
