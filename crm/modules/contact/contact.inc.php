@@ -411,184 +411,42 @@ function contact_form ($opts = array()) {
                 , 'label' => 'First Name'
                 , 'name' => 'firstName'
                 , 'value' => $contact['firstName']
-                , 'class' => 'float'
-            )
-            , array(
-                'type' => 'message'
-                , 'value' => '&nbsp'
-                , 'class' => 'float'
             )
             , array(
                 'type' => 'text'
                 , 'label' => 'Middle Name'
                 , 'name' => 'middleName'
                 , 'value' => $contact['middleName']
-                , 'class' => 'float'
-            )
-            , array(
-                'type' => 'message'
-                , 'value' => '&nbsp'
-                , 'class' => 'float'
             )
             , array(
                 'type' => 'text'
                 , 'label' => 'Last Name'
                 , 'name' => 'lastName'
                 , 'value' => $contact['lastName']
-                , 'class' => 'float'
             )
             , array(
                 'type' => 'text'
-                , 'label' => 'Street Address'
-                , 'name' => 'streetAddress'
-                , 'value' => $contact['streetAddress']
-                , 'size' => 35
-            )
-            , array(
-                'type' => 'text'
-                , 'label' => 'City'
-                , 'name' => 'city'
-                , 'value' => $contact['city']
-                , 'size' => 20
-                , 'class' => 'float'
-            )
-            , array(
-                'type' => 'message'
-                , 'value' => '&nbsp'
-                , 'class' => 'float'
-            )
-            , array(
-                'type' => 'text'
-                , 'label' => 'State/Pr'
-                , 'name' => 'state'
-                , 'value' => $contact['state']
-                , 'size' => 2
-                , 'class' => 'float'
-            )
-            , array(
-                'type' => 'message'
-                , 'value' => '&nbsp'
-                , 'class' => 'float'
-            )
-            , array(
-                'type' => 'text'
-                , 'label' => 'Zip/Postal Code'
-                , 'name' => 'zip'
-                , 'value' => $contact['zip']
-                , 'class' => 'float'
-            )
-            , array(
-                'type' => 'message'
-                , 'value' => ''
-            )
-            , array(
-                'type' => 'text'
-                , 'label' => 'Email (Primary)'
+                , 'label' => 'Email'
                 , 'name' => 'email'
                 , 'value' => $contact['email']
-                , 'size' => 30
-                , 'class' => 'float'
-            )
-            , array(
-                'type' => 'message'
-                , 'value' => '&nbsp'
-                , 'class' => 'float'
-            )
-            , array(
-                'type' => 'text'
-                , 'label' => 'Email (Alternate)'
-                , 'name' => 'emailAlt'
-                , 'value' => $contact['emailAlt']
-                , 'size' => 30
-                , 'class' => 'float'
-            )
-            , array(
-                'type' => 'message'
-                , 'value' => ''
             )
             , array(
                 'type' => 'text'
                 , 'label' => 'Phone'
                 , 'name' => 'phone'
                 , 'value' => $contact['phone']
-                , 'class' => 'float'
-            )
-            , array(
-                'type' => 'message'
-                , 'value' => '&nbsp'
-                , 'class' => 'float'
             )
             , array(
                 'type' => 'text'
-                , 'label' => 'Phone (Alternate)'
-                , 'name' => 'phoneAlt'
-                , 'value' => $contact['phoneAlt']
-                , 'class' => 'float'
-            )
-            , array(
-                'type' => 'radio'
-                , 'label' => 'Preferred Contact Method'
-                , 'name' => 'preferredContact'
-                , 'button' => array(
-                    'phoneVoice' => 'Phone - Voice'
-                    , 'phoneText' => 'Phone - Text'
-                    , 'phoneAltVoice' => 'Phone (Alt) - Voice'
-                    , 'phoneAltText' => 'Phone (Alt) - Text'
-                    , 'email' => 'Email'
-                    , 'emailAlt' => 'Email (Alt)'
-                    , 'slack' => 'Slack'
-                )
-            )
-            , array(
-                'type' => 'text'
-                , 'label' => 'Emergency Contact Name'
+                , 'label' => 'Emergency Contact'
                 , 'name' => 'emergencyName'
                 , 'value' => $contact['emergencyName']
-                , 'class' => 'float'
-            )
-            , array(
-                'type' => 'message'
-                , 'value' => '&nbsp'
-                , 'class' => 'float'
             )
             , array(
                 'type' => 'text'
-                , 'label' => 'Emergency Contact Phone'
+                , 'label' => 'Emergency Phone'
                 , 'name' => 'emergencyPhone'
                 , 'value' => $contact['emergencyPhone']
-                , 'class' => 'float'
-            )
-            , array(
-                'type' => 'message'
-                , 'value' => '&nbsp'
-                , 'class' => 'float'
-            )
-            , array(
-                'type' => 'text'
-                , 'label' => 'Emergency Contact Relation'
-                , 'name' => 'emergencyRelation'
-                , 'value' => $contact['emergencyRelation']
-                , 'class' => 'float'
-            )
-            , array(
-                'type' => 'textfield'
-                , 'label' => 'How I heard about i3Detroit'
-                , 'name' => 'howHeard'
-                , 'value' => $contact['howHeard']
-                , 'rows' => '100'
-                , 'cols' => '30'
-            )
-            , array(
-                'type' => 'textfield'
-                , 'label' => 'Why I left i3Detroit'
-                , 'name' => 'whyLeft'
-                , 'value' => $contact['whyLeft']
-                , 'rows' => '100'
-                , 'cols' => '30'
-            )
-            , array(
-                'type' => 'message'
-                , 'value' => 'Last updated on: '.$contact['updateDate']
             )
         )
     );
