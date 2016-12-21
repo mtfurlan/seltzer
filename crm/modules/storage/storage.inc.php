@@ -1157,6 +1157,18 @@ function storage_reap_month_filter_form () {
         $hidden[$key] = $val;
     }
 
+    // if this month isn't a valid reap month, show data for the next valid one
+    if (!array_key_exists($_SESSION['reap_month_filter_option'], $months)) {
+        $findlist = array_merge($storage_reap_months,$storage_reap_months);
+        for ($i=$_SESSION['reap_month_filter_option']; $i<=24; $i++) {
+            if ( $i > 12 ) { $j = $i-12; } else { $j=$i; }
+            if ($findlist[$j-1] == 1) {
+                $_SESSION['reap_month_filter_option'] = $j;
+                $i=25; //end loop
+            }
+        }
+    }
+    
     $form = array(
         'type' => 'form'
         , 'method' => 'get'
