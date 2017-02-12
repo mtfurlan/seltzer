@@ -100,6 +100,9 @@ $config_modules[] = "profile_picture";
 // Developer tools
 //$config_modules[] = "devel";
 
+// Storage module
+$config_modules[] = "storage";
+
 // Debugging functions
 $config_modules[] = "debug";
 
@@ -111,6 +114,7 @@ $config_links = array(
     , 'keys' => 'Keys'
     , 'payments' => 'Payments'
     , 'accounts' => 'Accounts'
+    , 'storage' => 'Storage'
     , 'reports' => 'Reports'
     , 'permissions' => 'Permissions'
     , 'upgrade' => 'Upgrade'
