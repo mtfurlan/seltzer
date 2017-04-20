@@ -761,7 +761,7 @@ function command_amazon_payment_email () {
         // Send email
         $to = $cidToContact[$cid]['email'];
         $from = $config_email_from;
-        $headers = "Content-type: text/html\r\nFrom: $from\r\nBcc: $from\r\n";
+        $headers = "Content-type: text/html\r\nFrom: $from\r\nBcc: ".variable_get('treasurer_email','')."\r\n";
         $custom_message = str_replace("\n\n", "</p><p>", $custom_message);
         $custom_message = str_replace("\n", "<br />", $custom_message);
         $message = "<p>Hello, $contactName.</p><p>$custom_message</p>$account<p><strong>Payment options:</strong></p>$button";
@@ -798,7 +798,7 @@ function command_amazon_payment_email_100 () {
         // Send email
         $to = $cidToContact[$cid]['email'];
         $from = $config_email_from;
-        $headers = "Content-type: text/html\r\nFrom: $from\r\nBcc: $from\r\n";
+        $headers = "Content-type: text/html\r\nFrom: $from\r\nBcc: ".variable_get('treasurer_email','')."\r\n";
         $custom_message = str_replace("\n\n", "</p><p>", $custom_message);
         $custom_message = str_replace("\n", "<br />", $custom_message);
         $message = "<p>Hello, $contactName.</p><p>$custom_message</p>$account<p><strong>Payment options:</strong></p>$button";
