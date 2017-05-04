@@ -38,7 +38,7 @@ function member_data ($opts = array()) {
         FROM `member`
         LEFT JOIN `contact` ON `member`.`cid`=`contact`.`cid`
         LEFT JOIN `user` ON `member`.`cid`=`user`.`cid`
-        LEFT JOIN `membership` ON (`member`.`cid`=`membership`.`cid` AND `membership`.`end` IS NULL)
+        LEFT JOIN `membership` ON `member`.`cid`=`membership`.`cid`
         LEFT JOIN `plan` ON `plan`.`pid`=`membership`.`pid`
         WHERE 1
     ";
@@ -61,7 +61,8 @@ function member_data ($opts = array()) {
         if (isset($filter['active'])) {
             if ($filter['active']) {
                 $sql .= " AND (`membership`.`pid` = '6' OR `membership`.`pid` = '10') ";
-                $sql .= " AND (`membership`.`start` IS NOT NULL AND `membership`.`end` IS NULL)";
+                $sql .= " AND (`membership`.`start` <= CURDATE()) ";
+                $sql .= " AND (`membership`.`end` IS NULL OR `membership`.`end`>= CURDATE()) ";
             } else {
                 $sql .= " AND (`membership`.`start` IS NULL OR `membership`.`end` IS NOT NULL)";
             }
