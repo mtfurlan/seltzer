@@ -208,6 +208,22 @@ function authCheck($opts = array())
     return array('auth'=>true,'user'=>$memberName,'message'=>'authorized');
 }
 
+function hash_compare($a, $b) { 
+    if (!is_string($a) || !is_string($b)) { 
+        return false; 
+    } 
+    
+    $len = strlen($a); 
+    if ($len !== strlen($b)) { 
+        return false; 
+    } 
+
+    $status = 0; 
+    for ($i = 0; $i < $len; $i++) { 
+        $status |= ord($a[$i]) ^ ord($b[$i]); 
+    } 
+    return $status === 0; 
+} 
 
 //////////////////////////////////////
 //other functions for service go here. 
@@ -217,36 +233,67 @@ function authCheck($opts = array())
 // the switch case below as well.
 //////////////////////////////////////
 
+// url format:
+// query.php?action=<function_name>&id=<device_id>&auth=<cryptostring>
+// cryptostring is concat of date (YYYYMMDDHHmm) and passkey
+// 
+// currently, ID and passkey are in secrets table, but this could be extracted to it's own table
 
-$possible_url = array("authCheck", "getRFIDWhitelist");
+require_once('db.inc.php');
 
-$value = "An error has occurred";
+$possible_url = array("authCheck", "getRFIDWhitelist", "doSomething");
 
-if (isset($_GET["action"]) && in_array($_GET["action"], $possible_url))
+$returnValue = "Ye Booched It!";
+
+if (isset($_GET["id"]) && isset($_GET["auth"]) && isset($_GET["action"]))
 {
-    switch ($_GET["action"])
+    // check authorization
+    // timestamp is YYYY MM DD HH m (where m is 1st of 2-digit minute)
+    $timestamp = (gmdate("YmdHi"));
+    var_dump_pre("timestamp:         ".$timestamp);
+    $timestampMinusOne = gmdate("YmdHi", strtotime('-1 minute'));
+    var_dump_pre("timestampMinusOne: ".$timestampMinusOne);
+    $message = $timestamp.variable_get($_GET['id'],'');
+    var_dump_pre("message:           ".$message);
+    $messageMinusOne = $timestampMinusOne.variable_get($_GET['id'],'');
+    var_dump_pre("messageMinusOne:   ".$messageMinusOne);
+    $apiSharedSecret = variable_get('api_shared_secret','');
+    var_dump_pre("secret:            ".$apiSharedSecret);
+    $userHash = hash_hmac('sha256',$message,$apiSharedSecret);
+    var_dump_pre("userhash:          ".$userHash);
+    $userHashMinusOne = hash_hmac('sha256',$messageMinusOne,$apiSharedSecret);
+    var_dump_pre("userhashMinusOne:  ".$userHashMinusOne);
+    
+    if ( hash_compare($userHash, $_GET['auth']) || hash_compare($userHashMinusOne, $_GET['auth']) )
+    {
+        switch ($_GET["action"])
         {
-        //     case "getMemberInfoByRFID":
-        //         $value = getMemberInfoByRFID($_GET['rfid'], $_GET['fieldNames']);
-        //         break;
-    	 // case "getMemberLastPaymentTimestamp":
-        //         $value = getMemberLastPaymentTimestamp($_GET['rfid']);
-        //         break;
             case "getRFIDWhitelist":
-                $value = getRFIDWhitelist($_GET['fields']);
+                $functionValue = getRFIDWhitelist($_GET['fields']);
                 break;
             case "authCheck":
-                $value = authCheck($_GET);
+                $functionValue = authCheck($_GET);
                 break;
-            // case "get_app":
-            //     if (isset($_GET["id"]))
-            //         $value = get_app_by_id($_GET["id"]);
-            //     else
-            //         $value = "Missing argument";
-            //     break;
         }
+        $returnValue = array('ok'=>true, 'message'=>'accepted auth string');
+    }
+    else { $returnValue = array('ok'=>false, 'message'=>'unauthorized'); }
 }
+else { $returnValue = array('ok'=>false, 'message'=>'mangled input'); }
 
 //return JSON object as the response to client
-exit(json_encode($value));
+/* {
+    "ok": true,                // was request accepted by api (i.e. correct parameters and authentication given)
+    "message": "some text"     // optional result with more info
+    "result": [
+        {
+            "key": "value",    // action-based responses
+            "key2: "value",    // will vary per action
+            ...
+        }, 
+        ...
+    ]
+    }
+*/
+exit(json_encode($returnValue));
 ?>
