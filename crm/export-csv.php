@@ -1,6 +1,7 @@
 <?php
+
 /*
-    Copyright 2009-2014 Edward L. Platt <ed@elplatt.com>
+    Copyright 2009-2017 Edward L. Platt <ed@elplatt.com>
     
     This file is part of the Seltzer CRM Project
     export-csv.php - Exports a table to csv format.
@@ -22,11 +23,11 @@
 // Save path of directory containing index.php
 $crm_root = dirname(__FILE__);
 
-// Bootstrap the crm
+// Bootstrap the site
 require_once('include/crm.inc.php');
 
 if (!user_id()) {
-    die ("ERROR: User not logged in");
+    crm_error("ERROR: User not logged in");
 }
 
 header('Content-type: text/csv');
