@@ -50,11 +50,7 @@ if(isset($_GET['q'])) {
 
 $template_vars = array('path' => path());
 if (!user_id()) {
-<<<<<<< HEAD
-    if (path() != 'login' && path() != 'reset' && path() != 'reset-confirm') {
-=======
     if (path() != 'login' && path() != 'reset' && path() != 'reset-confirm' && path() != 'register') {
->>>>>>> upstream/dev
         $template_vars = array('path' => 'login');
     }
 }
