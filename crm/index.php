@@ -23,7 +23,7 @@
 // Save path of directory containing index.php
 $crm_root = dirname(__FILE__);
 
-$err_level = error_reporting(E_ALL ^ E_WARNING);
+$err_level = error_reporting(E_ALL);
 error_reporting($err_level);
 
 // Bootstrap the crm

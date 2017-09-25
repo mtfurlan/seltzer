@@ -746,6 +746,8 @@ function command_amazon_payment_contact_add () {
 function command_amazon_payment_contact_delete () {
     amazon_payment_contact_delete($_POST);
     return crm_url('amazon-admin');
+}
+
 function command_amazon_payment_email () {
     global $config_email_from;
     global $config_site_title;

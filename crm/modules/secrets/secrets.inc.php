@@ -47,6 +47,7 @@ function secrets_permissions () {
  */
 function secrets_install($old_revision = 0) {
     if ($old_revision < 1) {
+      global $db_connect;
         // No unique databases needed
                 // Set default permissions
         $roles = array(
@@ -63,14 +64,14 @@ function secrets_install($old_revision = 0) {
             'webAdmin' => array('secrets_view', 'secrets_edit', 'secrets_delete')
         );
         foreach ($roles as $rid => $role) {
-            $esc_rid = mysql_real_escape_string($rid);
+            $esc_rid = mysqli_real_escape_string($db_connect, $rid);
             if (array_key_exists($role, $default_perms)) {
                 foreach ($default_perms[$role] as $perm) {
-                    $esc_perm = mysql_real_escape_string($perm);
+                    $esc_perm = mysqli_real_escape_string($db_connect, $perm);
                     $sql = "INSERT INTO `role_permission` (`rid`, `permission`) VALUES ('$esc_rid', '$esc_perm')";
                     $sql .= " ON DUPLICATE KEY UPDATE rid=rid";
-                    $res = mysql_query($sql);
-                    if (!$res) die(mysql_error());
+                    $res = mysqli_query($db_connect, $sql);
+                    if (!$res) die(mysqli_error());
                 }
             }
         }
@@ -92,6 +93,7 @@ function secrets_install($old_revision = 0) {
  * @return An array with each element representing a single key card assignment.
 */ 
 function secrets_data ($opts = array()) {
+  global $db_connect;
     // Query database
     $sql = "
         SELECT
@@ -100,20 +102,20 @@ function secrets_data ($opts = array()) {
         FROM `variable`
         WHERE 1";
     if (!empty($opts['name'])) {
-        $esc_name = mysql_real_escape_string($opts['name']);
+        $esc_name = mysqli_real_escape_string($db_connect, $opts['name']);
         $sql .= " AND `name`='" . $esc_name . "'";
     }
     $sql .= "
         ORDER BY `name` ASC";
-    $res = mysql_query($sql);
-    if (!$res) die(mysql_error());
+    $res = mysqli_query($db_connect, $sql);
+    if (!$res) die(mysqli_error());
     // Store data
     $secrets = array();
-    $row = mysql_fetch_assoc($res);
+    $row = mysqli_fetch_assoc($res);
     while (!empty($row)) {
         // Contents of row are name, value
         $secrets[] = $row;
-        $row = mysql_fetch_assoc($res);
+        $row = mysqli_fetch_assoc($res);
     }
     return $secrets;
 }
@@ -124,22 +126,23 @@ function secrets_data ($opts = array()) {
  * @return The secret structure with as it now exists in the database.
  */
 function secrets_add ($secret) {
+  global $db_connect;
     // Escape values
     $fields = array('name', 'value');
     if (isset($secret['name'])) {
         // Add key if nonexists, otherise Update existing key
         $name = $secret['name'];
-        $esc_name = mysql_real_escape_string($secret['name']);
-        $esc_value = mysql_real_escape_string($secret['value']);
+        $esc_name = mysqli_real_escape_string($db_connect, $secret['name']);
+        $esc_value = mysqli_real_escape_string($db_connect, $secret['value']);
         if ( preg_match('/\s/',$esc_name) || preg_match('/\s/',$esc_value) ) {
             message_register('Whitespace not allowed in Name or Value.');
             return array();
         }
         $sql = "INSERT INTO variable (name, value) ";
         $sql .="VALUES ('" . $esc_name . "', '" . $esc_value . "') ";
-        $res = mysql_query($sql);
+        $res = mysqli_query($db_connect, $sql);
         if (!$res) {
-            message_register('ERROR: ' . mysql_error());
+            message_register('ERROR: ' . mysqli_error());
         } else {
             message_register('Secret Added');
         }
@@ -153,21 +156,22 @@ function secrets_add ($secret) {
  * @return The secret structure with as it now exists in the database.
  */
 function secrets_edit ($secret) {
+  global $db_connect;
     // Escape values
     if (isset($secret['name'])) {
         // Add key if nonexists, otherise Update existing key
         $name = $secret['name'];
-        $esc_name = mysql_real_escape_string($secret['name']);
-        $esc_value = mysql_real_escape_string($secret['value']);
+        $esc_name = mysqli_real_escape_string($db_connect, $secret['name']);
+        $esc_value = mysqli_real_escape_string($db_connect, $secret['value']);
         $sql = "UPDATE variable ";
         $sql .="SET value = '" . $esc_value . "' ";
         $sql .= "WHERE name = '" . $esc_name . "' ";
 
-        $res = mysql_query($sql);
-        // if (!$res) die(mysql_error());
+        $res = mysqli_query($db_connect, $sql);
+        // if (!$res) die(mysqli_error());
         // message_register('Secret updated');
         if (!$res) {
-            message_register('SQL: ' . $sql . '<br>ERROR: ' . mysql_error());
+            message_register('SQL: ' . $sql . '<br>ERROR: ' . mysqli_error());
         } else {
             message_register('Secret updated');
         }
@@ -180,12 +184,13 @@ function secrets_edit ($secret) {
  * @param $secret The secret name
  */
 function secrets_delete ($secret) {
+  global $db_connect;
     if (isset($secret['name'])) {
-        $esc_name = mysql_real_escape_string($secret['name']);
+        $esc_name = mysqli_real_escape_string($db_connect, $secret['name']);
         $sql = "DELETE FROM variable WHERE name = '" . $esc_name . "'";
-        $res = mysql_query($sql);
-        if (!$res) die(mysql_error());
-        if (mysql_affected_rows() > 0) {
+        $res = mysqli_query($db_connect, $sql);
+        if (!$res) die(mysqli_error());
+        if (mysqli_affected_rows() > 0) {
             message_register('Secret deleted.');
         }
     } else {
@@ -197,6 +202,7 @@ function secrets_delete ($secret) {
 // Tables //////////////////////////////////////////////////////////////////////
 // Put table generators here
 function secrets_table () {
+  
     // Determine settings
     $export = false;
     // foreach ($opts as $option => $value) {
