@@ -64,16 +64,16 @@ function get_dupkeys () {
 }
 
 // Tables ///////////////////////////////////////////////////////////////////////
-function dupkeys_table () {
+function dupkeys_table ($opts = NULL) {
     // Determine settings
     $export = false;
-    // foreach ($opts as $option => $value) {
-    //     switch ($option) {
-    //         case 'export':
-    //             $export = $value;
-    //             break;
-    //     }
-    // }
+    foreach ($opts as $option => $value) {
+        switch ($option) {
+            case 'export':
+                $export = $value;
+                break;
+        }
+    }
     
      // Initialize table
     $table = array(
@@ -101,7 +101,7 @@ function dupkeys_table () {
         $member = $data[0];
         // name
         $contact = $member['contact'];
-        $name = theme('contact_name', $contact['cid'], true);
+        $name = theme('contact_name', $contact['cid'], !$export);
         $row[] = $name;
         // plan
         $membership = $member['membership'];

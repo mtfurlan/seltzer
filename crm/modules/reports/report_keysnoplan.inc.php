@@ -60,16 +60,16 @@ function get_keys_for_cids ($list = array()) {
 }
 
 // Tables ///////////////////////////////////////////////////////////////////////
-function keysnoplan_table () {
+function keysnoplan_table ($opts = NULL) {
     // Determine settings
     $export = false;
-    // foreach ($opts as $option => $value) {
-    //     switch ($option) {
-    //         case 'export':
-    //             $export = $value;
-    //             break;
-    //     }
-    // }
+    foreach ($opts as $option => $value) {
+        switch ($option) {
+            case 'export':
+                $export = $value;
+                break;
+        }
+    }
     
     $inactive_members = member_data(array('filter'=>array('active'=>false))); // Get inactive members
 // var_dump_pre($inactive_members);
@@ -106,7 +106,7 @@ function keysnoplan_table () {
         $member = $data[0];
         // name
         $contact = $member['contact'];
-        $name = theme('contact_name', $contact['cid'], true);
+        $name = theme('contact_name', $contact['cid'], !$export);
         $row[] = $name;
         // plan
         $membership = $member['membership'];

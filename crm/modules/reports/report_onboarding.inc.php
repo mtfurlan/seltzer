@@ -65,16 +65,16 @@ function get_cids_onboarding () {
 }
 
 // Tables ///////////////////////////////////////////////////////////////////////
-function onboarding_table () {
+function onboarding_table ($opts = NULL) {
     // Determine settings
     $export = false;
-    // foreach ($opts as $option => $value) {
-    //     switch ($option) {
-    //         case 'export':
-    //             $export = $value;
-    //             break;
-    //     }
-    // }
+    foreach ($opts as $option => $value) {
+        switch ($option) {
+            case 'export':
+                $export = $value;
+                break;
+        }
+    }
     
     $onboarding_cids = get_cids_onboarding();
 
@@ -95,7 +95,7 @@ function onboarding_table () {
         $data = member_data(array('cid'=>$cid));
         $member = $data[0];
         $contact = $member['contact'];
-        $name = theme('contact_name', $contact['cid'], true);
+        $name = theme('contact_name', $contact['cid'], !$export);
 
         $row[1] = $name;
         $row[2] = $sdate;

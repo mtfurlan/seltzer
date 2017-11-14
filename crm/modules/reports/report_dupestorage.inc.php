@@ -65,16 +65,16 @@ function get_dupe_storage () {
 }
 
 // Tables ///////////////////////////////////////////////////////////////////////
-function dupestorage_table () {
+function dupestorage_table ($opts = NULL) {
     // Determine settings
     $export = false;
-    // foreach ($opts as $option => $value) {
-    //     switch ($option) {
-    //         case 'export':
-    //             $export = $value;
-    //             break;
-    //     }
-    // }
+    foreach ($opts as $option => $value) {
+        switch ($option) {
+            case 'export':
+                $export = $value;
+                break;
+        }
+    }
     $dupes = get_dupe_storage();
 
      // Initialize table

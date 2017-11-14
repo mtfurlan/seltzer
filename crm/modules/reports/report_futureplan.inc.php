@@ -60,16 +60,16 @@ function get_cids_with_future_plan () {
 }
 
 // Tables ///////////////////////////////////////////////////////////////////////
-function futureplan_table () {
+function futureplan_table ($opts = NULL) {
     // Determine settings
     $export = false;
-    // foreach ($opts as $option => $value) {
-    //     switch ($option) {
-    //         case 'export':
-    //             $export = $value;
-    //             break;
-    //     }
-    // }
+    foreach ($opts as $option => $value) {
+        switch ($option) {
+            case 'export':
+                $export = $value;
+                break;
+        }
+    }
     
     $futureplan_cids = get_cids_with_future_plan();
 
@@ -93,7 +93,7 @@ function futureplan_table () {
         $data = member_data(array('cid'=>$cid));
         $member = $data[0];
         $contact = $member['contact'];
-        $name = theme('contact_name', $contact['cid'], true);
+        $name = theme('contact_name', $contact['cid'], !$export);
        // $name_link = theme('contact_name', $member, true);
    
         $row[] = $name;

@@ -30,5 +30,5 @@ if (!user_id()) {
 }
 
 header('Content-type: text/csv');
-header('Content-Disposition: attachment; filename="export.csv"');
+header('Content-Disposition: attachment; filename=' . $_GET['name'] . '.csv');
 print theme('table_csv', $_GET['name'], json_decode($_GET['opts'], true));

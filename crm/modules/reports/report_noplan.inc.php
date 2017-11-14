@@ -57,16 +57,16 @@ function get_cids_without_plan () {
 }
 
 // Tables ///////////////////////////////////////////////////////////////////////
-function noplan_table () {
+function noplan_table ($opts = NULL) {
     // Determine settings
     $export = false;
-    // foreach ($opts as $option => $value) {
-    //     switch ($option) {
-    //         case 'export':
-    //             $export = $value;
-    //             break;
-    //     }
-    // }
+    foreach ($opts as $option => $value) {
+        switch ($option) {
+            case 'export':
+                $export = $value;
+                break;
+        }
+    }
     
     $noplan_cids = get_cids_without_plan();
 
@@ -87,7 +87,7 @@ function noplan_table () {
         $data = member_data(array('cid'=>$cid));
         $member = $data[0];
         $contact = $member['contact'];
-        $name = theme('contact_name', $contact['cid'], true);
+        $name = theme('contact_name', $contact['cid'], !$export);
        // $name_link = theme('contact_name', $member, true);
    
         $row[] = $name;

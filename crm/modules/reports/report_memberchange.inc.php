@@ -124,16 +124,16 @@ function memberchange_search_form () {
 }
 
 // Tables ///////////////////////////////////////////////////////////////////////
-function memberchange_results_table () {
+function memberchange_results_table ($opts = NULL) {
     // Determine settings
     $export = false;
-    // foreach ($opts as $option => $value) {
-    //     switch ($option) {
-    //         case 'export':
-    //             $export = $value;
-    //             break;
-    //     }
-    // }
+    foreach ($opts as $option => $value) {
+        switch ($option) {
+            case 'export':
+                $export = $value;
+                break;
+        }
+    }
     $dates = $_GET;
     if (empty($dates['from'])) {$dates['from'] = date("Y-m-d");}
     if (empty($dates['to'])) {$dates['to'] = date("Y-m-d");}
@@ -176,7 +176,7 @@ function memberchange_results_table () {
         $data = member_data(array('cid'=>$cid));
         $member = $data[0];
         $contact = $member['contact'];
-        $name = theme('contact_name', $contact['cid'], true);
+        $name = theme('contact_name', $contact['cid'], !$export);
         $row[] = $name;
         
         // Plan Data
