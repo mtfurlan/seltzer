@@ -79,6 +79,13 @@ function reports_install($old_revision = 0) {
 }
 
 // Initialization //////////////////////////////////////////////////////////////
+if (stripos($_SERVER['REQUEST_URI'], 'export-csv.php')) {
+  // load modules directly when called by export function
+  $load_files = glob('modules/reports/report_*.inc.php');
+  foreach ($load_files as $filename) {
+    require_once("$filename");
+  }
+}
 
 // Utility functions ///////////////////////////////////////////////////////////
 
