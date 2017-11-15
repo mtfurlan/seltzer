@@ -38,6 +38,7 @@ $report_membership_desc = "Graphical history of memberships";
  */
 function report_membership_earliest_date () {
     $sql = "SELECT `start` FROM `membership` ORDER BY `start` ASC LIMIT 1";
+    global $db_connect;
     $res = mysqli_query($db_connect, $sql);
     $row = mysqli_fetch_assoc($res);
     if (!$row) {
@@ -70,6 +71,7 @@ function member_statistics () {
         $month = $months % 12 + 1;
         $dates[] = "('$year-$month-01')";
     }
+    global $db_connect;
     // Create temporary table with dates
     $sql = "DROP TEMPORARY TABLE IF EXISTS `temp_months`";
     $res = mysqli_query($db_connect, $sql);

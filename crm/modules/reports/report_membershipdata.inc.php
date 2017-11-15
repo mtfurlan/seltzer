@@ -39,8 +39,10 @@ $report_membershipdata_desc = "Tabular history of memberships";
  */
 function report_membershipdata_earliest_date () {
     $sql = "SELECT `start` FROM `membership` ORDER BY `start` ASC LIMIT 1";
-    $res = mysql_query($sql);
-    $row = mysql_fetch_assoc($res);
+    global $db_connect;
+    $res = mysqli_query($db_connect, $sql);
+    if (!$res) crm_error(mysqli_error($res));
+    $row = mysqli_fetch_assoc($res);
     if (!$row) {
         return '';
     }
@@ -72,6 +74,7 @@ function get_membershipdata () {
         $dates[] = "('$year-$month-01')";
     }
     // Create temporary table with dates
+    global $db_connect;
     $sql = "DROP TEMPORARY TABLE IF EXISTS `temp_months`";
     $res = mysqli_query($db_connect, $sql);
     if (!$res) crm_error(mysqli_error($res));
@@ -100,7 +103,7 @@ function get_membershipdata () {
     $res = mysqli_query($db_connect, $sql);
     if (!$res) crm_error(mysqli_error($res));
     // Build results
-    while ($row = mysql_fetch_assoc($res)) {
+    while ($row = mysqli_fetch_assoc($res)) {
         $results[$row['month']][$row['name']] = (int)$row['member_count'];
     }
 

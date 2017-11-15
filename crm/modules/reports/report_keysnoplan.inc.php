@@ -45,16 +45,16 @@ function get_keys_for_cids ($list = array()) {
         SELECT * FROM `key` 
         WHERE cid in ($cidlist) AND end is NULL;
     ";
-    
+    global $db_connect;
     $res = mysqli_query($db_connect, $sql);
     if (!$res) crm_error(mysqli_error($res));
 
     $keys=array();
-    $row = mysql_fetch_assoc($res);
+    $row = mysqli_fetch_assoc($res);
     while (!empty($row)) {
         // Contents of row are name, value
         $keys[] = $row;
-        $row = mysql_fetch_assoc($res);
+        $row = mysqli_fetch_assoc($res);
     }
     return $keys;
 }

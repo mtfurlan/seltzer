@@ -45,6 +45,7 @@ function get_cids_without_keys ($list = array()) {
     CREATE TEMPORARY TABLE cidlist (
         `cid` varchar(255) NOT NULL 
     );";
+    global $db_connect;
     $res = mysqli_query($db_connect, $sql);
     if (!$res) crm_error(mysqli_error($res));
 
@@ -61,11 +62,11 @@ function get_cids_without_keys ($list = array()) {
     if (!$res) crm_error(mysqli_error($res));
 
     $keys=array();
-    $row = mysql_fetch_assoc($res);
+    $row = mysqli_fetch_assoc($res);
     while (!empty($row)) {
         // Contents of row are name, value
         $keys[] = $row;
-        $row = mysql_fetch_assoc($res);
+        $row = mysqli_fetch_assoc($res);
     }
     return $keys;
 }

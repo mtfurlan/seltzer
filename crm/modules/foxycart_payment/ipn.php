@@ -52,7 +52,8 @@ if (isset($_POST["FoxyData"])) {
             ' $stuff '
         )
     ";
-    $res = mysql_query($sql); 
+    global $db_connect;
+    $res = mysqli_query($db_connect, $sql); 
     //For Each Transaction
     foreach($xml->transactions->transaction as $transaction) {
  
@@ -194,8 +195,9 @@ if (empty($cid)) {
         $sql = "
             SELECT `cid` FROM `contact`
             WHERE `email` = '" . $customer_email . "'";
-        $res = mysql_query($sql);
-        $row = mysql_fetch_assoc($res);
+        global $db_connect;
+        $res = mysqli_query($db_connect, $sql);
+        $row = mysqli_fetch_assoc($res);
         $cid = $row['cid'];
     }
 }
@@ -206,8 +208,9 @@ if (empty($cid) && isset($customer_id)) {
     $sql = "
         SELECT `credit`, MAX(created) AS `maxcreated` FROM `payment`
         WHERE `notes` = 'customer " . $customer_id ."'";
-    $res = mysql_query($sql);
-    $row = mysql_fetch_assoc($res);
+    global $db_connect;
+    $res = mysqli_query($db_connect, $sql);
+    $row = mysqli_fetch_assoc($res);
     $cid = $row['credit'];
     if (!empty($cid)) { $notes .= "customer $customer_id"; }
 }
