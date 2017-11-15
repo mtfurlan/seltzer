@@ -46,18 +46,9 @@ function get_cids_without_plan () {
         WHERE NOT EXISTS (SELECT * FROM membership WHERE contact.cid=membership.cid);
     ";
     
-    $res = mysql_query($sql);
-    if (!$res) { crm_error(mysql_error($res)); }
-   
-    $cids=array();
-    while ($row = mysql_fetch_row($res)) $cids[]=$row[0];
-    mysql_free_result($res);
-   
-    return $cids;
-}
+    $res = mysqli_query($db_connect, $sql);
+    if (!$res) crm_error(mysqli_error($res));
 
-// Tables ///////////////////////////////////////////////////////////////////////
-function noplan_table () {
     // Determine settings
     $export = false;
     // foreach ($opts as $option => $value) {

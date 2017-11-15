@@ -49,9 +49,9 @@ function get_cids_with_future_plan () {
             AND m.pid = p.pid;
     ";
     
-    $res = mysql_query($sql);
-    if (!$res) { crm_error(mysql_error($res)); }
-   
+    $res = mysqli_query($db_connect, $sql);
+    if (!$res) crm_error(mysqli_error($res));
+ 
     $cids=array();
     while ($row = mysql_fetch_row($res)) $cids[]=$row;
     mysql_free_result($res);

@@ -46,8 +46,8 @@ function get_keys_for_cids ($list = array()) {
         WHERE cid in ($cidlist) AND end is NULL;
     ";
     
-    $res = mysql_query($sql);
-    if (!$res) { crm_error(mysql_error($res)); }
+    $res = mysqli_query($db_connect, $sql);
+    if (!$res) crm_error(mysqli_error($res));
 
     $keys=array();
     $row = mysql_fetch_assoc($res);

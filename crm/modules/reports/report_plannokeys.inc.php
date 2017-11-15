@@ -45,20 +45,20 @@ function get_cids_without_keys ($list = array()) {
     CREATE TEMPORARY TABLE cidlist (
         `cid` varchar(255) NOT NULL 
     );";
-    $res = mysql_query($sql);
-    if (!$res) { crm_error(mysql_error($res)); }
-    
+    $res = mysqli_query($db_connect, $sql);
+    if (!$res) crm_error(mysqli_error($res));
+
     $sql="INSERT INTO cidlist (cid) VALUES $cidlist;";
-    $res = mysql_query($sql);
-    if (!$res) { crm_error(mysql_error($res)); }
+    $res = mysqli_query($db_connect, $sql);
+    if (!$res) crm_error(mysqli_error($res));
     
     $sql="
     SELECT cid
     FROM cidlist
     WHERE cid NOT IN (SELECT cid FROM `key`);
     ";
-    $res = mysql_query($sql);
-    if (!$res) { crm_error(mysql_error($res)); }
+    $res = mysqli_query($db_connect, $sql);
+    if (!$res) crm_error(mysqli_error($res));
 
     $keys=array();
     $row = mysql_fetch_assoc($res);

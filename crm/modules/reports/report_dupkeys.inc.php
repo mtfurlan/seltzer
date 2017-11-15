@@ -50,8 +50,8 @@ function get_dupkeys () {
         HAVING COUNT(serial) > 1
     )
     ORDER BY serial;";
-    $res = mysql_query($sql);
-    if (!$res) { crm_error(mysql_error($res)); }
+    $res = mysqli_query($db_connect, $sql);
+    if (!$res) crm_error(mysqli_error($res));
     
     $keys=array();
     $row = mysql_fetch_assoc($res);
