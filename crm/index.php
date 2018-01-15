@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright 2009-2014 Edward L. Platt <ed@elplatt.com>
+    Copyright 2009-2017 Edward L. Platt <ed@elplatt.com>
     
     This file is part of the Seltzer CRM Project
     index.php - Application main page
@@ -23,7 +23,7 @@
 // Save path of directory containing index.php
 $crm_root = dirname(__FILE__);
 
-$err_level = error_reporting(E_ALL ^ E_WARNING);
+$err_level = error_reporting(E_ALL);
 error_reporting($err_level);
 
 // Bootstrap the crm
@@ -50,7 +50,7 @@ if(isset($_GET['q'])) {
 
 $template_vars = array('path' => path());
 if (!user_id()) {
-    if (path() != 'login' && path() != 'reset' && path() != 'reset-confirm') {
+    if (path() != 'login' && path() != 'reset' && path() != 'reset-confirm' && path() != 'register') {
         $template_vars = array('path' => 'login');
     }
 }

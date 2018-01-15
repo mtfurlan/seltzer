@@ -1,7 +1,7 @@
 <?php
 /*
     Copyright 2014 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     storage.inc.php - Manage member storage assigments
 
@@ -59,8 +59,8 @@ function storage_install($old_revision = 0) {
             PRIMARY KEY (`pid`)
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
         ';
-        $res = mysql_query($sql);
-        if (!$res) die(mysql_error());
+        $res = mysqli_query($db_connect, $sql);
+        if (!$res) die(mysqli_error($res ));
 // create storage log
         $sql = 'CREATE TABLE IF NOT EXISTS `storage_log` (
             `timestamp` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -74,8 +74,8 @@ function storage_install($old_revision = 0) {
             `reapdate` date NOT NULL
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
         ';
-        $res = mysql_query($sql);
-        if (!$res) die(mysql_error());
+        $res = mysqli_query($db_connect, $sql);
+        if (!$res) die(mysqli_error($res));
                 // Set default permissions
         $roles = array(
             '1' => 'authenticated'
@@ -92,14 +92,14 @@ function storage_install($old_revision = 0) {
             'director' => array('storage_view', 'storage_edit', 'storage_delete')
         );
         foreach ($roles as $rid => $role) {
-            $esc_rid = mysql_real_escape_string($rid);
+            $esc_rid = mysqli_real_escape_string($db_connect, $rid);
             if (array_key_exists($role, $default_perms)) {
                 foreach ($default_perms[$role] as $perm) {
-                    $esc_perm = mysql_real_escape_string($perm);
+                    $esc_perm = mysqli_real_escape_string($db_connect, $perm);
                     $sql = "INSERT INTO `role_permission` (`rid`, `permission`) VALUES ('$esc_rid', '$esc_perm')";
                     $sql .= " ON DUPLICATE KEY UPDATE rid=rid";
-                    $res = mysql_query($sql);
-                    if (!$res) die(mysql_error());
+                    $res = mysqli_query($db_connect, $sql);
+                    if (!$res) die(mysqli_error($res));
                 }
             }
         }
@@ -118,7 +118,7 @@ function text_replace ($opts) {
         7 => "July", 8 => "August", 9 => "Sepember", 10 => "October", 11 => "November", 12 => "December"
     );
     $monthName = $monthNames[$_SESSION['reap_month_filter_option']];
-    
+
     // {{plotlist}} - list plot numbers in comma-separated format
     if (strpos($opts['text'], '{{plotlist}}') !== false) {
         $pidsToReap = preg_replace(array('/,/','/,([^,]*)$/'), array(', ',' and\1'), $opts['pidsToReap']);
@@ -158,24 +158,24 @@ function text_replace ($opts) {
 
     // {{month}} - name of reaping month
     if (strpos($opts['text'], '{{month}}') !== false) {
-        
+
         $repFrom[] = '/{{month}}/';  $repTo[] = $monthName;
-    }        
+    }
 
     // {{date to be out by}} - third Tuesday of month
     if (strpos($opts['text'], '{{outby}}') !== false) {
         $repFrom[] = '/{{outby}}/';  $repTo[] = date('l jS \of F Y', strtotime('third tuesday of '.$monthName));
     }
-    
+
     // {{first day to return}} - fourth Tuesday if month
         if (strpos($opts['text'], '{{returnon}}') !== false) {
         $repFrom[] = '/{{returnon}}/';  $repTo[] = date('l jS \of F Y', strtotime('fourth tuesday of '.$monthName));
-    }    
+    }
 
     // {{last day to return}} - last day of the month
         if (strpos($opts['text'], '{{returnby}}') !== false) {
         $repFrom[] = '/{{returnby}}/';  $repTo[] = date('l jS \of F Y', strtotime('last day of '.$monthName));
-    }    
+    }
 
     // message_register('preg_replace('.var_export($repFrom,true).', '.var_export($repTo,true).', '.$opts['text'].')');
     return preg_replace($repFrom, $repTo, $opts['text']);
@@ -191,99 +191,102 @@ function text_replace ($opts) {
  *   'reapafter' If specified, returns all plots reaped on or after this date;
  *   'reapbefore' If specified, returns all plots reaped on or before this date;
  * @return An array with each element representing a single plot assignment.
-*/ 
+*/
 function storage_data ($opts = array()) {
 // Query database
+    global $db_connect;
     $sql = "
-        SELECT * 
+        SELECT *
         FROM storage_plot
         WHERE 1 ";
     if (array_key_exists('pid', $opts) && !empty($opts['pid'])) {
-        $esc_name = mysql_real_escape_string($opts['pid']);
+        $esc_name = mysqli_real_escape_string($db_connect, $opts['pid']);
         $sql .= " AND pid='" . $esc_name . "'";
     }
     if (array_key_exists('cid', $opts) && !empty($opts['cid'])) {
-        $esc_name = mysql_real_escape_string($opts['cid']);
+        $esc_name = mysqli_real_escape_string($db_connect, $opts['cid']);
         $sql .= " AND cid='" . $esc_name . "'";
     }
-    if (array_key_exists('reapbefore', $opts) && !empty($opts['reapbefore'])) { 
-        $esc_reapbefore = mysql_real_escape_string($opts['reapbefore']);
+    if (array_key_exists('reapbefore', $opts) && !empty($opts['reapbefore'])) {
+        $esc_reapbefore = mysqli_real_escape_string($db_connect, $opts['reapbefore']);
         $sql .= " AND reapdate < '" . $esc_reapbefore . "' ";
     }
-    if (array_key_exists('reapafter', $opts) && !empty($opts['reapafter'])) { 
-        $esc_reapafter = mysql_real_escape_string($opts['reapafter']); 
+    if (array_key_exists('reapafter', $opts) && !empty($opts['reapafter'])) {
+        $esc_reapafter = mysqli_real_escape_string($db_connect, $opts['reapafter']);
         $sql .= " AND reapdate > '" . $esc_reapafter . "' ";
     }
     if (array_key_exists('reapmonth', $opts) && !empty($opts['reapmonth'])) {
-        $esc_reapmonth = mysql_real_escape_string($opts['reapmonth']);
+        $esc_reapmonth = mysqli_real_escape_string($db_connect, $opts['reapmonth']);
         $sql .= " AND reapmonth='" . $esc_reapmonth . "' ";
     }
 
     $sql .= "ORDER BY pid ASC";
-    $res = mysql_query($sql);
-    if (!$res) die(mysql_error());
+    $res = mysqli_query($db_connect, $sql);
+    if (!$res) die(mysqli_error($res));
     // Store data
     $storage = array();
-    $row = mysql_fetch_assoc($res);
+    $row = mysqli_fetch_assoc($res);
     while (!empty($row)) {
         // Contents of row are name, value
         $storage[] = $row;
-        $row = mysql_fetch_assoc($res);
+        $row = mysqli_fetch_assoc($res);
     }
     return $storage;
 }
 
 function storage_log_data ($opts = array()) {
+  global $db_connect;
 // Query database
     $sql = "
         SELECT *
         FROM storage_log";
     if (!empty($opts['order'])) {
         if ($opts['order'] == "reverse") {
-            $esc_order = mysql_real_escape_string("DESC");
+            $esc_order = mysqli_real_escape_string($db_connect, "DESC");
         } else {
-            $esc_order = mysql_real_escape_string("ASC");
+            $esc_order = mysqli_real_escape_string($db_connect, "ASC");
         }
         $sql .= " ORDER BY timestamp " . $esc_order;
     }
     if (!empty($opts['count']))  {
-        $esc_count = mysql_real_escape_string($opts['count']);
+        $esc_count = mysqli_real_escape_string($db_connect, $opts['count']);
         $sql .= " LIMIT ".$esc_count;
     }
-    $res = mysql_query($sql);
-    if (!$res) die(mysql_error());
+    $res = mysqli_query($db_connect, $sql);
+    if (!$res) die(mysqli_error($res));
     // Store data
     $log = array();
-    $row = mysql_fetch_assoc($res);
+    $row = mysqli_fetch_assoc($res);
     while (!empty($row)) {
         // Contents of row are name, value
         $log[] = $row;
-        $row = mysql_fetch_assoc($res);
+        $row = mysqli_fetch_assoc($res);
     }
     return $log;
 }
 
 
 /**
- * Add a storage plot 
+ * Add a storage plot
  * @param $plot The plots id,description,reapdate
  * @return The plot structure with as it now exists in the database.
  */
 function storage_add ($plot) {
+  global $db_connect;
     // Escape values
     $fields = array('pid', 'desc', 'reapdate');
     if (isset($plot['pid'])) {
         // Add key if nonexists, otherise Update existing key
         $pid = $plot['pid'];
-        $esc_pid = mysql_real_escape_string($plot['pid']);
-        $esc_desc = mysql_real_escape_string($plot['desc']);
-        $esc_reapdate = mysql_real_escape_string($plot['reapdate']);
-        $esc_reapmonth = mysql_real_escape_string($plot['reapmonth']);
+        $esc_pid = mysqli_real_escape_string($db_connect, $plot['pid']);
+        $esc_desc = mysqli_real_escape_string($db_connect, $plot['desc']);
+        $esc_reapdate = mysqli_real_escape_string($db_connect, $plot['reapdate']);
+        $esc_reapmonth = mysqli_real_escape_string($db_connect, $plot['reapmonth']);
         $sql = "INSERT INTO storage_plot (pid, `desc`, reapdate, reapmonth) ";
         $sql .="VALUES ('" . $esc_pid . "', '" . $esc_desc . "', '" . $esc_reapdate . "', '" . $esc_reapmonth . "') ";
-        $res = mysql_query($sql);
+        $res = mysqli_query($db_connect, $sql);
         if (!$res) {
-            message_register('ERROR: ' . mysql_error());
+            message_register('ERROR: ' . mysqli_error($res));
         } else {
             $plot['action'] = 'Add';
             storage_log($plot);
@@ -294,52 +297,53 @@ function storage_add ($plot) {
 }
 
 /**
- * Update an existing plot 
+ * Update an existing plot
  * @param $opts The plot's id,description,occupant,reapdate
  * @return The plot structure as it now exists in the database.
  */
 function storage_edit ($opts) {
 // message_register(var_export($opts,true));
     if (isset($opts['pid'])) {
+      global $db_connect;
         // Get current info
         $plot = crm_get_one('storage', array('pid'=>$opts['pid']));
         // Add key if nonexists, otherise Update existing key
         $pid = $opts['pid'];
-        $esc_pid = mysql_real_escape_string($opts['pid']);
+        $esc_pid = mysqli_real_escape_string($db_connect, $opts['pid']);
         $sql = "UPDATE storage_plot ";
         $sql .= "SET ";
         $sql_opts = array();
         if (isset($opts['desc'])) {
-            $esc_desc = mysql_real_escape_string($opts['desc']);
+            $esc_desc = mysqli_real_escape_string($db_connect, $opts['desc']);
             $sql_opts[] = "`desc` = '" . $esc_desc . "'";
         }
         if (isset($opts['cid']) && $opts['cid'] != '0') {
-            $esc_cid = mysql_real_escape_string($opts['cid']);
+            $esc_cid = mysqli_real_escape_string($db_connect, $opts['cid']);
             $sql_opts[] = "cid = '" . $esc_cid . "'";
             $sql_opts[] = "email = ''";
         } else {
             if (isset($opts['contact_name'])) {
-                $esc_name = mysql_real_escape_string($opts['contact_name']);
+                $esc_name = mysqli_real_escape_string($db_connect, $opts['contact_name']);
                 $sql_opts[] = "cid = '" . $esc_name . "'";
             }
             if (isset($opts['contact_email'])) {
-                $esc_email = mysql_real_escape_string($opts['contact_email']);
+                $esc_email = mysqli_real_escape_string($db_connect, $opts['contact_email']);
                 $sql_opts[] = "email = '" . $esc_email . "'";
             }
         }
         if (isset($opts['reapdate'])) {
-            $esc_reapdate = mysql_real_escape_string($opts['reapdate']);
+            $esc_reapdate = mysqli_real_escape_string($db_connect, $opts['reapdate']);
             $sql_opts[] = "reapdate = '" . $esc_reapdate . "'";
         }
         if (isset($opts['reapmonth'])) {
-            $esc_reapmonth = mysql_real_escape_string($opts['reapmonth']);
+            $esc_reapmonth = mysqli_real_escape_string($db_connect, $opts['reapmonth']);
             $sql_opts[] = "reapmonth = '" . $esc_reapmonth . "'";
         }
         $sql .= implode(", ", $sql_opts);
         $sql .= "WHERE pid = '" . $esc_pid . "' ";
-        $res = mysql_query($sql);
+        $res = mysqli_query($db_connect, $sql);
         if (!$res) {
-           message_register('SQL: ' . $sql . '<br>ERROR: ' . mysql_error());
+           message_register('SQL: ' . $sql . '<br>ERROR: ' . mysqli_error($res));
         } else {
             if (!array_key_exists('action',$opts)) { $opts['action'] = 'Edit'; }
             storage_log($opts);
@@ -350,18 +354,19 @@ function storage_edit ($opts) {
 }
 
 /**
- * Delete an existing plot 
+ * Delete an existing plot
  * @param $opts the pid of the plot to delete
  */
 function storage_delete ($opts) {
     if (isset($opts['pid'])) {
+      global $db_connect;
         $plot = crm_get_one('storage', array('pid'=>$opts['pid']));
         $plot['action'] = 'Delete';
-        $esc_name = mysql_real_escape_string($opts['pid']);
+        $esc_name = mysqli_real_escape_string($db_connect, $opts['pid']);
         $sql = "DELETE FROM storage_plot WHERE pid = '" . $esc_name . "'";
-        $res = mysql_query($sql);
-        if (!$res) die(mysql_error());
-        if (mysql_affected_rows() > 0) {
+        $res = mysqli_query($db_connect, $sql);
+        if (!$res) die(mysqli_error($res));
+        if (mysqli_affected_rows() > 0) {
             storage_log($plot);
             message_register('Storage Plot '.$esc_name.' deleted.');
         }
@@ -372,12 +377,13 @@ function storage_delete ($opts) {
 
 function user_plot_vacate ($opts) {
 if (isset($opts['pid'])) {
+  global $db_connect;
         // $plot = crm_get_one('storage', array('pid'=>$opts['pid']));
-        $esc_name = mysql_real_escape_string($opts['pid']);
+        $esc_name = mysqli_real_escape_string($db_connect, $opts['pid']);
         $sql = "UPDATE storage_plot SET cid = NULL WHERE pid = '" . $esc_name . "'";
-        $res = mysql_query($sql);
-        if (!$res) die(mysql_error());
-        if (mysql_affected_rows() > 0) {
+        $res = mysqli_query($db_connect, $sql);
+        if (!$res) die(mysqli_error($res));
+        if (mysqli_affected_rows() > 0) {
             $opts['action'] = 'Vacate';
             storage_log($opts);
             message_register('Storage Plot '.$esc_name.' vacated.');
@@ -390,45 +396,46 @@ if (isset($opts['pid'])) {
 function storage_log ($opts) {
 
     if (isset($opts['pid'])) {
+      global $db_connect;
         // Add to logfile
         $myid = user_id();
-        $esc_myid = mysql_real_escape_string($myid);
-        $esc_action = mysql_real_escape_string($opts['action']);
-        $esc_pid = mysql_real_escape_string($opts['pid']);
+        $esc_myid = mysqli_real_escape_string($db_connect, $myid);
+        $esc_action = mysqli_real_escape_string($db_connect, $opts['action']);
+        $esc_pid = mysqli_real_escape_string($db_connect, $opts['pid']);
         $plot = crm_get_one('storage', array('pid'=>$opts['pid']));
         if (!empty($opts['desc'])) {
-            $esc_desc = mysql_real_escape_string($opts['desc']);
+            $esc_desc = mysqli_real_escape_string($db_connect, $opts['desc']);
         } else {
-            $esc_desc = mysql_real_escape_string($plot['desc']);
+            $esc_desc = mysqli_real_escape_string($db_connect, $plot['desc']);
         }
         if (!empty($opts['cid'])) {
-            $esc_cid = mysql_real_escape_string($opts['cid']);
+            $esc_cid = mysqli_real_escape_string($db_connect, $opts['cid']);
         } else {
-            $esc_cid = mysql_real_escape_string($plot['cid']);
+            $esc_cid = mysqli_real_escape_string($db_connect, $plot['cid']);
         }
         if (!empty($opts['email'])) {
-            $esc_email = mysql_real_escape_string($opts['email']);
+            $esc_email = mysqli_real_escape_string($db_connect, $opts['email']);
         } else {
-            $esc_email = mysql_real_escape_string($plot['email']);
+            $esc_email = mysqli_real_escape_string($db_connect, $plot['email']);
         }
         if (isset($opts['reapdate'])) {
-            $esc_reapdate = mysql_real_escape_string($opts['reapdate']);
+            $esc_reapdate = mysqli_real_escape_string($db_connect, $opts['reapdate']);
         } else {
-            $esc_reapdate = mysql_real_escape_string($plot['reapdate']);
+            $esc_reapdate = mysqli_real_escape_string($db_connect, $plot['reapdate']);
         }
         if (isset($opts['reapmonth'])) {
-            $esc_reapmonth = mysql_real_escape_string($opts['reapmonth']);
+            $esc_reapmonth = mysqli_real_escape_string($db_connect, $opts['reapmonth']);
         } else {
-            $esc_reapmonth = mysql_real_escape_string($plot['reapmonth']);
+            $esc_reapmonth = mysqli_real_escape_string($db_connect, $plot['reapmonth']);
         }
 
         $sql = "INSERT INTO storage_log (user, action, pid, `desc`, cid, email, reapdate, reapmonth) ";
         $sql .= "VALUES (".$esc_myid.",'".$esc_action."',".$esc_pid.",'".$esc_desc."','".$esc_cid."','".$esc_email."','".$esc_reapdate."','".$esc_reapmonth."');";
-        $res = mysql_query($sql);
-        // if (!$res) die(mysql_error());
+        $res = mysqli_query($db_connect, $sql);
+        // if (!$res) die(mysqli_error($res));
         // message_register('Secret updated');
         if (!$res) {
-            message_register('SQL: ' . $sql . '<br>ERROR: ' . mysql_error());
+            message_register('SQL: ' . $sql . '<br>ERROR: ' . mysqli_error($res));
         // } else {
         //     message_register('Storage Log updated');
         }
@@ -442,7 +449,7 @@ function storage_reap ($opts) {
             $plotinfo = crm_get_one('storage', array('pid'=>$plot['pid']));
             $contact = crm_get_one('contact', array('cid'=>$plotinfo['cid']));
             if (!empty($contact)) { // get email from contact name, or from email field
-                $contact_email = $contact['email']; 
+                $contact_email = $contact['email'];
             } else if (!empty($plotinfo['email'])) {
                 $contact_email = $plotinfo['email'];
             }
@@ -451,7 +458,7 @@ function storage_reap ($opts) {
                 // update reap date on week three reaping
                 storage_edit(array('pid'=>$plot['pid'],'reapdate'=>$today, 'quiet'=>true, 'action'=>'Reap'));
             }
-            
+
             if (!empty($contact_email) && variable_get('storage_send_members',true)) {
                 $to = $contact_email;
                 $subject = $opts['subject'];
@@ -530,7 +537,7 @@ function storage_reap_config ($opts) {
             variable_set('storage_reap_months',$newMonths);
             message_register('Reaping months updated');
         break;
-        
+
         case 'Recalculate All Plots':
             $storage = crm_get_data('storage');
             if (count($storage) < 1) {
@@ -542,7 +549,7 @@ function storage_reap_config ($opts) {
             $plots_per_month = intval(count($storage)/$num_reap_months); // grab integer portion
             $leftover_plots = count($storage)%$num_reap_months; // grab remainder
             // message_register('total plots'.count($storage).' | months: '.$num_reap_months.' | per month: '.$plots_per_month.' | leftover: '.$leftover_plots);
-                       
+
             // TODO: Figure out how to update the reapmonth based on calucation of number plots per month and active reap months
             $myMonthList = array();
             for ($i=0;$i<=11;$i++) {
@@ -559,7 +566,7 @@ function storage_reap_config ($opts) {
                 } else {
                     // no more leftovers
                     $plots_this_month = $plots_per_month;
-                }   
+                }
                 storage_edit(array('pid'=>$plot['pid'],'reapmonth'=>$myMonthList[$myMonth], 'action'=>'recalc','quiet'=>true));
                 // message_register("storage_edit(array('pid'=>".$plot['pid'].",'reapmonth'=>".$myMonthList[$myMonth].", 'quiet'=>true))");
                 $myCount++;
@@ -570,7 +577,7 @@ function storage_reap_config ($opts) {
             }
             message_register('All storage plot reap months have been recalculated.');
         break;
-        
+
         case 'Recalculate Unreaped Plots':
             $year = date('Y') - 1;
             $beforedate = $year.'-12-31';
@@ -598,7 +605,7 @@ function storage_reap_config ($opts) {
             $plots_per_month = intval(count($storage)/$num_reap_months); // grab integer portion
             $leftover_plots = count($storage)%$num_reap_months; // grab remainder
             // message_register('unreaped plots'.count($storage).' | months: '.$num_reap_months.' | per month: '.$plots_per_month);
-                       
+
             $myMonthList = array();
             for ($i=$month-1;$i<=11;$i++) {
                 if ($storage_reap_months[$i] == 1) { $myMonthList[] = $i+1; } // list of active storage months
@@ -613,7 +620,7 @@ function storage_reap_config ($opts) {
                 } else {
                     // no more leftovers
                     $plots_this_month = $plots_per_month;
-                }   
+                }
                 storage_edit(array('pid'=>$plot['pid'],'reapmonth'=>$myMonthList[$myMonth], 'action'=>'recalc', 'quiet'=>true));
                 $myCount++;
                 if ($myCount > $plots_this_month) {
@@ -623,7 +630,7 @@ function storage_reap_config ($opts) {
             }
             message_register('All unreaped storage plot reap months have been recalculated.');
         break;
-        
+
         case 'Update Email':
             variable_set('storage_send_html', $opts['storage_send_html']);
             variable_set('storage_email_headers', $opts['storage_email_headers']);
@@ -636,7 +643,7 @@ function storage_reap_config ($opts) {
             variable_set('storage_body_announce_'.$opts['thisweek'], $opts['body_announce_'.$opts['thisweek']]);
             message_register('Email templates updated');
             break;
-        
+
         case 'Update Storage Admins':
             variable_set('storage_admin_email',$opts['storage_admin_email']);
             message_register('Storage Admin emails updated');
@@ -713,7 +720,7 @@ function storage_table () {
         }
         // Add ops row
         $row[] = join(' ', $ops);
-        $table['rows'][] = $row;  
+        $table['rows'][] = $row;
     }
   return $table;
 }
@@ -781,7 +788,7 @@ function storage_log_table ($opts) {
             $row[] = date('F', mktime(0, 0, 0, $log['reapmonth'], 10));
             $row[] = $log['reapdate'];
         }
-    $table['rows'][] = $row;  
+    $table['rows'][] = $row;
     }
   return $table;
 }
@@ -857,7 +864,7 @@ function storage_plot_table ($opts) {
         }
         // Add ops row
         $row[] = join(' ', $ops);
-        $table['rows'][] = $row;  
+        $table['rows'][] = $row;
     }
   return $table;
 }
@@ -877,7 +884,7 @@ function storage_reap_table () {
     $monthNum = $_SESSION['reap_month_filter_option'];
     $monthName = date("F", mktime(0, 0, 0, $monthNum, 10));
     $_SESSION['reap_month'] = $monthName;
-    
+
     $storage = crm_get_data('storage', array('reapmonth'=>$monthNum));
     if (count($storage) < 1) {
         return array();
@@ -920,7 +927,7 @@ function storage_reap_table () {
         $row[] = $plot['reapdate'];
         // }
         $rows[] = $row;
-        $table['rows'][] = $row;  
+        $table['rows'][] = $row;
     }
     $_SESSION['pids_to_reap'] = $toReap;
     return $table;
@@ -929,7 +936,7 @@ function storage_reap_table () {
 // Put form generators here
 
 function storage_add_form () {
-    
+
     // Ensure user is allowed to edit keys
     if (!user_access('storage_edit')) {
         return NULL;
@@ -1012,7 +1019,7 @@ function storage_edit_form ($name) {
         $contactlist[$contact['cid']] = member_name($contact['contact']['firstName'], $contact['contact']['middleName'], $contact['contact']['lastName']);
     }
     // message_register(var_export($contactlist,true));
-    
+
 
     // Create form structure
     $form = array(
@@ -1080,7 +1087,7 @@ function storage_edit_form ($name) {
             )
         )
     );
-    
+
     return $form;
 }
 
@@ -1092,18 +1099,18 @@ function storage_reap_filter_form ($opts) {
         , 'weekThree' => 'Reap plots (3rd Tuesday)'
         , 'weekFour' => 'Plot return (4th Tuesday)'
     );
-    
+
     // Default filter
     if (empty($_SESSION['reap_filter_option'])) { $_SESSION['reap_filter_option'] = 'weekOne'; }
     $selected = $_SESSION['reap_filter_option'];
-    
+
     // Construct hidden fields to pass GET params
     $hidden = array();
     foreach ($_GET as $key=>$val) {
         $hidden[$key] = $val;
     }
     switch ($opts['tab']) {
-        case 'reap' : 
+        case 'reap' :
             $myTitle = 'Storage Reaping for '.$selected .' of '.$_SESSION['reap_month'];
             break;
         case 'config' :
@@ -1142,7 +1149,7 @@ function storage_reap_month_filter_form () {
         1 => "January" , 2 => "February", 3 => "March", 4 => "April", 5 => "May", 6 => "June",
         7 => "July", 8 => "August", 9 => "Sepember", 10 => "October", 11 => "November", 12 => "December"
     );
-    
+
     $storage_reap_months = str_split(variable_get('storage_reap_months','000000000000'),1); //convert to array
     $months = array();
     for ($i=1;$i<=12;$i++) {
@@ -1168,7 +1175,7 @@ function storage_reap_month_filter_form () {
             }
         }
     }
-    
+
     $form = array(
         'type' => 'form'
         , 'method' => 'get'
@@ -1204,7 +1211,7 @@ function storage_reap_email_form() {
     $storage_body = text_replace(array('text'=>variable_get('storage_body_'.$thisWeek,''),'pidsToReap'=>$pidsToReap));
     $storage_subject_announce = text_replace(array('text'=>variable_get('storage_subject_announce_'.$thisWeek,'')));
     $storage_body_announce = text_replace(array('text'=>variable_get('storage_body_announce_'.$thisWeek,''),'pidsToReap'=>$pidsToReap));
-    
+
     if (variable_get('storage_send_members',true)) {
         $member_subject = array(
             'type' => 'textarea'
@@ -1232,7 +1239,7 @@ function storage_reap_email_form() {
             , 'value' => ''
         );
     }
-    
+
     if (variable_get('storage_send_announce',true)) {
         $announce_subject = array(
             'type' => 'textarea'
@@ -1260,7 +1267,7 @@ function storage_reap_email_form() {
             , 'value' => ''
         );
     }
-    
+
     $form = array(
         'type' => 'form'
         , 'method' => 'post'
@@ -1291,7 +1298,7 @@ function storage_delete_form ($plot) {
     if (!user_access('storage_delete')) {
         return NULL;
     }
-    
+
     // Get secret data
     $storage = crm_get_one('storage', array('pid'=>$plot));
     // Construct secret name
@@ -1327,17 +1334,17 @@ function storage_delete_form ($plot) {
 }
 
 function user_plot_assign_form ($opts) {
-    $esc_cid = mysql_real_escape_string($opts['cid']);
+    $esc_cid = mysqli_real_escape_string($db_connect, $opts['cid']);
     // Get available plots
     $sql = "SELECT pid, `desc` from storage_plot ";
     $sql .= "WHERE ( cid is NULL or cid = '' ) ";
     $sql .= "ORDER by pid;";
-    $res = mysql_query($sql);
-    if (!$res) die(mysql_error());
-    while($rs=mysql_fetch_array($res)){
+    $res = mysqli_query($db_connect, $sql);
+    if (!$res) die(mysqli_error($res));
+    while($rs=mysqli_fetch_array($db_connect, $res)){
         $openplots[$rs['pid']] = $rs['pid'] ." - ". $rs['desc'];
     }
-    
+
     // Create form structure
     $form = array(
         'type' => 'form',
@@ -1416,8 +1423,8 @@ function storage_reap_config_months_form () {
     if (!user_access('storage_edit')) {
         return NULL;
     }
-    
-    // // // 
+
+    // // //
     // Storage Reap Months
     // // //
 
@@ -1434,7 +1441,7 @@ function storage_reap_config_months_form () {
     for ($m = 1; $m <= 12; $m++) {
         $columns[] = array('title' => date('F', mktime(0, 0, 0, $m, 10)));
     }
-    
+
     // Process rows
     $row = array();
     for ($m = 1; $m <= 12; $m++) {
@@ -1501,7 +1508,7 @@ function storage_reap_config_months_form () {
                 'type' => 'message'
                 , 'value' => '&nbsp'
              )
- 
+
         )
     );
     return $form;
@@ -1725,7 +1732,7 @@ function storage_page (&$page_data, $page_name, $options) {
         // Plot management
         case 'storage':
             page_set_title($page_data, 'Storage Plots');
-            
+
             if (user_access('storage_view')) {
                 $storage = theme('table', 'storage', array('show_export'=>true));
             }
@@ -1733,7 +1740,7 @@ function storage_page (&$page_data, $page_name, $options) {
                 $storage .= theme('storage_add_form', '');
             }
             page_add_content_top($page_data, $storage, 'View' );
-            
+
             // Reap tab
             if (user_access('storage_edit')) {
                 // set current month
@@ -1748,7 +1755,7 @@ function storage_page (&$page_data, $page_name, $options) {
                 $reap_content .= theme('form', crm_get_form('storage_reap_email'));
                 page_add_content_top($page_data, $reap_content, 'Reap');
             }
-            
+
             // Config tab
             if (user_access('storage_edit')) {
                 $config_content = theme('form', crm_get_form('storage_reap_config_months'));
@@ -1756,12 +1763,12 @@ function storage_page (&$page_data, $page_name, $options) {
                 $config_content .= theme('form', crm_get_form('storage_reap_config_email'));
                 page_add_content_top($page_data, $config_content, 'Config');
             }
- 
+
             if (user_access('storage_view')) {
                 $storage_log = theme('table', 'storage_log', array('count'=>15, 'order'=>'reverse'));
             }
             page_add_content_top($page_data, $storage_log, 'Log' );
-            
+
             break;
 
         case 'storage_edit':
@@ -1769,32 +1776,32 @@ function storage_page (&$page_data, $page_name, $options) {
             $pid = $options['pid'];
             if (empty($pid)) {
                 return;
-            }           
+            }
             page_set_title($page_data, 'Edit a Storage Plot');
             if (user_access('storage_edit')) {
                 page_add_content_top($page_data, theme('storage_edit_form', $pid));
             }
             break;
-            
+
         // User Plots
         case 'contact':
-            
+
             // Capture contact cid
             $cid = $options['cid'];
             if (empty($cid)) {
                 return;
             }
-            
+
             // Add storage tab
             if (user_access('storage_view') || user_access('storage_edit') || user_access('storage_delete') || $cid == user_id()) {
                 $plots = theme('table', 'storage_plot', array('cid' => $cid, 'show_export'=>false));
                 page_add_content_bottom($page_data, $plots, 'Storage');
             }
-            
+
             break;
 
          case 'plot_assign':
-            
+
             // Capture contact cid
             $cid = $options['cid'];
             if (empty($cid)) {

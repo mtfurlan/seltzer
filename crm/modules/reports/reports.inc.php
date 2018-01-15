@@ -70,8 +70,8 @@ function reports_install($old_revision = 0) {
                     $esc_perm = mysql_real_escape_string($perm);
                     $sql = "INSERT INTO `role_permission` (`rid`, `permission`) VALUES ('$esc_rid', '$esc_perm')";
                     $sql .= " ON DUPLICATE KEY UPDATE rid=rid";
-                    $res = mysql_query($sql);
-                    if (!$res) die(mysql_error());
+                    $res = mysqli_query($db_connect, $sql);
+                    if (!$res) crm_error(mysqli_error($res));
                 }
             }
         }

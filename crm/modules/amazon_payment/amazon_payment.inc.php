@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright 2009-2014 Edward L. Platt <ed@elplatt.com>
+    Copyright 2009-2017 Edward L. Platt <ed@elplatt.com>
     
     This file is part of the Seltzer CRM Project
     amazon_payment.inc.php - Amazon payments extensions for the payment module.
@@ -34,6 +34,7 @@ function amazon_payment_revision () {
  *   module has never been installed.
  */
 function amazon_payment_install($old_revision = 0) {
+    global $db_connect;
     // Create initial database table
     if ($old_revision < 1) {
         
@@ -45,8 +46,8 @@ function amazon_payment_install($old_revision = 0) {
               PRIMARY KEY (`pmtid`)
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
         ';
-        $res = mysql_query($sql);
-        if (!$res) crm_error(mysql_error());
+        $res = mysqli_query($db_connect, $sql);
+        if (!$res) crm_error(mysqli_error($res));
         
         // Additional contact info for amazon payments
         $sql = '
@@ -56,8 +57,8 @@ function amazon_payment_install($old_revision = 0) {
               PRIMARY KEY (`amazon_name`)
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
         ';
-        $res = mysql_query($sql);
-        if (!$res) crm_error(mysql_error());
+        $res = mysqli_query($db_connect, $sql);
+        if (!$res) crm_error(mysqli_error($res));
     }
 }
 
@@ -92,22 +93,23 @@ function amazon_payment_data_alter ($type, $data = array(), $opts = array()) {
  * Return data for one or more amazon payments.
  */
 function amazon_payment_data ($opts = array()) {
+    global $db_connect;
     $sql = "SELECT `pmtid`, `amazon_name` FROM `payment_amazon` WHERE 1";
     if (isset($opts['pmtid'])) {
         if (is_array($opts['pmtid'])) {
             $terms = array();
-            foreach ($opts['pmtid'] as $id) { $terms[] = mysql_real_escape_string($id); }
+            foreach ($opts['pmtid'] as $id) { $terms[] = mysqli_real_escape_string($db_connect, $id); }
             $sql .= " AND `pmtid` IN (" . join(',', $terms) . ") ";
         } else {
-            $esc_pmtid = mysql_real_escape_string($opts['pmtid']);
+            $esc_pmtid = mysqli_real_escape_string($db_connect, $opts['pmtid']);
             $sql .= " AND `pmtid`='$esc_pmtid' ";
         }
     }
-    $res = mysql_query($sql);
-    if (!$res) crm_error(mysql_error());
+    $res = mysqli_query($db_connect, $sql);
+    if (!$res) crm_error(mysqli_error($res));
     // Read from database and store in a structure
     $amazon_payment_data = array();
-    while ($db_row = mysql_fetch_assoc($res)) {
+    while ($db_row = mysqli_fetch_assoc($res)) {
         $amazon_payment_data[] = $db_row;
     }
     return $amazon_payment_data;
@@ -122,29 +124,32 @@ function amazon_payment_data ($opts = array()) {
  * @return An array with each element representing a single payment.
 */
 function amazon_payment_contact_data ($opts = array()) {
+    global $db_connect;
     $sql = "SELECT `cid`, `amazon_name` FROM `contact_amazon` WHERE 1";
     if (isset($opts['filter'])) {
         foreach ($opts['filter'] as $filter => $value) {
             if ($filter === 'amazon_name') {
-                $esc_name = mysql_real_escape_string($value);
+                $esc_name = mysqli_real_escape_string($db_connect, $value);
                 $sql .= " AND `amazon_name`='$esc_name' ";
             }
         }
     }
-    $res = mysql_query($sql);
-    if (!$res) crm_error(mysql_error());
+    $res = mysqli_query($db_connect, $sql);
+    if (!$res) crm_error(mysqli_error($res));
     $names = array();
-    $row = mysql_fetch_assoc($res);
+    $row = mysqli_fetch_assoc($res);
     while ($row) {
         $name = array(
             'cid' => $row['cid']
             , 'amazon_name' => $row['amazon_name']
         );
         $names[] = $name;
-        $row = mysql_fetch_assoc($res);
+        $row = mysqli_fetch_assoc($res);
     }
     return $names;
 }
+
+// Contact & Payment addition, deletion, update ////////////////////////////////
 
 /**
  * Save an amazon contact.  If the name is already in the database,
@@ -152,13 +157,14 @@ function amazon_payment_contact_data ($opts = array()) {
  * set are not modified.
  */
 function amazon_payment_contact_save ($contact) {
-    $esc_name = mysql_real_escape_string($contact['amazon_name']);
-    $esc_cid = mysql_real_escape_string($contact['cid']);    
+    global $db_connect;
+    $esc_name = mysqli_real_escape_string($db_connect, $contact['amazon_name']);
+    $esc_cid = mysqli_real_escape_string($db_connect, $contact['cid']);    
     // Check whether the amazon contact already exists in the database
     $sql = "SELECT * FROM `contact_amazon` WHERE `amazon_name` = '$esc_name'";
-    $res = mysql_query($sql);
-    if (!$res) crm_error(mysql_error());
-    $row = mysql_fetch_assoc($res);
+    $res = mysqli_query($db_connect, $sql);
+    if (!$res) crm_error(mysqli_error($res));
+    $row = mysqli_fetch_assoc($res);
     if ($row) {
         // Name is already in database, update if the cid is set
         if (isset($contact['cid'])) {
@@ -167,16 +173,19 @@ function amazon_payment_contact_save ($contact) {
                 SET `cid`='$esc_cid'
                 WHERE `amazon_name`='$esc_name'
             ";
-            $res = mysql_query($sql);
-            if (!$res) crm_error(mysql_error());
+            $res = mysqli_query($db_connect, $sql);
+            if (!$res) crm_error(mysqli_error($res));
         }
     } else {
         // Name is not in database, insert new
         $sql = "
             INSERT INTO `contact_amazon`
-            (`amazon_name`, `cid`) VALUES ('$esc_name', '$esc_cid')";
-        $res = mysql_query($sql);
-        if (!$res) crm_error(mysql_error());
+            (`amazon_name`, `cid`)
+            VALUES
+            ('$esc_name', '$esc_cid')
+        ";
+        $res = mysqli_query($db_connect, $sql);
+        if (!$res) crm_error(mysqli_error($res));
     }
 }
 
@@ -185,12 +194,13 @@ function amazon_payment_contact_save ($contact) {
  * @param $amazon_payment_contact The amazon_payment_contact data structure to delete, must have a 'cid' element.
  */
 function amazon_payment_contact_delete ($amazon_payment_contact) {
-    $esc_cid = mysql_real_escape_string($amazon_payment_contact['amazon_name']);
-    $sql = "DELETE FROM `contact_amazon` WHERE `amazon_name`='$esc_cid'";
-    $res = mysql_query($sql);
-    if (!$res) die(mysql_error());
-    if (mysql_affected_rows() > 0) {
-        message_register("Contact info deleted for $amazon_name");
+    global $db_connect;
+    $esc_cid = mysqli_real_escape_string($db_connect, $amazon_payment_contact['cid']);
+    $sql = "DELETE FROM `contact_amazon` WHERE `cid`='$esc_cid'";
+    $res = mysqli_query($db_connect, $sql);
+    if (!$res) crm_error(mysqli_error($res));
+    if (mysqli_affected_rows($db_connect) > 0) {
+        message_register("Amazon contact info deleted for: " . theme('contact_name', $esc_cid));
     }
     return crm_url('amazon-admin');
 }
@@ -201,14 +211,15 @@ function amazon_payment_contact_delete ($amazon_payment_contact) {
  * @param $op The operation being performed.
  */
 function amazon_payment_payment_api ($payment, $op) {
+    global $db_connect;
     if ($payment['method'] !== 'amazon') {
         return $payment;
     }
     $name = $payment['amazon_name'];
     $pmtid = $payment['pmtid'];
     $credit_cid = $payment['credit_cid'];
-    $esc_name = mysql_real_escape_string($name);
-    $esc_pmtid = mysql_real_escape_string($pmtid);
+    $esc_name = mysqli_real_escape_string($db_connect, $name);
+    $esc_pmtid = mysqli_real_escape_string($db_connect, $pmtid);
     // Create link between the amazon payment name and contact id
     $amazon_contact = array();
     if (isset($payment['amazon_name'])) {
@@ -225,8 +236,8 @@ function amazon_payment_payment_api ($payment, $op) {
                 VALUES
                 ('$esc_pmtid', '$esc_name')
             ";
-            $res = mysql_query($sql);
-            if (!$res) crm_error(mysql_error());
+            $res = mysqli_query($db_connect, $sql);
+            if (!$res) crm_error(mysqli_error($res));
             amazon_payment_contact_save($amazon_contact);
             break;
         case 'update':
@@ -235,20 +246,22 @@ function amazon_payment_payment_api ($payment, $op) {
                 SET `amazon_name` = '$esc_name'
                 WHERE `pmtid` = '$esc_pmtid'
             ";
-            $res = mysql_query($sql);
-            if (!$res) crm_error(mysql_error());
+            $res = mysqli_query($db_connect, $sql);
+            if (!$res) crm_error(mysqli_error($res));
             amazon_payment_contact_save($amazon_contact);
             break;
         case 'delete':
             $sql = "
                 DELETE FROM `payment_amazon`
                 WHERE `pmtid`='$esc_pmtid'";
-                $res = mysql_query($sql);
-                if (!$res) crm_error(mysql_error());
+                $res = mysqli_query($db_connect, $sql);
+                if (!$res) crm_error(mysqli_error($res));
             break;
     }
     return $payment;
 }
+
+// Table & Page rendering //////////////////////////////////////////////////////
 
 /**
  * Generate payments contacts table.
@@ -265,7 +278,7 @@ function amazon_payment_contact_table ($opts) {
         "class" => '',
         "rows" => array(),
         "columns" => array()
-    );    
+    );
     // Check for permissions
     if (!user_access('payment_view')) {
         error_register('User does not have permission to view payments');
@@ -333,21 +346,13 @@ function amazon_payment_page (&$page_data, $page_name, $options) {
             break;
         case 'amazon-admin':
             page_set_title($page_data, 'Administer Amazon Contacts');
-            page_add_content_top($page_data, theme('table', 'amazon_payment_contact', array('show_export'=>true)), 'View');
+            page_add_content_top($page_data, theme('table', crm_get_table('amazon_payment_contact', array('show_export'=>true)), 'View'));
             page_add_content_top($page_data, theme('form', crm_get_form('amazon_payment_contact_add')), 'Add');
-            break;
-        case 'contact':
-            if (user_access('payment_view') || $_GET['cid'] == user_id()) {
-                page_add_content_bottom($page_data, theme('amazon_payment_account_info', $_GET['cid']), 'Account');
-            }
-            if (function_exists('billing_revision')) {
-                if (user_access('payment_view') || $_GET['cid'] == user_id()) {
-                    page_add_content_bottom($page_data, theme('amazon_payment_first_month', $_GET['cid']), 'Plan');
-                }
-            }
             break;
     }
 }
+
+// Forms ///////////////////////////////////////////////////////////////////////
 
 /**
  * @return an amazon payments import form structure.
@@ -385,7 +390,7 @@ function amazon_payment_import_form () {
 /**
  * Return the form structure for the add amazon contact form.
  *
- * @param The cid of the contact to add a amazon contact for.
+ * @param The cid of the contact to add an amazon contact for.
  * @return The form structure.
 */
 function amazon_payment_contact_add_form () {
@@ -616,7 +621,7 @@ treasurer@i3detroit.org'
  * @param &$form_data Metadata about the form.
  * @param $form_id The name of the form.
  */
-function amazon_payment_form_alter($form, $form_id) {
+function amazon_payment_form_alter ($form, $form_id) {
     if ($form_id === 'payment_edit') {
         // Modify amazon payments only
         $payment = $form['data']['payment'];
@@ -654,6 +659,8 @@ function amazon_payment_form_alter($form, $form_id) {
     }
     return $form;
 }
+
+// Commands ////////////////////////////////////////////////////////////////////
 
 /**
  * Handle amazon payment import request.
@@ -733,8 +740,14 @@ function command_amazon_payment_contact_add () {
 }
 
 /**
- * Send emails to any members with a positive balance.
+ * Delete an amazon contact.
+ * @param $amazon_payment_contact The amazon_payment_contact data structure to delete, must have a 'cid' element.
  */
+function command_amazon_payment_contact_delete () {
+    amazon_payment_contact_delete($_POST);
+    return crm_url('amazon-admin');
+}
+
 function command_amazon_payment_email () {
     global $config_email_from;
     global $config_site_title;
@@ -808,6 +821,8 @@ function command_amazon_payment_email_100 () {
     variable_set('amazon_payment_last_email', date('Y-m-d'));
     return crm_url('payments', array('query'=>array('tab'=>'billing')));
 }
+
+// Themes //////////////////////////////////////////////////////////////////////
 
 /**
  * Return themed html for amazon admin links.

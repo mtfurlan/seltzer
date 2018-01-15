@@ -49,16 +49,16 @@ function get_dupe_storage () {
         HAVING COUNT(cid) > 1
     )
     ORDER BY cid;";
-
-    $res = mysql_query($sql);
-    if (!$res) { crm_error(mysql_error($res)); }
-    
+    global $db_connect;
+    $res = mysqli_query($db_connect, $sql);
+    if (!$res) crm_error(mysqli_error($res));
+ 
     $dupes=array();
-    $row = mysql_fetch_assoc($res);
+    $row = mysqli_fetch_assoc($res);
     while (!empty($row)) {
         // Contents of row are name, value
         $dupes[] = $row;
-        $row = mysql_fetch_assoc($res);
+        $row = mysqli_fetch_assoc($res);
     }
 
     return $dupes;

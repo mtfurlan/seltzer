@@ -45,15 +45,15 @@ function memberexit_query ($from, $to) {
         INNER JOIN plan ON membership.pid=plan.pid
         WHERE end BETWEEN '" . $from . "' AND '". $to ."';
     ";
-    
-    $res = mysql_query($sql);
-    if (!$res) { crm_error(mysql_error($res)); }
-   
-    $row = mysql_fetch_assoc($res);
+    global $db_connect;
+    $res = mysqli_query($db_connect, $sql);
+    if (!$res) crm_error(mysqli_error($res));
+ 
+    $row = mysqli_fetch_assoc($res);
     while (!empty($row)) {
         // Contents of row are kid, cid, start, end, serial, slot
         $result[] = $row;
-        $row = mysql_fetch_assoc($res);
+        $row = mysqli_fetch_assoc($res);
     }
    
     return $result;

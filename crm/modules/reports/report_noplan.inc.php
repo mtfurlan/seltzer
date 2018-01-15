@@ -45,13 +45,13 @@ function get_cids_without_plan () {
         SELECT cid FROM contact
         WHERE NOT EXISTS (SELECT * FROM membership WHERE contact.cid=membership.cid);
     ";
+    global $db_connect;
+    $res = mysqli_query($db_connect, $sql);
+    if (!$res) crm_error(mysqli_error($res));
     
-    $res = mysql_query($sql);
-    if (!$res) { crm_error(mysql_error($res)); }
-   
     $cids=array();
-    while ($row = mysql_fetch_row($res)) $cids[]=$row[0];
-    mysql_free_result($res);
+    
+    while ($row = mysqli_fetch_row($res)) $cids[]=$row[0];
    
     return $cids;
 }

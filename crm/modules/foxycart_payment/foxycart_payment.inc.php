@@ -45,9 +45,10 @@ function foxycart_install($old_revision = 0) {
               PRIMARY KEY (`pmtid`)
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
         ';
-        $res = mysql_query($sql);
-        if (!$res) crm_error(mysql_error());
-        
+        global $db_connect;
+        $res = mysqli_query($db_connect, $sql);
+        if (!$res) crm_error(mysqli_error($res));
+ 
         // Additional contact info for amazon payments
         $sql = '
             CREATE TABLE IF NOT EXISTS `contact_foxycart` (
@@ -56,8 +57,8 @@ function foxycart_install($old_revision = 0) {
               PRIMARY KEY (`fc_email`)
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
         ';
-        $res = mysql_query($sql);
-        if (!$res) crm_error(mysql_error());
+        $res = mysqli_query($db_connect, $sql);
+        if (!$res) crm_error(mysqli_error($res));
     }
 }
 
@@ -103,11 +104,12 @@ function foxycart_data ($opts = array()) {
             $sql .= " AND `pmtid`='$esc_pmtid' ";
         }
     }
-    $res = mysql_query($sql);
-    if (!$res) crm_error(mysql_error());
+    global $db_connect;
+    $res = mysqli_query($db_connect, $sql);
+    if (!$res) crm_error(mysqli_error($res));
     // Read from database and store in a structure
     $foxycart_data = array();
-    while ($db_row = mysql_fetch_assoc($res)) {
+    while ($db_row = mysqli_fetch_assoc($res)) {
         $foxycart_data[] = $db_row;
     }
     return $foxycart_data;
@@ -131,17 +133,18 @@ function foxycart_contact_data ($opts = array()) {
             }
         }
     }
-    $res = mysql_query($sql);
-    if (!$res) crm_error(mysql_error());
+    global $db_connect;
+    $res = mysqli_query($db_connect, $sql);
+    if (!$res) crm_error(mysqli_error($res));
     $names = array();
-    $row = mysql_fetch_assoc($res);
+    $row = mysqli_fetch_assoc($res);
     while ($row) {
         $name = array(
             'cid' => $row['cid']
             , 'amazon_name' => $row['amazon_name']
         );
         $names[] = $name;
-        $row = mysql_fetch_assoc($res);
+        $row = mysqli_fetch_assoc($res);
     }
     return $names;
 }
@@ -158,9 +161,10 @@ function foxycart_contact_save ($contact) {
     $esc_cid = mysql_real_escape_string($contact['cid']);    
     // Check whether the amazon contact already exists in the database
     $sql = "SELECT * FROM `contact_amazon` WHERE `amazon_name` = '$esc_name'";
-    $res = mysql_query($sql);
-    if (!$res) crm_error(mysql_error());
-    $row = mysql_fetch_assoc($res);
+    global $db_connect;
+    $res = mysqli_query($db_connect, $sql);
+    if (!$res) crm_error(mysqli_error($res));
+    $row = mysqli_fetch_assoc($res);
     if ($row) {
         // Name is already in database, update if the cid is set
         if (isset($contact['cid'])) {
@@ -169,16 +173,16 @@ function foxycart_contact_save ($contact) {
                 SET `cid`='$esc_cid'
                 WHERE `amazon_name`='$esc_name'
             ";
-            $res = mysql_query($sql);
-            if (!$res) crm_error(mysql_error());
+            $res = mysqli_query($db_connect, $sql);
+            if (!$res) crm_error(mysqli_error($res));
         }
     } else {
         // Name is not in database, insert new
         $sql = "
             INSERT INTO `contact_amazon`
             (`amazon_name`, `cid`) VALUES ('$esc_name', '$esc_cid')";
-        $res = mysql_query($sql);
-        if (!$res) crm_error(mysql_error());
+            $res = mysqli_query($db_connect, $sql);
+            if (!$res) crm_error(mysqli_error($res));
     }
 }
 
@@ -189,8 +193,9 @@ function foxycart_contact_save ($contact) {
 function foxycart_contact_delete ($foxycart_contact) {
     $esc_cid = mysql_real_escape_string($foxycart_contact['amazon_name']);
     $sql = "DELETE FROM `contact_amazon` WHERE `amazon_name`='$esc_cid'";
-    $res = mysql_query($sql);
-    if (!$res) die(mysql_error());
+    global $db_connect;
+    $res = mysqli_query($db_connect, $sql);
+    if (!$res) crm_error(mysqli_error($res));
     if (mysql_affected_rows() > 0) {
         message_register("Contact info deleted for $amazon_name");
     }
@@ -219,6 +224,7 @@ function foxycart_payment_api ($payment, $op) {
     if (isset($payment['credit_cid'])) {
         $amazon_contact['cid'] = $credit_cid;
     }
+    global $db_connect;
     switch ($op) {
         case 'insert':
             $sql = "
@@ -227,8 +233,8 @@ function foxycart_payment_api ($payment, $op) {
                 VALUES
                 ('$esc_pmtid', '$esc_name')
             ";
-            $res = mysql_query($sql);
-            if (!$res) crm_error(mysql_error());
+            $res = mysqli_query($db_connect, $sql);
+            if (!$res) crm_error(mysqli_error($res));
             foxycart_contact_save($amazon_contact);
             break;
         case 'update':
@@ -237,16 +243,16 @@ function foxycart_payment_api ($payment, $op) {
                 SET `amazon_name` = '$esc_name'
                 WHERE `pmtid` = '$esc_pmtid'
             ";
-            $res = mysql_query($sql);
-            if (!$res) crm_error(mysql_error());
+            $res = mysqli_query($db_connect, $sql);
+            if (!$res) crm_error(mysqli_error($res));
             foxycart_contact_save($amazon_contact);
             break;
         case 'delete':
             $sql = "
                 DELETE FROM `payment_amazon`
                 WHERE `pmtid`='$esc_pmtid'";
-                $res = mysql_query($sql);
-                if (!$res) crm_error(mysql_error());
+                $res = mysqli_query($db_connect, $sql);
+                if (!$res) crm_error(mysqli_error($res));
             break;
     }
     return $payment;
