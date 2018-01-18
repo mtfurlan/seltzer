@@ -92,7 +92,8 @@ $config_modules[] = "billing";
 //$config_modules[] = "mentor";
 
 // Show profile pictures
-$config_modules[] = "profile_picture";
+// This feature is broken in 2.0
+//$config_modules[] = "profile_picture";
 
 // Silly nickname module
 //$config_modules[] = "template";

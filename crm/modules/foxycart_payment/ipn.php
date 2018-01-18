@@ -41,7 +41,7 @@ if (isset($_POST["FoxyData"])) {
     //-----------------------------------------------------
     $FoxyData_decrypted = foxycart_decrypt($_POST["FoxyData"]);
     $xml = simplexml_load_string($FoxyData_decrypted, NULL, LIBXML_NOCDATA);
-    $stuff = mysql_real_escape_string($FoxyData_decrypted);
+    $stuff = mysqli_real_escape_string($db_connect, $FoxyData_decrypted);
     $sql = "
         INSERT INTO `xml_log`
         (
@@ -190,7 +190,7 @@ if ((!EMPTY($STATUS)) && ($STATUS != "APPROVED"))
 $fullname = "$customer_first_name $customer_last_name";
 $cid = '';
 if (empty($cid)) {
-    $esc_email = mysql_real_escape_string($customer_email); 
+    $esc_email = mysqli_real_escape_string($db_connect, $customer_email); 
     if (!empty($esc_email)) {
         $sql = "
             SELECT `cid` FROM `contact`
@@ -204,7 +204,7 @@ if (empty($cid)) {
 
 // [issue06] if cid is still empty, search for the cid from the last time customerid appeared
 if (empty($cid) && isset($customer_id)) {
-    $esc_customerid = mysql_real_escape_string($customer_id);
+    $esc_customerid = mysqli_real_escape_string($db_connect, $customer_id);
     $sql = "
         SELECT `credit`, MAX(created) AS `maxcreated` FROM `payment`
         WHERE `notes` = 'customer " . $customer_id ."'";
