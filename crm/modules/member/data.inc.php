@@ -89,10 +89,11 @@ function member_data ($opts = array()) {
             if ($v_filter > 1) $f_sql .= " OR";
             $f_sql .= " (`plan`.`pid` = '9' AND (`membership`.`start` IS NOT NULL AND `membership`.`start` < NOW()) AND (`membership`.`end` IS NULL OR `membership`.`end` > NOW()))";
         }
+        // figure out why inactive isn't pulling the right info
         if (isset($filter['inactive']) && $filter['inactive']) {
             $v_filter++;
             if ($v_filter > 1) $f_sql .= " OR";
-            $f_sql .= " (`membership`.`start` IS NULL OR `membership`.`start` > NOW() OR `membership`.`end` < NOW())";
+            $f_sql .= " (`membership`.`start` IS NULL OR `membership`.`start` > NOW() OR (`membership`.`end` IS NOT NULL AND `membership`.`end` < NOW()))";
         }
         $sql .= " AND ($f_sql)";
     }
