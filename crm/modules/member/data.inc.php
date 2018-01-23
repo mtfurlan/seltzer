@@ -39,10 +39,11 @@ function member_data ($opts = array()) {
         FROM `member`
         LEFT JOIN `contact` ON `member`.`cid`=`contact`.`cid`
         LEFT JOIN `user` ON `member`.`cid`=`user`.`cid`
-        LEFT JOIN `membership` ON (`member`.`cid`=`membership`.`cid` AND (`membership`.`end` IS NULL OR `membership`.`end` > NOW()))
+        LEFT JOIN `membership` ON `member`.`cid`=`membership`.`cid`
         LEFT JOIN `plan` ON `plan`.`pid`=`membership`.`pid`
         WHERE 1
     ";
+    // LEFT JOIN `membership` ON (`member`.`cid`=`membership`.`cid` AND (`membership`.`end` IS NULL OR `membership`.`end` > NOW()))
     if (isset($opts['cid']) and !empty($opts['cid'])) {
         if (is_array($opts['cid'])) {
             $terms = array();
@@ -57,25 +58,55 @@ function member_data ($opts = array()) {
             $sql .= " AND `member`.`cid`='$esc_cid'";
         }
     }
+    // filter options (set true if wanted)
+    // active == live plan
+    // scholarship == live scholarship
+    // onboarding == current onboarding plan
+    // hiatus == current hiatus plan
+    // inactive == no live plan, scholarship, onboarding, or hiatus
+
     if (isset($opts['filter'])) {
         $filter = $opts['filter'];
-        if (isset($filter['active'])) {
-            if ($filter['active']) {
-                //get active members:
-                $sql .= " AND (`membership`.`start` IS NOT NULL AND `membership`.`start` < NOW() AND (`membership`.`end` IS NULL OR `membership`.`end` > NOW()))";
-            } else {
-                //get NOT active members:
-                $sql .= " AND (`membership`.`start` IS NULL OR `membership`.`start` > NOW() OR `membership`.`end` < NOW())";
-            }
+        $v_filter = 0;
+        $f_sql = "";
+        if (isset($filter['active']) && $filter['active']) {
+            $v_filter++;
+            if ($v_filter > 1) $f_sql .= " OR";
+            $f_sql .= " (`plan`.`pid` = '10' AND (`membership`.`start` IS NOT NULL AND `membership`.`start` < NOW())) AND (`membership`.`end` IS NULL OR `membership`.`end` > NOW()))";
         }
-        if (isset($filter['voting'])) {
-            $sql .= " AND (`membership`.`start` IS NOT NULL AND `membership`.`start` < NOW() AND (`membership`.`end` IS NULL OR `membership`.`end` > NOW()) AND `plan`.`voting` <> 0)";
+        if (isset($filter['scholarship']) && $filter['scholarship']) {
+            $v_filter++;
+            if ($v_filter > 1) $f_sql .= " OR";
+            $f_sql .= " (`plan`.`pid` = '6' AND (`membership`.`start` IS NOT NULL AND `membership`.`start` < NOW()) AND (`membership`.`end` IS NULL OR `membership`.`end` > NOW()))";
+        }                
+        if (isset($filter['onboarding']) && $filter['onboarding']) {
+            $v_filter++;
+            if ($v_filter > 1) $f_sql .= " OR";
+            $f_sql .= " (`plan`.`pid` = '13' AND (`membership`.`start` IS NOT NULL AND `membership`.`start` < NOW()) AND (`membership`.`end` IS NULL OR `membership`.`end` > NOW()))";
         }
+        if (isset($filter['hiatus']) && $filter['hiatus']) {
+            $v_filter++;
+            if ($v_filter > 1) $f_sql .= " OR";
+            $f_sql .= " (`plan`.`pid` = '9' AND (`membership`.`start` IS NOT NULL AND `membership`.`start` < NOW()) AND (`membership`.`end` IS NULL OR `membership`.`end` > NOW()))";
+        }
+        if (isset($filter['inactive']) && $filter['inactive']) {
+            $v_filter++;
+            if ($v_filter > 1) $f_sql .= " OR";
+            $f_sql .= " (`membership`.`start` IS NULL OR `membership`.`start` > NOW() OR `membership`.`end` < NOW())";
+        }
+        $sql .= " AND ($f_sql)";
     }
+    if (isset($filter['voting'])) {
+        $sql .= " AND (`membership`.`start` IS NOT NULL AND `membership`.`start` < NOW() AND (`membership`.`end` IS NULL OR `membership`.`end` > NOW()) AND `plan`.`voting` <> 0)";
+    }
+
     $sql .= " GROUP BY `member`.`cid` ";
     $sql .= " ORDER BY `lastName`, `firstName`, `middleName` ASC ";
-    
+
+    var_dump_pre($sql);    
     $res = mysqli_query($db_connect, $sql);
+// var_dump_pre($res);
+// var_dump_pre("[EOF]");
     if (!$res) crm_error(mysqli_error($res));
     
     // Store data

@@ -71,13 +71,14 @@ function keysnoplan_table ($opts = NULL) {
         }
     }
     
-    $inactive_members = member_data(array('filter'=>array('active'=>false))); // Get inactive members
+    $inactive_members = member_data(array('filter'=>array('inactive'=>true))); // Get inactive members
 // var_dump_pre($inactive_members);
     // build cid index
     $cidlist = array();
     foreach ($inactive_members as $member) {
         $cidlist[] = $member['cid'];
     }
+    var_dump_pre("Pre get_keys_for_cids");
     $keysnoplan = get_keys_for_cids($cidlist);
 // var_dump_pre($keysnoplan);
      // Initialize table
