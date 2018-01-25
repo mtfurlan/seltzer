@@ -78,7 +78,7 @@ function keysnoplan_table ($opts = NULL) {
     foreach ($inactive_members as $member) {
         $cidlist[] = $member['cid'];
     }
-    var_dump_pre("Pre get_keys_for_cids");
+    // var_dump_pre("Pre get_keys_for_cids");
     $keysnoplan = get_keys_for_cids($cidlist);
 // var_dump_pre($keysnoplan);
      // Initialize table

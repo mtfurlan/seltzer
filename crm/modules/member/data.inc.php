@@ -72,30 +72,41 @@ function member_data ($opts = array()) {
         if (isset($filter['active']) && $filter['active']) {
             $v_filter++;
             if ($v_filter > 1) $f_sql .= " OR";
-            $f_sql .= " (`plan`.`pid` = '10' AND (`membership`.`start` IS NOT NULL AND `membership`.`start` < NOW())) AND (`membership`.`end` IS NULL OR `membership`.`end` > NOW()))";
+            $f_sql .= " (`plan`.`pid` = '10' AND (`membership`.`start` IS NOT NULL AND `membership`.`start` < NOW()) AND (`membership`.`end` IS NULL OR `membership`.`end` > NOW()))\n";
         }
         if (isset($filter['scholarship']) && $filter['scholarship']) {
             $v_filter++;
             if ($v_filter > 1) $f_sql .= " OR";
-            $f_sql .= " (`plan`.`pid` = '6' AND (`membership`.`start` IS NOT NULL AND `membership`.`start` < NOW()) AND (`membership`.`end` IS NULL OR `membership`.`end` > NOW()))";
+            $f_sql .= " (`plan`.`pid` = '6' AND (`membership`.`start` IS NOT NULL AND `membership`.`start` < NOW()) AND (`membership`.`end` IS NULL OR `membership`.`end` > NOW()))\n";
         }                
         if (isset($filter['onboarding']) && $filter['onboarding']) {
             $v_filter++;
             if ($v_filter > 1) $f_sql .= " OR";
-            $f_sql .= " (`plan`.`pid` = '13' AND (`membership`.`start` IS NOT NULL AND `membership`.`start` < NOW()) AND (`membership`.`end` IS NULL OR `membership`.`end` > NOW()))";
+            $f_sql .= " (`plan`.`pid` = '13' AND (`membership`.`start` IS NOT NULL AND `membership`.`start` < NOW()) AND (`membership`.`end` IS NULL OR `membership`.`end` > NOW()))\n";
         }
         if (isset($filter['hiatus']) && $filter['hiatus']) {
             $v_filter++;
             if ($v_filter > 1) $f_sql .= " OR";
-            $f_sql .= " (`plan`.`pid` = '9' AND (`membership`.`start` IS NOT NULL AND `membership`.`start` < NOW()) AND (`membership`.`end` IS NULL OR `membership`.`end` > NOW()))";
+            $f_sql .= " (`plan`.`pid` = '9' AND (`membership`.`start` IS NOT NULL AND `membership`.`start` < NOW()) AND (`membership`.`end` IS NULL OR `membership`.`end` > NOW()))\n";
         }
         // figure out why inactive isn't pulling the right info
         if (isset($filter['inactive']) && $filter['inactive']) {
             $v_filter++;
             if ($v_filter > 1) $f_sql .= " OR";
-            $f_sql .= " (`membership`.`start` IS NULL OR `membership`.`start` > NOW() OR (`membership`.`end` IS NOT NULL AND `membership`.`end` < NOW()))";
+
+            // Get all active users
+            $l_active = member_data(array('filter'=>array('active'=>true, 'scholarship'=>true, 'onboarding'=>true, 'hiatus'=>true)));
+            // git list of active user cids
+            $l_cids = array();
+            foreach ($l_active as $l_user) {
+                $l_cids[] = $l_user['cid'];
+            }
+            // I don't know why but seems to ignore the NOT IN clause
+            $esc_list = "(" . implode(',', $l_cids) . ")";
+            $f_sql .= " ( `membership`.`cid` NOT IN $esc_list AND (`membership`.`start` IS NULL OR `membership`.`start` > NOW()) OR (`membership`.`end` IS NOT NULL AND `membership`.`end` < NOW()))";
+            
         }
-        $sql .= " AND ($f_sql)";
+        $sql .= " AND ( \n$f_sql\n )";
     }
     if (isset($filter['voting'])) {
         $sql .= " AND (`membership`.`start` IS NOT NULL AND `membership`.`start` < NOW() AND (`membership`.`end` IS NULL OR `membership`.`end` > NOW()) AND `plan`.`voting` <> 0)";
@@ -104,7 +115,7 @@ function member_data ($opts = array()) {
     $sql .= " GROUP BY `member`.`cid` ";
     $sql .= " ORDER BY `lastName`, `firstName`, `middleName` ASC ";
 
-    var_dump_pre($sql);    
+    // var_dump_pre($sql);    
     $res = mysqli_query($db_connect, $sql);
 // var_dump_pre($res);
 // var_dump_pre("[EOF]");
