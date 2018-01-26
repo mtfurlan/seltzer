@@ -103,7 +103,7 @@ function member_data ($opts = array()) {
             }
             // I don't know why but seems to ignore the NOT IN clause
             $esc_list = "(" . implode(',', $l_cids) . ")";
-            $f_sql .= " ( `membership`.`cid` NOT IN $esc_list AND (`membership`.`start` IS NULL OR `membership`.`start` > NOW()) OR (`membership`.`end` IS NOT NULL AND `membership`.`end` < NOW()))";
+            $f_sql .= " ( (`membership`.`start` IS NULL OR `membership`.`start` > NOW()) OR (`membership`.`end` IS NOT NULL AND `membership`.`end` < NOW()) AND `member`.`cid` NOT IN $esc_list)";
             
         }
         $sql .= " AND ( \n$f_sql\n )";

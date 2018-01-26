@@ -165,7 +165,7 @@ function member_voting_report_table () {
     }
     
     // Get member data
-    $members = member_data(array('filter'=>array('voting'=>true, 'active'=>true)));
+    $members = member_data(array('filter'=>array('voting'=>true, 'active'=>true, 'scholarship'=>true)));
     
     // Create table structure
     $table = array(

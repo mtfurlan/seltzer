@@ -49,7 +49,7 @@ function get_storage_cids_without_plan () {
 // var_dump_pre($storage_contacts);
     
     $cids = array();
-    foreach (member_data(array('cid'=>$storage_contacts,'filter'=>array('active'=>false))) as $contact) {
+    foreach (member_data(array('cid'=>$storage_contacts,'filter'=>array('inactive'=>true,'hiatus'=>true))) as $contact) {
         $cids[] = $contact['cid'];
     }
 

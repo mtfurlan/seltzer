@@ -71,7 +71,7 @@ function keysnoplan_table ($opts = NULL) {
         }
     }
     
-    $inactive_members = member_data(array('filter'=>array('inactive'=>true))); // Get inactive members
+    $inactive_members = member_data(array('filter'=>array('inactive'=>true,'hiatus'=>true,'onboarding'=>true))); // Get inactive members
 // var_dump_pre($inactive_members);
     // build cid index
     $cidlist = array();
