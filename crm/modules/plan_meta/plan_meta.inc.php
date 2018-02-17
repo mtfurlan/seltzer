@@ -29,6 +29,7 @@
 */
 
 // Installation functions //////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return This module's revision number. Each new release should increment
@@ -37,6 +38,8 @@
 function plan_meta_revision () {
     return 1;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return An array of the permissions provided by this module.
@@ -48,6 +51,8 @@ function plan_meta_permissions () {
         , 'plan_meta_delete'
     );
 }
+
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Install or upgrade this module.
@@ -101,6 +106,8 @@ function plan_meta_install($old_revision = 0) {
 }
 
 // Utility functions ///////////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Generate a descriptive string for a single Meta-Tag .
@@ -125,6 +132,8 @@ function plan_meta_description ($pmid) {
 }
 
 // DB to Object mapping ////////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return data for one or more meta-tag assignments.
@@ -218,6 +227,11 @@ function plan_meta_data ($opts = array()) {
     return $plan_metas;
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Implementation of hook_data_alter().
  * @param $type The type of the data being altered.
@@ -254,6 +268,9 @@ function plan_meta_data_alter ($type, $data = array(), $opts = array()) {
     }
     return $data;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Save a user meta data structure.  If $plan_meta has a 'pmid' element, an existing user meta data will
@@ -306,6 +323,8 @@ function plan_meta_save ($plan_meta) {
     return crm_get_one('plan_meta', array('pmid'=>$pmid));
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Delete a piece of plan meta data.
  * @param $plan_meta The plan meta data data structure to delete, must have a 'pmid' element.
@@ -322,6 +341,8 @@ function plan_meta_delete ($plan_meta) {
 }
 
 // Table data structures ///////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return a table structure for a table of meta tag assignments.
@@ -331,7 +352,9 @@ function plan_meta_delete ($plan_meta) {
  * @return The table structure.
  */
 function plan_meta_cross_table ($opts) {
-    
+
+    global $db_connect;
+
     // Determine settings
     $export = false;
     foreach ($opts as $option => $value) {
@@ -441,6 +464,9 @@ function plan_meta_cross_table ($opts) {
     return $table;
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Return a normal table structure for a table of meta assignments.
  *
@@ -523,6 +549,8 @@ function plan_meta_table ($opts) {
 }
 
 // Forms ///////////////////////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return the form structure for the add meta assignment form.
@@ -580,6 +608,9 @@ function plan_meta_add_form ($pid) {
     
     return $form;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return the form structure for an edit meta assignment form.
@@ -657,6 +688,9 @@ function plan_meta_edit_form ($pmid) {
     return $form;
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Return the delete meta assigment form structure.
  *
@@ -706,6 +740,9 @@ function plan_meta_delete_form ($pmid) {
 }
 
 // Request Handlers ////////////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Command handler.
@@ -720,6 +757,8 @@ function plan_meta_command ($command, &$url, &$params) {
             break;
     }
 }
+
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Handle meta add request.
@@ -738,6 +777,8 @@ function command_plan_meta_add() {
     return crm_url('plan&pid=' . $_POST['pid'] . '&tab=metas');
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Handle meta update request.
  *
@@ -754,6 +795,8 @@ function command_plan_meta_update() {
     plan_meta_save($_POST);
     return crm_url('plan_meta&pmid=' . $esc_post['pmid'] . '&tab=edit');
 }
+
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Handle meta delete request.
@@ -772,6 +815,7 @@ function command_plan_meta_delete() {
 }
 
 // Pages ///////////////////////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return An array of pages provided by this module.
@@ -783,6 +827,10 @@ function plan_meta_page_list () {
     }
     return $pages;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Page hook. Adds module content to a page before it is rendered.
@@ -842,6 +890,8 @@ function plan_meta_page (&$page_data, $page_name, $options) {
 }
 
 // Themeing ////////////////////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return the themed html for an add meta assignment form.
@@ -852,6 +902,9 @@ function plan_meta_page (&$page_data, $page_name, $options) {
 function theme_plan_meta_add_form ($pid) {
     return theme('form', crm_get_form('plan_meta_add', $pid));
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return themed html for an edit meta assignment form.

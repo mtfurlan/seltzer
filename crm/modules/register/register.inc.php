@@ -20,6 +20,7 @@
     You should have received a copy of the GNU General Public License
     along with Seltzer.  If not, see <http://www.gnu.org/licenses/>.
 */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return This module's revision number.  Each new release should increment
@@ -28,6 +29,8 @@
 function register_revision () {
     return 1;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Install or upgrade this module.
@@ -40,12 +43,16 @@ function register_install($old_revision = 0) {
     }
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * @return The themed html string for a registration form.
 */
 function theme_register_form () {
     return theme('form', crm_get_form('register'));
 }
+
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return The form structure for registering a member.
@@ -64,6 +71,8 @@ function register_form () {
     
     return $form;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Handle member registration request.

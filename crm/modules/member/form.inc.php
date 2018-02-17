@@ -21,6 +21,7 @@
 */
 
 // Members /////////////////////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return The form structure for adding a member.
@@ -81,6 +82,8 @@ function member_add_form () {
     return $form;
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * @return The form structure for editing a member.
 */
@@ -133,6 +136,7 @@ function member_edit_form ($cid) {
 }
 
 // Plans ///////////////////////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return The form structure for adding a membership plan.
@@ -186,6 +190,9 @@ function member_plan_add_form () {
     
     return $form;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Returns the form structure for editing a membership plan.
@@ -256,6 +263,9 @@ function member_plan_edit_form ($pid) {
     return $form;
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Return the form structure to delete a membership plan.
  *
@@ -302,6 +312,8 @@ function member_plan_delete_form ($pid) {
 }
 
 // Memberships /////////////////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return the form structure for adding a membership.
@@ -361,6 +373,9 @@ function member_membership_add_form ($cid) {
     );
     return $form;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return the form structure for editing a membership.
@@ -438,6 +453,9 @@ function member_membership_edit_form ($sid) {
     return $form;
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Return the form structure to delete a membership.
  *
@@ -499,6 +517,7 @@ function member_membership_delete_form ($sid) {
 }
 
 // Filters /////////////////////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return the form structure for a member filter.
@@ -551,6 +570,7 @@ function member_filter_form () {
 }
 
 // Imports /////////////////////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return the form structure for a member import form.
@@ -590,6 +610,8 @@ function member_import_form () {
         )
     );
 }
+
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return the form structure for a plan import form.

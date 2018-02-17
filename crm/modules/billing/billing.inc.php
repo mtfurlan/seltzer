@@ -19,6 +19,7 @@
     You should have received a copy of the GNU General Public License
     along with Seltzer.  If not, see <http://www.gnu.org/licenses/>.
 */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return This module's revision number.  Each new release should increment
@@ -28,12 +29,16 @@ function billing_revision () {
     return 1;
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * @return An array of the permissions provided by this module.
  */
 function billing_permissions () {
     return array();
 }
+
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Install or upgrade this module.
@@ -52,6 +57,7 @@ function billing_install($old_revision = 0) {
 // Table data structures ///////////////////////////////////////////////////////
 
 // Forms ///////////////////////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Form for initiating membership billings.
@@ -94,6 +100,8 @@ function billing_form () {
     
     return $form;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Form for initiating membership billing emails.
@@ -215,6 +223,7 @@ function command_billing_email () {
 }
 
 // Pages ///////////////////////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return An array of pages provided by this module.
@@ -223,6 +232,10 @@ function billing_page_list () {
     $pages = array();
     return $pages;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Page hook.  Adds module content to a page before it is rendered.
@@ -252,6 +265,9 @@ function billing_page (&$page_data, $page_name, $options) {
 }
 
 // Utility functions ///////////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Run billing for a single membership.
@@ -337,6 +353,10 @@ function billing_days_in_period ($date_info) {
     return $days;
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Calculate prorated billing amount.
  * @param $period_info Billing start date (as returned by getdate()).
@@ -402,6 +422,9 @@ function theme_billing_first_month ($cid) {
     $html .= '</fieldset>';
     return $html;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return an account summary and payment button.

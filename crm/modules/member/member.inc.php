@@ -19,6 +19,7 @@
     You should have received a copy of the GNU General Public License
     along with Seltzer.  If not, see <http://www.gnu.org/licenses/>.
 */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return This module's revision number.  Each new release should increment
@@ -28,12 +29,16 @@ function member_revision () {
     return 4;
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * @return Array of paths to stylesheets relative to this module's directory.
  */
 function member_stylesheets () {
     return array('style.css');
 }
+
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return An array of the permissions provided by this module.

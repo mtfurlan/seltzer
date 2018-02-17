@@ -19,6 +19,7 @@
     You should have received a copy of the GNU General Public License
     along with Seltzer.  If not, see <http://www.gnu.org/licenses/>.
 */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return An array of the permissions provided by this module.
@@ -29,6 +30,8 @@ function module_permissions () {
     );
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * @return list of installed modules.
  */
@@ -37,6 +40,9 @@ function module_list () {
     
     return $config_modules;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return The revision of an enabled module's current code, 0 if not enabled.
@@ -49,6 +55,8 @@ function module_get_code_revision ($module) {
     }
     return call_user_func($revision_func);
 }
+
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Get a module's database schema revision.
@@ -66,6 +74,9 @@ function module_get_schema_revision ($module) {
     $row = mysqli_fetch_assoc($res);
     return $row['revision'];
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Set a module's database schema revision.
@@ -157,6 +168,8 @@ function module_upgrade () {
     return true;
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * @return a table structure of modules and their upgrade status.
  */
@@ -188,6 +201,8 @@ function module_upgrade_table () {
     }
     return $table;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return The installation form structure.
@@ -224,6 +239,8 @@ function module_install_form () {
     return $form;
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * @return The upgrade form structure.
  */
@@ -251,6 +268,8 @@ function module_upgrade_form () {
     );
     return $form;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
 
 
 /**
@@ -297,6 +316,8 @@ function command_module_install () {
     return crm_url('login');
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Handle upgrade request.
  *
@@ -339,6 +360,9 @@ function module_init () {
         }
     }
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Invoke a hook in all modules.

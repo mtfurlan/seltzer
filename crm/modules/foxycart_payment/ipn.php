@@ -35,7 +35,8 @@ $apikey = variable_get('foxycart_apikey','');
 // TRANSACTION DATAFEED
 //-----------------------------------------------------
 if (isset($_POST["FoxyData"])) {
- 
+
+    global $db_connect;
  
     //DECRYPT (required)
     //-----------------------------------------------------
@@ -52,7 +53,6 @@ if (isset($_POST["FoxyData"])) {
             ' $stuff '
         )
     ";
-    global $db_connect;
     $res = mysqli_query($db_connect, $sql); 
     //For Each Transaction
     foreach($xml->transactions->transaction as $transaction) {

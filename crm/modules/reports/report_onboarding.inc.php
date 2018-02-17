@@ -32,6 +32,7 @@ $report_onboarding_theme = 'table';
 $report_onboarding_theme_opts = 'onboarding';
 $report_onboarding_name = "Contact onboarding";
 $report_onboarding_desc = "List of contacts in onboarding process";
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return A comma-separated list of user emails.

@@ -19,6 +19,8 @@
     You should have received a copy of the GNU General Public License
     along with Seltzer.  If not, see <http://www.gnu.org/licenses/>.
 */
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Process a command and redirect.

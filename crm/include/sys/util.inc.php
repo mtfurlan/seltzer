@@ -19,6 +19,7 @@
     You should have received a copy of the GNU General Public License
     along with Seltzer.  If not, see <http://www.gnu.org/licenses/>.
 */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return The base path to the directory containing index.php.
@@ -28,12 +29,16 @@ function base_path () {
     return $config_base_path;
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * @return the path to the current page.
  */
 function path () {
     return array_key_exists('q', $_GET) ? $_GET['q'] : '';
 }
+
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return The title of the site.
@@ -43,6 +48,8 @@ function title () {
     return $config_site_title;
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * @return An array of navigation links
  */
@@ -50,6 +57,10 @@ function links () {
     global $config_links;
     return $config_links;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return a url to an internal path.
@@ -74,6 +85,11 @@ function crm_url ($path = '', $opts = array()) {
     return $url;
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Return a link.
  * @param $text The text of the link.
@@ -95,6 +111,8 @@ function crm_error ($text) {
     print "</pre>";
     die();
 }
+
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Parse and return the version of the app as specified in crm.inc.php under $crm_version.

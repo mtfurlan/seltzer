@@ -32,6 +32,7 @@ $report_nonmemberstorage_theme = 'table';
 $report_nonmemberstorage_theme_opts = 'nonmemberstorage';
 $report_nonmemberstorage_name = "Non-Member Storage";
 $report_nonmemberstorage_desc = "List of non-member contacts with storage plots";
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return A comma-separated list of user emails.

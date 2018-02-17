@@ -19,6 +19,8 @@
     You should have received a copy of the GNU General Public License
     along with Seltzer.  If not, see <http://www.gnu.org/licenses/>.
 */
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return the themed html for a table of members.
@@ -30,6 +32,9 @@ function theme_member_table ($opts = NULL) {
     return theme('table', crm_get_table('member', $opts));
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Return the themed html for a single member's contact info.
  * 
@@ -39,6 +44,9 @@ function theme_member_table ($opts = NULL) {
 function theme_member_contact_table ($opts = NULL) {
     return theme('table_vertical', crm_get_table('member_contact', $opts));
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Returned the themed html for edit member form.
@@ -50,6 +58,8 @@ function theme_member_edit_form ($cid) {
     return theme('form', crm_get_form('member_edit', $cid));
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * @return The themed html for a member filter form.
 */
@@ -57,12 +67,17 @@ function theme_member_filter_form () {
     return theme('form', crm_get_form('member_filter'));
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * @return The themed html for a member voting report.
 */
 function theme_member_voting_report () {
     return theme('table', crm_get_table('member_voting_report'));
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return the themed html for a membership table.
@@ -74,6 +89,9 @@ function theme_member_membership_table ($opts = NULL) {
     return theme('table', crm_get_table('member_membership', $opts));
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Return the themed html for a membership add form.
  *
@@ -83,6 +101,9 @@ function theme_member_membership_table ($opts = NULL) {
 function theme_member_membership_add_form ($cid) {
     return theme('form', crm_get_form('member_membership_add', $cid));
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return the themed html for a membership edit form.
@@ -94,6 +115,9 @@ function theme_member_membership_edit_form ($sid) {
     return theme('form', crm_get_form('member_membership_edit', $sid));
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Return the themed html for a membership plan table.
  *
@@ -104,6 +128,8 @@ function theme_member_plan_table ($opts = NULL) {
     return theme('table', crm_get_table('member_plan', $opts));
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Return the themed html for a membership plan add form.
  *
@@ -112,6 +138,9 @@ function theme_member_plan_table ($opts = NULL) {
 function theme_member_plan_add_form () {
     return theme('form', crm_get_form('member_plan_add'));
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return the themed html for a membership plan edit form.
@@ -123,6 +152,9 @@ function theme_member_plan_edit_form ($pid) {
     return theme('form', crm_get_form('member_plan_edit', $pid));
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Return the themed html for a member info table.
  *
@@ -132,6 +164,9 @@ function theme_member_plan_edit_form ($pid) {
 function theme_member_info_table ($opts = NULL) {
     return theme('table_vertical', crm_get_table('member_info', $opts));
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return the themed html for a contact's name.
@@ -155,6 +190,9 @@ function theme_member_contact_name ($cid) {
     return $output;
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Return the themed html description for a plan.
  *
@@ -173,6 +211,8 @@ function theme_member_plan_description ($pid) {
     
     return $output;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return the text of an email notifying administrators that a user has been created.
@@ -211,6 +251,9 @@ function theme_member_created_email ($cid) {
     return $output;
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Return the text of an email welcoming a new member.
  * @param $cid The contact id of the new member.
@@ -225,6 +268,10 @@ function theme_member_welcome_email ($cid, $confirm_url) {
     );
     return template_render('email', $vars);
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Theme a plan name.

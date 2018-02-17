@@ -19,6 +19,8 @@
     You should have received a copy of the GNU General Public License
     along with Seltzer.  If not, see <http://www.gnu.org/licenses/>.
 */
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return a table structure representing members.
@@ -152,6 +154,8 @@ function member_table ($opts = NULL) {
     return $table;
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Return table structure for all active voting members.
  * 
@@ -214,6 +218,9 @@ function member_voting_report_table () {
     // Return table
     return $table;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return a table structure representing membership plans.
@@ -288,6 +295,9 @@ function member_plan_table ($opts = NULL) {
     return $table;
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Return a table structure representing a member's past and current memberships.
  *
@@ -347,6 +357,9 @@ function member_membership_table ($opts = NULL) {
     return $table;
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Return a table structure representing contact info.
  *
@@ -384,6 +397,9 @@ function member_contact_table ($opts) {
     
     return $table;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 
 /**

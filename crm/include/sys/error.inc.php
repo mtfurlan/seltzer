@@ -19,6 +19,7 @@
     You should have received a copy of the GNU General Public License
     along with Seltzer.  If not, see <http://www.gnu.org/licenses/>.
 */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Register an error.
@@ -29,6 +30,8 @@ function error_register ($error) {
     $_SESSION['errorList'][] = $error;
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Register a message.
  *
@@ -37,6 +40,8 @@ function error_register ($error) {
 function message_register ($message) {
     $_SESSION['messageList'][] = $message;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return all registered errors and clear the list.
@@ -49,6 +54,8 @@ function error_list () {
     return $errors;
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Return all registered messages and clear the list.
  *
@@ -59,6 +66,8 @@ function message_list () {
     $_SESSION['messageList'] = array();
     return $errors;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return The themed html string for any errors currently registered.
@@ -81,6 +90,8 @@ function theme_errors () {
     $output .= '</ul></fieldset>';
     return $output;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return The themed html string for any registered messages.

@@ -19,6 +19,7 @@
     You should have received a copy of the GNU General Public License
     along with Seltzer.  If not, see <http://www.gnu.org/licenses/>.
 */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return the path to the theme folder without leading or trailing slashes.
@@ -31,6 +32,9 @@ function path_to_theme() {
     return 'themes/inspire';
   }
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Map theme calls to appropriate theme handler.
@@ -67,6 +71,8 @@ function theme () {
     return call_user_func_array($handler, $handler_args);
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * @return Themed html for script includes.
  */
@@ -78,6 +84,8 @@ function theme_scripts () {
     }
     return $output;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return Themed html for stylesheet includes.

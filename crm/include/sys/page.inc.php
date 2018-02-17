@@ -41,6 +41,8 @@ function page_init () {
     }
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * @return A tree structure representing the sitemap.
 */
@@ -48,6 +50,10 @@ function page_sitemap () {
     global $page_sitemap;
     return $page_sitemap;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Construct the data structure for a specified page.
@@ -75,6 +81,8 @@ function page ($page, $options) {
     return $data;
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Set the title of a page.
  * @param &$page_data The page data.
@@ -83,6 +91,10 @@ function page ($page, $options) {
 function page_set_title (&$page_data, $title) {
     $page_data['#title'] = $title;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Add content to the top of a page tab.
@@ -100,6 +112,10 @@ function page_add_content_top (&$page_data, $content, $tab_name = NULL) {
     array_unshift($page_data[$tab_name], $content);
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Add content to the bottom of a page tab.
  * @param &$page_data The page data structure.
@@ -115,6 +131,10 @@ function page_add_content_bottom (&$page_data, $content, $tab_name = NULL) {
     }
     array_push($page_data[$tab_name], $content);
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Theme an entire page.

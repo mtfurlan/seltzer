@@ -195,6 +195,8 @@ function memberchange_results_table ($opts = NULL) {
 
 
 // Themeing ////////////////////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 /**
  * Return the themed html for an add secret assignment form.
  *

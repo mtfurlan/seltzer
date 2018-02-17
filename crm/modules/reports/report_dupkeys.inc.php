@@ -32,6 +32,7 @@ $report_dupkeys_theme = 'table';
 $report_dupkeys_theme_opts = 'dupkeys';
 $report_dupkeys_name = "Duplicate Keys";
 $report_dupkeys_desc = "List of keys that are assigned to multiple users";
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return A comma-separated list of user emails.

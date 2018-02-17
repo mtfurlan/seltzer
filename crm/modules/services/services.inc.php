@@ -20,6 +20,7 @@
 */
 
 // Installation functions //////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return This module's revision number.  Each new release should increment
@@ -28,6 +29,8 @@
 function services_revision () {
     return 1;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return An array of the permissions provided by this module.
@@ -40,12 +43,17 @@ function services_permissions () {
     );
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Install or upgrade this module.
  * @param $old_revision The last installed revision of this module, or 0 if the
  *   module has never been installed.
  */
 function services_install($old_revision = 0) {
+
+    global $db_connect;
+
     if ($old_revision < 1) {
         // Create databases here
         $roles = array(
@@ -80,6 +88,10 @@ function services_install($old_revision = 0) {
 
 
 // DB to Object mapping ////////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Implementation of hook_data_alter().
@@ -101,6 +113,8 @@ function services_install($old_revision = 0) {
 
 // Tables //////////////////////////////////////////////////////////////////////
 // Put table generators here
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 /**
  * Return a table structure for a table of service links.
  *
@@ -177,6 +191,7 @@ function services_table ($opts) {
 // }
 
 // Pages ///////////////////////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return An array of pages provided by this module.
@@ -187,6 +202,10 @@ function services_page_list () {
         $pages[] = 'services';
     return $pages;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Page hook.  Adds module content to a page before it is rendered.

@@ -20,6 +20,7 @@
     You should have received a copy of the GNU General Public License
     along with Seltzer.  If not, see <http://www.gnu.org/licenses/>.
 */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return This module's revision number.  Each new release should increment
@@ -30,6 +31,7 @@ function profile_picture_revision () {
 }
 
 // Installation functions //////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Install or upgrade this module.
@@ -62,6 +64,7 @@ function profile_picture_install ($old_revision = 0) {
 }
 
 // Pages ///////////////////////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return An array of pages provided by this module.
@@ -71,6 +74,9 @@ function profile_picture_page_list () {
 
     return $pages;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Page hook.  Adds profile_picture module content to a page before it is rendered.
@@ -110,6 +116,8 @@ function profile_picture_page (&$page_data, $page_name) {
     }
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * @return a profile picture upload form structure.
  */
@@ -145,6 +153,8 @@ function profile_picture_upload_form ($cid) {
         )
     );
 }
+
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Handle profile picture upload request.
@@ -252,6 +262,7 @@ function command_profile_picture_upload () {
 }
 
 // DB to Object mapping ////////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Delete a profile picture.
@@ -287,6 +298,8 @@ function profile_picture_delete ($cid) {
 }
 
 // Themeing ////////////////////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Theme a contact's profile picture.

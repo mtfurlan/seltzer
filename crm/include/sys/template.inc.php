@@ -19,6 +19,8 @@
     You should have received a copy of the GNU General Public License
     along with Seltzer.  If not, see <http://www.gnu.org/licenses/>.
 */
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Render a template.
@@ -53,6 +55,8 @@ function template_render ($name, $vars = array()) {
     return $output;
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Assign variables to be set for a template.
  * @param $vars The previously set variables.
@@ -68,6 +72,8 @@ function template_preprocess ($vars) {
     
     return $vars;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Assign variables to be set for a template.

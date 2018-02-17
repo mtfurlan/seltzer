@@ -32,6 +32,7 @@ $report_keysnoplan_theme = 'table';
 $report_keysnoplan_theme_opts = 'keysnoplan';
 $report_keysnoplan_name = "Keys NoPlan";
 $report_keysnoplan_desc = "List of contacts with keys but inactive plans";
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return A comma-separated list of user emails.

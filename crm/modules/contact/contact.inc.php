@@ -19,6 +19,7 @@
     You should have received a copy of the GNU General Public License
     along with Seltzer.  If not, see <http://www.gnu.org/licenses/>.
 */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return This module's revision number.  Each new release should increment
@@ -28,11 +29,15 @@ function contact_revision () {
     return 1;
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * @return Array of paths to stylesheets relative to this module's directory.
  */
 function contact_stylesheets () {
 }
+
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return An array of the permissions provided by this module.
@@ -47,6 +52,7 @@ function contact_permissions () {
 }
 
 // Installation functions //////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Install or upgrade this module.
@@ -75,6 +81,8 @@ function contact_install ($old_revision = 0) {
 }
 
 // DB to Object mapping ////////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return data for one or more contacts.
@@ -213,6 +221,8 @@ function contact_save ($contact) {
     return $contact;
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Delete a contact.
  * @param $cid The contact id.
@@ -255,6 +265,8 @@ function contact_name_autocomplete ($fragment) {
 }
 
 // Table data structures ///////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return a table structure representing contacts.
@@ -345,6 +357,8 @@ function contact_table ($opts = array()) {
 }
 
 // Forms ///////////////////////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return the form structure for adding or editing a contact.  If $opts['cid']
@@ -445,6 +459,9 @@ function contact_form ($opts = array()) {
     return $form;
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Return the form structure to delete a contact.
  *
@@ -491,6 +508,7 @@ function contact_delete_form ($cid) {
 }
 
 // Request Handlers ////////////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Handle contact add request.
@@ -516,6 +534,8 @@ function command_contact_add () {
     $cid = $contact['cid'];
     return crm_url("contact&cid=$cid");
 }
+
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Handle contact update request.
@@ -546,6 +566,8 @@ function command_contact_update () {
     return crm_url('members');
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Handle contact delete request.
  *
@@ -562,6 +584,7 @@ function command_contact_delete () {
 }
 
 // Pages ///////////////////////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return An array of pages provided by this module.
@@ -574,6 +597,9 @@ function contact_page_list () {
     }
     return $pages;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Page hook.  Adds contact module content to a page before it is rendered.
@@ -637,6 +663,9 @@ function contact_page (&$page_data, $page_name) {
 //require_once('report.inc.php');
 
 // Themeing ////////////////////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Theme a contact's name.

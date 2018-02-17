@@ -19,6 +19,8 @@
     You should have received a copy of the GNU General Public License
     along with Seltzer.  If not, see <http://www.gnu.org/licenses/>.
 */
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return data for one or more members.
@@ -152,6 +154,11 @@ function member_data ($opts = array()) {
     return $members;
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Implementation of hook_data_alter().
  * @param $type The type of the data being altered.
@@ -188,6 +195,9 @@ function member_data_alter ($type, $data = array(), $opts = array()) {
     }
     return $data;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Update member data when a contact is updated.
@@ -300,6 +310,9 @@ function member_delete ($cid) {
     message_register("Deleted membership info for: $name");
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Return data for one or more membership plans.
  * 
@@ -326,7 +339,7 @@ function member_plan_data ($opts = array()) {
         }
     }
     if (!empty($opts['pid'])) {
-        $pid = mysqli_real_escape_string($db_connect, $opts[pid]);
+        $pid = mysqli_real_escape_string($db_connect, $opts['pid']);
         $sql .= " AND `plan`.`pid`='$pid' ";
     }
     
@@ -344,6 +357,9 @@ function member_plan_data ($opts = array()) {
     
     return $plans;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Generates an associative array mapping membership plan pids to
@@ -420,6 +436,9 @@ function member_plan_delete ($pid) {
     if (!$res) crm_error(mysqli_error($res));
     message_register("Deleted plan: $description");
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return data for one or more memberships.
@@ -561,6 +580,9 @@ function member_membership_delete ($sid) {
     $res = mysqli_query($db_connect, $sql);
     if (!$res) crm_error(mysqli_error($res));
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return data for one or more contacts.  Use contact_data() instead.

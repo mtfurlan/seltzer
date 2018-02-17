@@ -32,6 +32,7 @@ $report_membershipdata_theme = 'table';
 $report_membershipdata_theme_opts = 'membershipdata';
 $report_membershipdata_name = "Membership Status (raw data)";
 $report_membershipdata_desc = "Tabular history of memberships";
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return A comma-separated list of user emails.
@@ -48,6 +49,8 @@ function report_membershipdata_earliest_date () {
     }
     return $row['start'];
 }
+
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return json structure containing membershipdata statistics.

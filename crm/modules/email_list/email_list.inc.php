@@ -25,6 +25,8 @@ function email_list_revision () {
     return 1;
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * @return An array of the permissions provided by this module.
  */
@@ -40,6 +42,7 @@ function email_list_permissions () {
 }
 
 // Installation functions //////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Install or upgrade this module.
@@ -105,6 +108,7 @@ function email_list_install ($old_revision = 0) {
     }
 }
 // Pages ///////////////////////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return An array of pages provided by this module.
@@ -117,6 +121,9 @@ function email_list_page_list () {
     }
     return $pages;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Page hook.  Adds email_lists module content to a page before it is rendered.
@@ -182,6 +189,8 @@ function email_list_page (&$page_data, $page_name, $options) {
 }
 
 // Utility functions ///////////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Generate a descriptive string for a single email list.
@@ -205,6 +214,8 @@ function email_list_description ($lid) {
 }
 
 // DB to Object mapping ////////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return data for one or more email lists
@@ -281,6 +292,11 @@ function email_list_data ($opts = array()) {
     return $email_list_data;
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Implementation of hook_data_alter().
  * @param $type The type of the data being altered.
@@ -317,6 +333,9 @@ function email_list_data_alter ($type, $data = array(), $opts = array()) {
     }
     return $data;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Save an email list list structure.  If $list has a 'lid' element, an existing email list will
@@ -362,6 +381,8 @@ function email_list_save ($list) {
     //return crm_get_one('email_list', array('kid'=>$kid));
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Delete an email list.
  * @param $list the list data structure to delete, must have a 'lid' element.
@@ -385,6 +406,8 @@ function email_list_delete ($list) {
     }
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Delete a subscription.
  * @param $subscription The subscription structure to delete, must have both 'cid' and 'lid' element.
@@ -406,6 +429,8 @@ function email_list_unsubscribe ($subscription) {
 }
 
 // Table data structures ///////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return a table structure for a table of email lists.
@@ -476,6 +501,9 @@ function email_list_table ($opts) {
     }
     return $table;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return a table structure for a table of email lists subscriptions.
@@ -558,6 +586,7 @@ function email_list_subscriptions_table ($opts) {
 }
 
 // Forms ///////////////////////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return Array mapping payment method values to descriptions.
@@ -602,6 +631,8 @@ function email_list_options () {
     }
     return $options;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return an email subscribe form structure.
@@ -648,6 +679,9 @@ function email_list_subscribe_form ($cid) {
         )
     );
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return the email list unsubscribe form structure.
@@ -701,6 +735,8 @@ function email_list_unsubscribe_form ($subscription) {
     return $form;
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * @return an email list create form structure.
  */
@@ -734,6 +770,10 @@ function email_list_create_form () {
     );
     return $form;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return an email list edit form structure.
@@ -784,8 +824,10 @@ function email_list_edit_form ($lid) {
             )
         )
     );
-    return $form;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return the delete email_list  form structure.
@@ -837,6 +879,7 @@ function email_list_delete_form ($lid) {
 }
 
 // Command handlers ////////////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Handle email list subscribe request.
@@ -865,6 +908,8 @@ function command_email_list_subscribe () {
     return crm_url('contact&cid=' . $cid);
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Handle email list unsubscribe request.
  *
@@ -882,6 +927,8 @@ function command_email_list_unsubscribe () {
     return crm_url('contact&cid=' . $esc_post['cid'] . '#tab-emails');
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Handle email list creation request.
  *
@@ -897,6 +944,8 @@ function command_email_list_create () {
     return crm_url('email_lists');
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Handle email list cpdate request.
  *
@@ -911,6 +960,8 @@ function command_email_list_edit () {
     email_list_save($_POST);
     return crm_url('email_lists&lid=' . $_POST['lid'] . '&tab=edit');
 }
+
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Handle email list delete request.
@@ -929,6 +980,7 @@ function command_email_list_delete () {
 }
 
 // Themeing ////////////////////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return the themed html for an email list creation form.
@@ -938,6 +990,9 @@ function command_email_list_delete () {
 function theme_email_list_create_form () {
     return theme('form', crm_get_form('email_list_create'));
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return themed html for an edit list form.
@@ -949,6 +1004,9 @@ function theme_email_list_edit_form ($kid) {
     return theme('form', crm_get_form('email_list_edit', $lid));
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Return themed html for an email list subscribe form.
  *
@@ -958,6 +1016,9 @@ function theme_email_list_edit_form ($kid) {
 function theme_email_list_subscribe_form ($cid) {
     return theme('form', crm_get_form('email_list_subscribe', $cid));
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return themed html for an email list unsubscribe form.

@@ -32,6 +32,7 @@ $report_membership_theme = 'report_membership';
 $report_membership_theme_opts = '';
 $report_membership_name = "Membership Status";
 $report_membership_desc = "Graphical history of memberships";
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return the earliest date of any membership.
@@ -46,6 +47,8 @@ function report_membership_earliest_date () {
     }
     return $row['start'];
 }
+
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return json structure containing membership statistics.
@@ -130,6 +133,7 @@ function member_statistics () {
 
 
 // Themeing ////////////////////////////////////////////////////////////////////
+/** @noinspection PhpUndefinedClassInspection */
 /**
  * @return The themed html for a membership report.
  */

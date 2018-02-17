@@ -19,6 +19,7 @@
     You should have received a copy of the GNU General Public License
     along with Seltzer.  If not, see <http://www.gnu.org/licenses/>.
 */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return The themed html string for a page header.
@@ -31,6 +32,8 @@ function theme_header () {
     return $output;
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * @return The themed html string for a page footer.
 */
@@ -38,12 +41,16 @@ function theme_footer() {
     return 'Powered by <a href="https://github.com/elplatt/seltzer">Seltzer CRM ' . crm_version() . '</a>';
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * @return The themed html string for logo.
 */
 function theme_logo () {
     return '<div class="logo"><img alt="' . title() . " " . crm_version() . '" src="' . path_to_theme() . '/images/logo.png"/></div>';
 }
+
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return The themed html string for user login status.
@@ -65,6 +72,8 @@ function theme_login_status () {
     return $output;
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * @return The themed html string for the navigation menu.
 */
@@ -82,6 +91,10 @@ function theme_navigation () {
     return $output;
 }
 
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Theme a link.
  *
@@ -96,6 +109,10 @@ function theme_navigation_link ($path, $title) {
     $output = '<a href="' . base_path() . '?q=' . $path . '">' . $title . '</a>';
     return $output;
 }
+
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Generate a themed delete confirmation form.
