@@ -19,7 +19,6 @@
     You should have received a copy of the GNU General Public License
     along with Seltzer.  If not, see <http://www.gnu.org/licenses/>.
 */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return This module's revision number.  Each new release should increment
@@ -28,8 +27,6 @@
 function payment_revision () {
     return 1;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return An array of the permissions provided by this module.
@@ -41,8 +38,6 @@ function payment_permissions () {
         , 'payment_delete'
     );
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Install or upgrade this module.
@@ -101,8 +96,6 @@ function payment_install($old_revision = 0) {
 }
 
 // Utility functions ///////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Parse a string and return a currency.
@@ -181,10 +174,6 @@ function payment_parse_currency ($value, $code = null) {
     return $currency_value;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Format a currency.
  * @param $value A currency structure.
@@ -254,10 +243,6 @@ function payment_format_currency ($value, $symbol = true) {
     return $result;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Add two currency values.
  * @param $a A currency structure.
@@ -275,9 +260,6 @@ function payment_add_currency ($a, $b) {
     );
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Inverts a currency value.
  * @param $value The currency value.
@@ -289,8 +271,6 @@ function payment_invert_currency ($value) {
 }
 
 // DB to Object mapping ////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return data for one or more payments.
@@ -400,9 +380,6 @@ function payment_data ($opts = array()) {
     return $payments;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Save a payment to the database.  If the payment has a key called "pmtid"
  * an existing payment will be updated in the database.  Otherwise a new payment
@@ -491,8 +468,6 @@ function payment_save ($payment) {
     return $payment;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Delete the payment identified by $pmtid.
  * @param $pmtid The payment id.
@@ -512,9 +487,6 @@ function payment_delete ($pmtid) {
         message_register('Deleted payment with id ' . $pmtid);
     }
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return an array mapping cids to balance owed.
@@ -599,9 +571,6 @@ function payment_accounts ($opts = array()) {
     return $cid_to_balance;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Return an array of cids matching the given filters.
  * @param $filter An associative array of filters, keys are:
@@ -652,8 +621,6 @@ function payment_contact_filter ($filter) {
 }
 
 // Table data structures ///////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return a table structure for a table of payments.
@@ -758,9 +725,6 @@ function payment_table ($opts) {
     return $table;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Return a table showing a contacts payment history.
  * @param $opts An associative array of options.  Possible keys are:
@@ -842,9 +806,6 @@ function payment_history_table ($opts) {
     return $table;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Return a table showing account balances.
  * @param $opts An associative array of options.
@@ -875,7 +836,6 @@ function payment_accounts_table ($opts) {
 }
 
 // Forms ///////////////////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return Array mapping payment method values to descriptions.
@@ -888,8 +848,6 @@ function payment_method_options () {
     $options['other'] = 'Other';
     return $options;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return The form structure for adding a payment.
@@ -968,9 +926,6 @@ function payment_add_form () {
     
     return $form;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Create a form structure for editing a payment.
@@ -1080,9 +1035,6 @@ function payment_edit_form ($pmtid) {
     return $form;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Return the payment form structure.
  *
@@ -1136,8 +1088,6 @@ function payment_delete_form ($pmtid) {
     return $form;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Return the form structure for a payment filter.
  * @return The form structure.
@@ -1184,7 +1134,6 @@ function payment_filter_form () {
 }
 
 // Pages ///////////////////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return An array of pages provided by this module.
@@ -1200,10 +1149,6 @@ function payment_page_list () {
     }
     return $pages;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Page hook.  Adds module content to a page before it is rendered.
@@ -1252,7 +1197,6 @@ function payment_page (&$page_data, $page_name, $options) {
 }
 
 // Command handlers ////////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Handle payment add request.
@@ -1277,8 +1221,6 @@ function command_payment_add() {
     return crm_url('payments');
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Handle payment edit request.
  *
@@ -1300,8 +1242,6 @@ function command_payment_edit() {
     return crm_url('payments');
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Handle payment delete request.
  *
@@ -1317,8 +1257,6 @@ function command_payment_delete() {
     payment_delete($_POST['pmtid']);
     return crm_url('payments');
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Handle payment filter request.

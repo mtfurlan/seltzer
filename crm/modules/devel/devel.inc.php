@@ -19,7 +19,6 @@
     You should have received a copy of the GNU General Public License
     along with Seltzer.  If not, see <http://www.gnu.org/licenses/>.
 */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return This module's revision number.  Each new release should increment
@@ -28,9 +27,6 @@
 function devel_revision () {
     return 1;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Page hook.  Adds module content to a page before it is rendered.

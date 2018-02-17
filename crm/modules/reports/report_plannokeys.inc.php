@@ -32,8 +32,6 @@ $report_plannokeys_theme = 'table';
 $report_plannokeys_theme_opts = 'plannokeys';
 $report_plannokeys_name = "Plan NoKeys";
 $report_plannokeys_desc = "List of contacts with active plans but no keys";
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * @return A comma-separated list of user emails.
  * @param $opts - Options to pass to member_data().

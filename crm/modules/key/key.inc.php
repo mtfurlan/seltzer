@@ -21,7 +21,6 @@
 */
 
 // Installation functions //////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return This module's revision number.  Each new release should increment
@@ -30,8 +29,6 @@
 function key_revision () {
     return 2;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return An array of the permissions provided by this module.
@@ -43,8 +40,6 @@ function key_permissions () {
         , 'key_delete'
     );
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Install or upgrade this module.
@@ -100,8 +95,6 @@ function key_install($old_revision = 0) {
 }
 
 // Utility functions ///////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Generate a descriptive string for a single key.
@@ -128,8 +121,6 @@ function key_description ($kid) {
 }
 
 // DB to Object mapping ////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return data for one or more key card assignments.
@@ -202,11 +193,6 @@ function key_data ($opts = array()) {
     return $keys;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Implementation of hook_data_alter().
  * @param $type The type of the data being altered.
@@ -243,9 +229,6 @@ function key_data_alter ($type, $data = array(), $opts = array()) {
     }
     return $data;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Save a key structure.  If $key has a 'kid' element, an existing key will
@@ -308,8 +291,6 @@ function key_save ($key) {
     return crm_get_one('key', array('kid'=>$kid));
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Delete a key.
  * @param $key The key data structure to delete, must have a 'kid' element.
@@ -327,8 +308,6 @@ function key_delete ($key) {
 }
 
 // Table data structures ///////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return a table structure for a table of key assignments.
@@ -415,8 +394,6 @@ function key_table ($opts) {
 }
 
 // Forms ///////////////////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return the form structure for the add key assignment form.
@@ -478,9 +455,6 @@ function key_add_form ($cid) {
     );
     return $form;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return the form structure for an edit key assignment form.
@@ -559,9 +533,6 @@ function key_edit_form ($kid) {
     return $form;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Return the delete key assignment form structure.
  *
@@ -612,9 +583,6 @@ function key_delete_form ($kid) {
 }
 
 // Request Handlers ////////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Command handler.
@@ -629,8 +597,6 @@ function key_command ($command, &$url, &$params) {
             break;
     }
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Handle key add request.
@@ -647,8 +613,6 @@ function command_key_add() {
     return crm_url('contact&cid=' . $_POST['cid'] . '&tab=keys');
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Handle key update request.
  *
@@ -664,8 +628,6 @@ function command_key_update() {
     key_save($_POST);
     return crm_url('key&kid=' . $_POST['kid'] . '&tab=edit');
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Handle key delete request.
@@ -684,7 +646,6 @@ function command_key_delete() {
 }
 
 // Pages ///////////////////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return An array of pages provided by this module.
@@ -696,10 +657,6 @@ function key_page_list () {
     }
     return $pages;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Page hook.  Adds module content to a page before it is rendered.
@@ -760,8 +717,6 @@ function key_page (&$page_data, $page_name, $options) {
 }
 
 // Themeing ////////////////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return the themed html for an add key assignment form.
@@ -772,9 +727,6 @@ function key_page (&$page_data, $page_name, $options) {
 function theme_key_add_form ($cid) {
     return theme('form', crm_get_form('key_add', $cid));
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return themed html for an edit key assignment form.

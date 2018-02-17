@@ -19,7 +19,6 @@
     You should have received a copy of the GNU General Public License
     along with Seltzer.  If not, see <http://www.gnu.org/licenses/>.
 */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Normalize line endings.  Converts all line endings to UNIX (\n) style.
@@ -39,13 +38,6 @@ function remove_utf8_bom($text) {
     $text = preg_replace("/^$bom/", '', $text);
     return $text;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Converts csv data into a data structure.  The returned value is an array

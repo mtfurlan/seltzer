@@ -19,7 +19,6 @@
     You should have received a copy of the GNU General Public License
     along with Seltzer.  If not, see <http://www.gnu.org/licenses/>.
 */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Handle member add request.
@@ -123,8 +122,6 @@ function command_member_add () {
     return crm_url("contact&cid=$esc_cid");
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Handle member edit request.
  *
@@ -151,8 +148,6 @@ function command_member_edit () {
     
     return crm_url("contact&cid=$esc_cid");
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Handle membership plan add request.
@@ -182,8 +177,6 @@ function command_member_plan_add () {
     return crm_url('plans');
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Handle membership plan update request.
  *
@@ -212,8 +205,6 @@ function command_member_plan_update () {
     return crm_url('plans');
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Handle delete membership plan request.
  *
@@ -233,8 +224,6 @@ function command_member_plan_delete () {
     
     return crm_url('plans');
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Handle membership add request.
@@ -267,9 +256,6 @@ function command_member_membership_add () {
     return crm_url("contact&cid=$_POST[cid]&tab=plan");
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Handle membership update request.
  *
@@ -300,8 +286,6 @@ function command_member_membership_update () {
     return crm_url("contact&cid=$_POST[cid]&tab=plan");
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Handle membership delete request.
  *
@@ -321,8 +305,6 @@ function command_member_membership_delete () {
     
     return crm_url("contact&cid=$_POST[cid]&tab=plan");
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Handle member filter request.
@@ -359,8 +341,6 @@ function command_member_filter () {
     
     return crm_url('members') . $query;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Handle member import request.
@@ -508,8 +488,6 @@ function command_member_import () {
     
     return crm_url('members');
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Handle plan import request.

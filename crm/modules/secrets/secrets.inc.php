@@ -20,8 +20,6 @@
 */
 
 // Installation functions //////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * @return This module's revision number.  Each new release should increment
  * this number.
@@ -29,8 +27,6 @@
 function secrets_revision () {
     return 1;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return An array of the permissions provided by this module.
@@ -42,8 +38,6 @@ function secrets_permissions () {
         , 'secrets_delete'
     );
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Install or upgrade this module.
@@ -86,9 +80,6 @@ function secrets_install($old_revision = 0) {
 // Utility functions ///////////////////////////////////////////////////////////
 
 // DB to Object mapping ////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Return data for one or more secrets.
  *
@@ -127,9 +118,6 @@ function secrets_data ($opts = array()) {
     return $secrets;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Create a new secret 
  * @param $secret The secret name,value
@@ -160,9 +148,6 @@ function secrets_add ($secret) {
     }
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Update an existing secret 
  * @param $secret The secret name,value
@@ -191,8 +176,6 @@ function secrets_edit ($secret) {
         return crm_get_one('secrets', array('name'=>$name));
     }
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Delete an existing secret 
@@ -375,9 +358,6 @@ function secrets_add_form () {
     return $form;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Return the secrets edit form structure.
  *
@@ -435,9 +415,6 @@ function secrets_edit_form ($name) {
     return $form;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Return the delete key assigment form structure.
  *
@@ -487,9 +464,6 @@ function secrets_delete_form ($name) {
 }
 
 // Themeing ////////////////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Return the themed html for an add secret assignment form.
  *
@@ -499,9 +473,6 @@ function secrets_delete_form ($name) {
 function theme_secrets_add_form ($name) {
     return theme('form', crm_get_form('secrets_add', $name));
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return themed html for an edit secret form.
@@ -514,8 +485,6 @@ function theme_secrets_edit_form ($name) {
 }
 
 // Pages ///////////////////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * @return An array of pages provided by this module.
  */
@@ -527,10 +496,6 @@ function secrets_page_list () {
     }
     return $pages;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Page hook.  Adds module content to a page before it is rendered.
@@ -568,8 +533,6 @@ function secrets_page (&$page_data, $page_name, $options) {
 }
 // Request Handlers ////////////////////////////////////////////////////////////
 // Put request handlers here
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Handle key secret request.
  *
@@ -585,8 +548,6 @@ function command_secrets_add() {
     return crm_url('secrets');
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Handle key secret edit.
  *
@@ -601,8 +562,6 @@ function command_secrets_edit() {
     secrets_edit($_POST);
     return crm_url('secrets');
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Handle secret delete request.

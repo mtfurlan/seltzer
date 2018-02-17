@@ -20,8 +20,6 @@
 */
 
 // Installation functions //////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * @return This module's revision number.  Each new release should increment
  * this number.
@@ -86,8 +84,6 @@ function service_slack_getSlackID ($email, $username) {
 
 // Tables //////////////////////////////////////////////////////////////////////
 // Put table generators here
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 /**
  * Return a table structure for a table of service links.
  *
@@ -166,15 +162,9 @@ function service_slack_addrow ($opts) {
 // }
 
 // Pages ///////////////////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * @return An array of pages provided by this module.
  */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Page hook.  Adds module content to a page before it is rendered.
  *

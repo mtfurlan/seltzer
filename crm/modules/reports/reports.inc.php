@@ -21,7 +21,6 @@
 */
 
 // Installation functions //////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return This module's revision number.  Each new release should increment
@@ -30,8 +29,6 @@
 function reports_revision () {
     return 1;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return An array of the permissions provided by this module.
@@ -43,8 +40,6 @@ function reports_permissions () {
         , 'reports_delete'
     );
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Install or upgrade this module.
@@ -139,7 +134,6 @@ function reports_table ($reportList) {
 // Themeing ////////////////////////////////////////////////////////////////////
 
 // Pages ///////////////////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return An array of pages provided by this module.
@@ -151,10 +145,6 @@ function reports_page_list () {
     }
     return $pages;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Page hook.  Adds module content to a page before it is rendered.

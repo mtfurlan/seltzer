@@ -19,8 +19,6 @@
     You should have received a copy of the GNU General Public License
     along with Seltzer.  If not, see <http://www.gnu.org/licenses/>.
 */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Get a table, allowing modules to alter it.
@@ -42,10 +40,6 @@ function crm_get_table ($table_id, $opts = array()) {
     }
     return $table;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Themes tabular data.
@@ -183,10 +177,6 @@ function theme_table ($table_id, $opts = NULL) {
     return $output;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Themes tabular data as a CSV.
  *
@@ -234,9 +224,6 @@ function theme_table_csv ($table_name, $opts = NULL) {
     return $output;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Escape a string as a csv cell.
  * @param $cell The cell data
@@ -245,10 +232,6 @@ function theme_table_csv ($table_name, $opts = NULL) {
 function table_escape_csv ($cell) {
     return '"' . str_replace('"', '\"', $cell) . '"';    
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Themes a table with headers in the left column instead of the top row.

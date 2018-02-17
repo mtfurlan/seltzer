@@ -22,7 +22,6 @@
 */
 
 // Installation functions //////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return This module's revision number.  Each new release should increment
@@ -31,8 +30,6 @@
 function mentor_revision () {
     return 1;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return An array of the permissions provided by this module.
@@ -44,8 +41,6 @@ function mentor_permissions () {
         , 'mentor_delete'
     );
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Install or upgrade this module.
@@ -87,7 +82,6 @@ function mentor_install($old_revision = 0) {
 }
 
 // Pages ///////////////////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return An array of pages provided by this module.
@@ -99,10 +93,6 @@ function mentor_page_list () {
     }
     return $pages;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Page hook.  Adds module content to a page before it is rendered.
@@ -137,8 +127,6 @@ function mentor_page (&$page_data, $page_name, $options) {
 }
 
 // Themeing ////////////////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return the themed html for an add mentor assignment form.
@@ -149,9 +137,6 @@ function mentor_page (&$page_data, $page_name, $options) {
 function theme_mentor_add_form ($cid) {
     return theme('form', crm_get_form('mentor_add', $cid));
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return themed html for an edit mentor assignment form.
@@ -164,8 +149,6 @@ function theme_mentor_edit_form ($cid) {
 }
 
 // DB to Object mapping ////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return data for one or more mentor assignments.
@@ -253,8 +236,6 @@ function mentor_data ($opts = array()) {
 }
 
 // Table data structures ///////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return a table structure for a table of mentor assignments.
@@ -382,8 +363,6 @@ function mentor_table ($opts) {
 }
 
 // Forms ///////////////////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return the form structure for the add mentor assignment form.
@@ -430,9 +409,6 @@ function mentor_add_form ($cid) {
     
     return $form;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return the form structure for an edit mentor assignment form.
@@ -510,9 +486,6 @@ function mentor_edit_form ($cid) {
     return $form;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Return the delete mentor assigment form structure.
  *
@@ -570,9 +543,6 @@ function mentor_delete_form ($cid) {
 }
 
 // Request Handlers ////////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Command handler.
@@ -587,8 +557,6 @@ function mentor_command ($command, &$url, &$params) {
             break;
     }
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Handle mentor add request.
@@ -616,8 +584,6 @@ function command_mentor_add() {
     
     return crm_url('contact&cid=' . $_POST['cid'] . '#tab-mentor');
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Handle mentor update request.
@@ -654,8 +620,6 @@ function command_mentor_update() {
     
     return crm_url('contact&cid=' . $esc_post['cid'] . '#tab-mentor');
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Handle mentor delete request.

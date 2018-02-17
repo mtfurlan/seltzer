@@ -32,7 +32,6 @@ $report_emailactive_theme = 'report_emailactive';
 $report_emailactive_theme_opts = array('filter'=>array('active'=>true));
 $report_emailactive_name = "Active Emails";
 $report_emailactive_desc = "List of active member email addresses";
-/** @noinspection PhpUndefinedClassInspection */
 /**
  * @return A comma-separated list of user emails.
  * @param $opts - Options to pass to member_data().
@@ -56,7 +55,6 @@ if (! function_exists('member_email_report')) {
 
 
 // Themeing ////////////////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
 /**
  * @return The themed html for an active member email report.
 */

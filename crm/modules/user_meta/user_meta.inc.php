@@ -29,7 +29,6 @@
 */
 
 // Installation functions //////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return This module's revision number. Each new release should increment
@@ -38,8 +37,6 @@
 function user_meta_revision () {
     return 1;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return An array of the permissions provided by this module.
@@ -51,8 +48,6 @@ function user_meta_permissions () {
         , 'user_meta_delete'
     );
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Install or upgrade this module.
@@ -106,8 +101,6 @@ function user_meta_install($old_revision = 0) {
 }
 
 // Utility functions ///////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Generate a descriptive string for a single Meta-Tag .
@@ -132,8 +125,6 @@ function user_meta_description ($umid) {
 }
 
 // DB to Object mapping ////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return data for one or more meta-tag assignments.
@@ -244,11 +235,6 @@ function user_meta_data ($opts = array()) {
     return $user_metas;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Implementation of hook_data_alter().
  * @param $type The type of the data being altered.
@@ -285,9 +271,6 @@ function user_meta_data_alter ($type, $data = array(), $opts = array()) {
     }
     return $data;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Save a user meta data structure.  If $user_meta has a 'umid' element, an existing user meta data will
@@ -340,8 +323,6 @@ function user_meta_save ($user_meta) {
     return crm_get_one('user_meta', array('umid'=>$umid));
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Delete a piece of user meta data.
  * @param $user_meta The user meta data data structure to delete, must have a 'umid' element.
@@ -358,8 +339,6 @@ function user_meta_delete ($user_meta) {
 }
 
 // Table data structures ///////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return a table structure for a table of meta tag assignments.
@@ -496,9 +475,6 @@ function user_meta_cross_table ($opts) {
     return $table;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Return a normal table structure for a table of meta assignments.
  *
@@ -615,8 +591,6 @@ function meta_tag_autocomplete ($fragment) {
 }
 
 // Forms ///////////////////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return the form structure for the add meta assignment form.
@@ -676,9 +650,6 @@ function user_meta_add_form ($cid) {
     
     return $form;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return the form structure for an edit meta assignment form.
@@ -756,9 +727,6 @@ function user_meta_edit_form ($umid) {
     return $form;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Return the delete meta assigment form structure.
  *
@@ -808,9 +776,6 @@ function user_meta_delete_form ($umid) {
 }
 
 // Request Handlers ////////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Command handler.
@@ -825,8 +790,6 @@ function user_meta_command ($command, &$url, &$params) {
             break;
     }
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Handle meta add request.
@@ -845,8 +808,6 @@ function command_user_meta_add() {
     return crm_url('contact&cid=' . $_POST['cid'] . '&tab=metas');
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Handle meta update request.
  *
@@ -863,8 +824,6 @@ function command_user_meta_update() {
     user_meta_save($_POST);
     return crm_url('user_meta&umid=' . $esc_post['umid'] . '&tab=edit');
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Handle meta delete request.
@@ -883,7 +842,6 @@ function command_user_meta_delete() {
 }
 
 // Pages ///////////////////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return An array of pages provided by this module.
@@ -895,10 +853,6 @@ function user_meta_page_list () {
     }
     return $pages;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Page hook. Adds module content to a page before it is rendered.
@@ -958,8 +912,6 @@ function user_meta_page (&$page_data, $page_name, $options) {
 }
 
 // Themeing ////////////////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return the themed html for an add meta assignment form.
@@ -970,9 +922,6 @@ function user_meta_page (&$page_data, $page_name, $options) {
 function theme_user_meta_add_form ($cid) {
     return theme('form', crm_get_form('user_meta_add', $cid));
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return themed html for an edit meta assignment form.

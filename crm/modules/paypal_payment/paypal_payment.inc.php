@@ -20,7 +20,6 @@
     You should have received a copy of the GNU General Public License
     along with Seltzer.  If not, see <http://www.gnu.org/licenses/>.
 */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return This module's revision number.  Each new release should increment
@@ -29,8 +28,6 @@
 function paypal_payment_revision () {
     return 2;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Install or upgrade this module.
@@ -87,10 +84,6 @@ function paypal_payment_install($old_revision = 0) {
 }
 
 // DB to Object mapping ////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Implementation of hook_data_alter().
@@ -142,8 +135,6 @@ function paypal_payment_data ($opts = array()) {
     }
     return $paypal_payment_data;
 };
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return data for one or more paypal contacts.
@@ -180,8 +171,6 @@ function paypal_payment_contact_data ($opts = array()) {
 }
 
 // Contact & Payment addition, deletion, update ////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Update paypal payment contact data when a contact is updated.
@@ -242,8 +231,6 @@ function paypal_payment_contact_save ($contact) {
     }
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Delete a paypal contact.
  * @param $paypal_payment_contact The paypal_payment_contact data structure to delete, must have a 'cid' element.
@@ -259,9 +246,6 @@ function paypal_payment_contact_delete ($paypal_payment_contact) {
     }
     return crm_url('paypal-admin');
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Update paypal_payment data when a payment is updated.
@@ -320,8 +304,6 @@ function paypal_payment_payment_api ($payment, $op) {
 }
 
 // Table & Page rendering //////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Generate payments contacts table.
@@ -384,10 +366,6 @@ function paypal_payment_contact_table ($opts) {
     return $table; 
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Page hook.  Adds module content to a page before it is rendered.
  *
@@ -413,7 +391,6 @@ function paypal_payment_page (&$page_data, $page_name, $options) {
 }
 
 // Forms ///////////////////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return a paypal payments import form structure.
@@ -447,9 +424,6 @@ function paypal_payment_import_form () {
         )
     );
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return the form structure for the add paypal contact form.
@@ -496,9 +470,6 @@ function paypal_payment_contact_add_form () {
     
     return $form;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return the delete paypal contact form structure.
@@ -549,10 +520,6 @@ function paypal_payment_contact_delete_form ($cid) {
     return $form;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Implementation of hook_form_alter().
  * @param &$form The form being altered.
@@ -599,7 +566,6 @@ function paypal_payment_form_alter ($form, $form_id) {
 }
 
 // Commands ////////////////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Handle paypal payment import request.
@@ -657,8 +623,6 @@ function command_paypal_payment_import () {
     return crm_url('payments');
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Add a paypal contact.
  * @return The url to display on completion.
@@ -667,8 +631,6 @@ function command_paypal_payment_contact_add () {
     paypal_payment_contact_save($_POST);
     return crm_url('paypal-admin');
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Delete a paypal contact.

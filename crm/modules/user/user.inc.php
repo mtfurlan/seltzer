@@ -19,8 +19,6 @@
     You should have received a copy of the GNU General Public License
     along with Seltzer.  If not, see <http://www.gnu.org/licenses/>.
 */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * @return This module's revision number.  Each new release should increment
  * this number.
@@ -28,8 +26,6 @@
 function user_revision () {
     return 1;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return An array of the permissions provided by this module.
@@ -45,8 +41,6 @@ function user_permissions () {
 }
 
 // Install /////////////////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Install or upgrade this module.
  * @param $old_revision The last installed revision of this module, or 0 if the
@@ -145,9 +139,6 @@ function user_install ($old_revision = 0) {
 }
 
 // Data Model //////////////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Return data for one or more users.
  *
@@ -275,11 +266,6 @@ function user_data ($opts) {
     return $users;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Implementation of hook_data_alter().
  * @param $type The type of the data being altered.
@@ -316,9 +302,6 @@ function user_data_alter ($type, $data = array(), $opts = array()) {
     }
     return $data;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return data for one or more roles.
@@ -365,9 +348,6 @@ function user_role_data ($opts = NULL) {
 }
 
 // User adding and deleting ////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Update user data when a contact is updated.
  * @param $contact The contact data array.
@@ -395,9 +375,6 @@ function user_contact_api ($contact, $op) {
     }
     return $contact;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Saves a user into the database
@@ -438,8 +415,6 @@ function user_save ($user) {
     
     return $user;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Delete user.
@@ -484,8 +459,6 @@ function user_init () {
     }
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * @return a list of all permissions.
  */
@@ -493,8 +466,6 @@ function user_permissions_list () {
     global $user_permissions;
     return $user_permissions;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return the cid of the logged in user.
@@ -506,8 +477,6 @@ function user_id () {
     return 0;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Update the session variables to set a specified user as logged in.
  *
@@ -516,9 +485,6 @@ function user_id () {
 function user_login ($cid) {
     $_SESSION['userId'] = $cid;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Check user password.
@@ -533,9 +499,6 @@ function user_check_password($password, $user) {
     }
     return false;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @param $cid The cid of the user being queried, defaults to current user.
@@ -556,8 +519,6 @@ function user_username($cid = NULL) {
     return $data[0]['username'];
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * @return An array of role names.
  */
@@ -576,8 +537,6 @@ function user_role_list () {
     
     return $roles;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Check if the logged in user has permissions for a specified action.
@@ -614,9 +573,6 @@ function user_access ($permission) {
     return $access;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Check if the user has a specific role
  *
@@ -643,8 +599,6 @@ function user_subject_access ($cid, $permission) {
     $user_permission_cache[$permission] = $access;
     return $access;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Generate a password reset url.
@@ -691,8 +645,6 @@ function user_reset_password_url ($username) {
     return $url;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Check whether a specified password reset code exists.
  *
@@ -714,8 +666,6 @@ function user_check_reset_code ($code) {
     return (boolean)$row;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * @return a random password salt.
  */
@@ -730,8 +680,6 @@ function user_salt () {
     return $salt;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Generate a salted password hash.
  * @param $password
@@ -744,8 +692,6 @@ function user_hash ($password, $salt) {
 }
 
 // Command Handlers ////////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Handle login request.
  *
@@ -798,8 +744,6 @@ function command_login () {
     // Redirect to index
     return $next;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Handle logout request.
@@ -862,8 +806,6 @@ function command_reset_password () {
     return crm_url();
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Respond to password reset confirmation.
  * @return The url to display after the command is processed.
@@ -912,8 +854,6 @@ function command_reset_password_confirm () {
     return crm_url('login');
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Set password from member page.
  * @return The url to display after the command is processed.
@@ -953,8 +893,6 @@ function command_set_password () {
     
     return crm_url("contact&cid=$esc_cid");
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Handle user permissions update request.
@@ -1012,8 +950,6 @@ function command_user_permissions_update () {
     return crm_url('permissions');
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Handle user role update request.
  *
@@ -1060,8 +996,6 @@ function command_user_role_update () {
 }
 
 // Forms ///////////////////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * @return login form structure.
 */
@@ -1098,8 +1032,6 @@ function login_form () {
     return $form;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * @return password reset form structure
 */
@@ -1129,9 +1061,6 @@ function user_reset_password_form () {
     );
     return $form;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @param $code The password reset code.
@@ -1173,8 +1102,6 @@ function user_reset_password_confirm_form ($code) {
     return $form;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * @return The set password form structure.
 */
@@ -1212,8 +1139,6 @@ function user_set_password_form ($cid) {
     );
     return $form;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return Form structure for updating user permissions.
@@ -1272,9 +1197,6 @@ function user_permissions_form () {
     return $form;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Return the form structure for editing user roles.
  *
@@ -1322,9 +1244,6 @@ function user_role_edit_form ($cid) {
 }
 
 // Table, Theme & Page /////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Generate a table structure for a given user's info.
  * @param $opts An associative array of options to be passed to user_data().
@@ -1355,8 +1274,6 @@ function user_table ($opts) {
     return $table;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * @return The themed html string for a login form.
 */
@@ -1364,17 +1281,12 @@ function theme_login_form () {
     return theme('form', crm_get_form('login'));
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * @return The themed html for a password reset form.
 */
 function theme_user_reset_password_form () {
     return theme('form', crm_get_form('user_reset_password_form'));
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @param $code The pasword reset code.
@@ -1389,9 +1301,6 @@ function theme_user_reset_password_confirm_form ($code) {
     return theme('form', crm_get_form('user_reset_password_confirm', $code));
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Return themed html for a user role edit form.
  *
@@ -1401,10 +1310,6 @@ function theme_user_reset_password_confirm_form ($code) {
 function theme_user_role_edit_form ($cid) {
     return theme('form', crm_get_form('user_role_edit', $cid));
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Page hook.  Adds user module content to a page before it is rendered.

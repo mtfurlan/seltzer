@@ -52,10 +52,6 @@ function crm_get_form () {
     return $form;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Set form field values or use default.
  * @param $field A form field.
@@ -82,9 +78,6 @@ function form_set_value ($field, $values) {
     }
     return $field;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @param $form The form structure.
@@ -204,9 +197,6 @@ function theme_form ($form) {
     return $output;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Theme a table in the form.
  * @param $field The form table data.
@@ -232,9 +222,6 @@ function theme_form_table ($field) {
     return theme('table', $table);
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Themes a message in a form.
  *
@@ -248,9 +235,6 @@ function theme_form_message($field) {
     $output .= '</fieldset>';
     return $output;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Themes a read-only field in a form.
@@ -273,9 +257,6 @@ function theme_form_readonly ($field) {
     $output .= '</fieldset>';
     return $output;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Themes a text field in a form.
@@ -342,9 +323,6 @@ function theme_form_text ($field) {
     return $output;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Themes a textarea in a form.
  * 
@@ -379,9 +357,6 @@ function theme_form_textarea ($field) {
     return $output;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Themes a checkbox in a form.
  *
@@ -402,9 +377,6 @@ function theme_form_checkbox ($field) {
     $output .= '</fieldset>';
     return $output;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Themes a list of radio buttons in a form.
@@ -432,9 +404,6 @@ function theme_form_radio ($field) {
     return $output;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Themes a password field in a form.
  * 
@@ -452,9 +421,6 @@ function theme_form_password ($field) {
     return $output;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Themes a file field in a form.
  * 
@@ -471,9 +437,6 @@ function theme_form_file ($field) {
     $output .= '</fieldset>';
     return $output;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Themes a select field in a form.
@@ -503,9 +466,6 @@ function theme_form_select ($field) {
     $output .= '</fieldset>';
     return $output;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Themes a submit button in a form.

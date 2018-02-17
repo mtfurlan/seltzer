@@ -32,8 +32,6 @@ $report_dupestorage_theme = 'table';
 $report_dupestorage_theme_opts = 'dupestorage';
 $report_dupestorage_name = "Duplicate Plots";
 $report_dupestorage_desc = "List of contacts with multiple storage plots";
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * @return A comma-separated list of user emails.
  * @param $opts - Options to pass to member_data().

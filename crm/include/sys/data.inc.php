@@ -19,9 +19,6 @@
     You should have received a copy of the GNU General Public License
     along with Seltzer.  If not, see <http://www.gnu.org/licenses/>.
 */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Get an array of data structures from the database, and allow all modules
@@ -61,10 +58,6 @@ function crm_get_data ($type, $opts = array()) {
     return $data;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Get a single data structure from the database, and allow all modules
  * to extend it.  This function will call hook_data() to get the data and
@@ -81,10 +74,6 @@ function crm_get_one ($type, $opts = array()) {
     }
     return array();
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Take an indexed array of data structures and create an associative array.

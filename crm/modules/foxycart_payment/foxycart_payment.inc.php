@@ -19,7 +19,6 @@
     You should have received a copy of the GNU General Public License
     along with Seltzer.  If not, see <http://www.gnu.org/licenses/>.
 */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return This module's revision number.  Each new release should increment
@@ -28,8 +27,6 @@
 function foxycart_revision () {
     return 1;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Install or upgrade this module.
@@ -66,10 +63,6 @@ function foxycart_install($old_revision = 0) {
 }
 
 // DB to Object mapping ////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Implementation of hook_data_alter().
@@ -121,8 +114,6 @@ function foxycart_data ($opts = array()) {
     }
     return $foxycart_data;
 };
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return data for one or more amazon contacts.
@@ -195,8 +186,6 @@ function foxycart_contact_save ($contact) {
     }
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Delete an amazon contact.
  * @param $foxycart_contact The foxycart_contact data structure to delete, must have a 'cid' element.
@@ -212,9 +201,6 @@ function foxycart_contact_delete ($foxycart_contact) {
     }
     return crm_url('amazon-admin');
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Update foxycart data when a payment is updated.
@@ -273,8 +259,6 @@ function foxycart_payment_api ($payment, $op) {
 }
 
 // Table & Page rendering //////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Generate payments contacts table.
@@ -337,10 +321,6 @@ function foxycart_contact_table ($opts) {
     return $table; 
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Page hook.  Adds module content to a page before it is rendered.
  *
@@ -366,7 +346,6 @@ function foxycart_page (&$page_data, $page_name, $options) {
 }
 
 // Forms ///////////////////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * @return an amazon payments import form structure.
@@ -400,9 +379,6 @@ function foxycart_import_form () {
         )
     );
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return the form structure for the add amazon contact form.
@@ -450,9 +426,6 @@ function foxycart_contact_add_form () {
     return $form;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Return the delete amazon contact form structure.
  *
@@ -494,10 +467,6 @@ function foxycart_contact_delete_form ($amazon_name) {
     
     return $form;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Implementation of hook_form_alter().
@@ -545,7 +514,6 @@ function foxycart_form_alter($form, $form_id) {
 }
 
 // Commands ////////////////////////////////////////////////////////////////////
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Handle amazon payment import request.
@@ -615,8 +583,6 @@ function command_foxycart_import () {
     return crm_url('payments');
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Add an amazon contact.
  * @return The url to display on completion.
@@ -625,8 +591,6 @@ function command_foxycart_contact_add () {
     foxycart_contact_save($_POST);
     return crm_url('amazon-admin');
 }
-
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Delete an amazon contact.
@@ -645,10 +609,6 @@ function command_foxycart_contact_delete () {
 function theme_foxycart_admin () {
     return '<p><a href=' . crm_url('amazon-admin') . '>Administer</a></p>';
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Return themed html for an amazon payment button.
@@ -717,8 +677,6 @@ EOF;
     return $html;
 }
 
-/** @noinspection PhpUndefinedClassInspection */
-
 /**
  * Generates an amazon payment signature.
  * See: http://docs.aws.amazon.com/general/latest/gr/signature-version-2.html
@@ -734,9 +692,6 @@ function foxycart_signature ($params, $host, $path, $method) {
     $signature = base64_encode(hash_hmac('sha256', $query, $config_foxycart_secret, true));
     return $signature;
 }
-
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedClassInspection */
 
 /**
  * Convert parameters into a query string for signing.
