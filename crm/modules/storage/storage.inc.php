@@ -1334,6 +1334,7 @@ function storage_delete_form ($plot) {
 }
 
 function user_plot_assign_form ($opts) {
+    global $db_connect;
     $esc_cid = mysqli_real_escape_string($db_connect, $opts['cid']);
     // Get available plots
     $sql = "SELECT pid, `desc` from storage_plot ";
