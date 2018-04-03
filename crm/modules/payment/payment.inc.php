@@ -1183,13 +1183,13 @@ function payment_page (&$page_data, $page_name, $options) {
         case 'accounts':
             page_set_title($page_data, 'Accounts');
             if (user_access('payment_view')) {
-                $content = theme('table', crm_get_table('payment_accounts', array('show_export'=>true)));
+                $content = theme('table', 'payment_accounts', array('show_export'=>true));
                 page_add_content_top($page_data, $content);
             }
             break;
         case 'contact':
             if (user_id() == $_GET['cid'] || user_access('payment_view')) {
-                $content = theme('table', crm_get_table('payment_history', array('cid' => $_GET['cid'])));
+                $content = theme('table', 'payment_history', array('cid' => $_GET['cid']));
                 page_add_content_top($page_data, $content, 'Account');
             }
             break;

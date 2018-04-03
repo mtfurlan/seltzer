@@ -49,8 +49,7 @@ function crm_get_table ($table_id, $opts = array()) {
  * @return The themed html for a table.
 */
 function theme_table ($table_id, $opts = NULL) {
-    
-    // $opts['show_export'] = false;
+
     // Check if $table_name is a string
     if (is_string($table_id)) {
         $table = crm_get_table($table_id, $opts);
@@ -74,7 +73,7 @@ function theme_table ($table_id, $opts = NULL) {
     if (!is_string($table_id)) {
         $table_id = $table_id['id'];
     }
-    $export = 'export-csv.php?name=' . $table_id . '&opts=' . urlencode(json_encode($new_opts));
+     $export = 'export-csv.php?name=' . $table_id . '&opts=' . urlencode(json_encode($new_opts));
     
     // Open table
     $output = "<table";
@@ -156,7 +155,6 @@ function theme_table ($table_id, $opts = NULL) {
         $output .= '</tr>';
     }
     $output .= "</tbody>";
-   
     if (isset($opts) && array_key_exists('show_export', $opts)) {
         if ($opts['show_export']) {
             $output .= '<tfoot>';
