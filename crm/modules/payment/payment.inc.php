@@ -813,7 +813,7 @@ function payment_history_table ($opts) {
  */
 function payment_accounts_table ($opts) {
     $export = (array_key_exists('export', $opts) && $opts['export']) ? true : false;
-    $cids = payment_contact_filter(array('balance_due'=>true));
+    $cids = payment_contact_filter(array('balance'=>true));
     $balances = payment_accounts(array('cid'=>$cids));
     $table = array(
         'columns' => array(
