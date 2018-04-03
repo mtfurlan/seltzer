@@ -382,8 +382,8 @@ if (isset($opts['pid'])) {
         $esc_name = mysqli_real_escape_string($db_connect, $opts['pid']);
         $sql = "UPDATE storage_plot SET cid = NULL WHERE pid = '" . $esc_name . "'";
         $res = mysqli_query($db_connect, $sql);
-        if (!$res) die(mysqli_error($res));
-        if (mysqli_affected_rows() > 0) {
+        if (!$res) { die(mysqli_error($res));} 
+        else {
             $opts['action'] = 'Vacate';
             storage_log($opts);
             message_register('Storage Plot '.$esc_name.' vacated.');
@@ -591,11 +591,11 @@ function storage_reap_config ($opts) {
             $fourthThu = date('d', strtotime('fourth thursday of this month'));
             if (date('d') > $fourthThu) {
                 $fromdate = date('Y-m-d', strtotime('fourth tuesday of next month'));
-                $month = date('m', strtotime('next month'));
+                $month = date('n', strtotime('next month'));
                 $monthName = date('F', strtotime('next month'));
             } else {
                 $fromdate = date('Y-m-d', strtotime('fourth tuesday of this month'));
-                $month = date('m');
+                $month = date('n');
                 $monthName = date('F');
             }
 
@@ -1342,7 +1342,7 @@ function user_plot_assign_form ($opts) {
     $sql .= "ORDER by pid;";
     $res = mysqli_query($db_connect, $sql);
     if (!$res) die(mysqli_error($res));
-    while($rs=mysqli_fetch_array($db_connect, $res)){
+    while($rs=mysqli_fetch_array($res)){
         $openplots[$rs['pid']] = $rs['pid'] ." - ". $rs['desc'];
     }
 
@@ -1746,7 +1746,7 @@ function storage_page (&$page_data, $page_name, $options) {
             if (user_access('storage_edit')) {
                 // set current month
                 if (!array_key_exists('reap_month_filter_option', $_SESSION)) {
-                    $_SESSION['reap_month_filter_option'] = date('m');
+                    $_SESSION['reap_month_filter_option'] = date('n');
                 }
                 $thisWeek = array_key_exists('reap_filter', $_SESSION) ? $_SESSION['reap_filter'] : array('week'=>'weekOne');
 
