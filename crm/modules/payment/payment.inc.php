@@ -1169,7 +1169,7 @@ function payment_page (&$page_data, $page_name, $options) {
                     'show_export' => true
                     , 'filter' => $filter
                 );
-                $content .= theme('table', crm_get_table('payment', $opts));
+                $content .= theme('table', 'payment', $opts);
                 page_add_content_top($page_data, $content, 'View');
             }
             break;

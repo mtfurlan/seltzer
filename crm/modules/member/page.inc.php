@@ -69,7 +69,7 @@ function member_page (&$page_data, $page_name, $options) {
                         'emergencyPhone'
                     )
                 );
-                $view .= theme('table', crm_get_table('member', $opts));
+                $view .= theme('table', 'member', $opts);
                 page_add_content_top($page_data, $view, 'View');
             }
             
@@ -92,7 +92,7 @@ function member_page (&$page_data, $page_name, $options) {
             
             // Add view, add and import tabs
             if (user_access('member_plan_edit')) {
-                page_add_content_top($page_data, theme('table', crm_get_table('member_plan')), 'View');
+                page_add_content_top($page_data, theme('table', member_plan, array('show_export'=>true)), 'View');
                 page_add_content_top($page_data, theme('form', crm_get_form('member_plan_add')), 'Add');
                 page_add_content_top($page_data, theme('form', crm_get_form('plan_import')), 'Import');
             }

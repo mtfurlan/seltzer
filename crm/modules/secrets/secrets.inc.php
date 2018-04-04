@@ -514,7 +514,7 @@ function secrets_page (&$page_data, $page_name, $options) {
         case 'secrets':
             page_set_title($page_data, 'Secret Keeper');
             if (user_access('secrets_view')) {
-                $secrets = theme('table', 'secrets');
+                $secrets = theme('table', 'secrets', array('show_export'=>true));
             }
             if (user_access('secrets_edit')) {
                 $secrets .= theme('secrets_add_form', '');

@@ -691,7 +691,7 @@ function key_page (&$page_data, $page_name, $options) {
             page_set_title($page_data, 'Keys');
             // Add view tab
             if (user_access('key_view')) {
-                $keys = theme('table', crm_get_table('key', array('join'=>array('contact', 'member'), 'show_export'=>true)));
+                $keys = theme('table', 'key', array('join'=>array('contact', 'member'), 'show_export'=>true));
                 page_add_content_top($page_data, $keys, 'View');
             }
             break;
