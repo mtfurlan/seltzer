@@ -1015,7 +1015,7 @@ function storage_edit_form ($name) {
 
     // Get list of active users to populate dropdown
     $contactlist = array('0'=>'');
-    $contacts = member_data(array('filter'=>array('active'=>true)));
+    $contacts = member_data(array('filter'=>array('active'=>true, 'scholarship'=>true)));
     // message_register(count($contacts));
     // message_register(var_export($contacts,true));
     foreach ($contacts as $contact) {
