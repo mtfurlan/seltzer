@@ -886,7 +886,7 @@ function user_meta_page (&$page_data, $page_name, $options) {
             page_set_title($page_data, 'Meta-Tags');
             if (user_access('user_meta_view')) {
                 // meta_cross_table ( displays tags across the screen, not down )
-                $user_metas = theme('table', crm_get_table('user_meta_cross', array('join'=>array('contact', 'member'), 'show_export'=>true)));
+                $user_metas = theme('table', 'user_meta_cross', array('join'=>array('contact', 'member'), 'show_export'=>true));
                 page_add_content_top($page_data, $user_metas, 'View');
             }
             break;
