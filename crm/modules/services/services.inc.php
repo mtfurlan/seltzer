@@ -46,6 +46,9 @@ function services_permissions () {
  *   module has never been installed.
  */
 function services_install($old_revision = 0) {
+
+    global $db_connect;
+
     if ($old_revision < 1) {
         // Create databases here
         $roles = array(

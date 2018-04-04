@@ -47,6 +47,9 @@ function reports_permissions () {
  *   module has never been installed.
  */
 function reports_install($old_revision = 0) {
+
+    global $db_connect;
+
     if ($old_revision < 1) {
         // No unique databases needed
                 // Set default permissions

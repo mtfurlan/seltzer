@@ -32,7 +32,6 @@ $report_membership_theme = 'report_membership';
 $report_membership_theme_opts = '';
 $report_membership_name = "Membership Status";
 $report_membership_desc = "Graphical history of memberships";
-
 /**
  * @return the earliest date of any membership.
  */

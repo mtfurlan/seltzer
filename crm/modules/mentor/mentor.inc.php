@@ -606,8 +606,8 @@ function command_mentor_update() {
         UPDATE `mentor`
         SET
         `start`='$esc_post[start]',";
-    if (!empty($esc_post[end])) {
-        $sql .= "`end`='$esc_post[end]',";
+    if (!empty($esc_post['end'])) {
+        $sql .= "`end`='"+$esc_post['end']+"',";
     } else {
         $sql .= "`end`=NULL,";
     }

@@ -20,7 +20,6 @@
 */
 
 // Installation functions //////////////////////////////////////////////////////
-
 /**
  * @return This module's revision number.  Each new release should increment
  * this number.
@@ -163,11 +162,9 @@ function service_slack_addrow ($opts) {
 // }
 
 // Pages ///////////////////////////////////////////////////////////////////////
-
 /**
  * @return An array of pages provided by this module.
  */
-
 /**
  * Page hook.  Adds module content to a page before it is rendered.
  *

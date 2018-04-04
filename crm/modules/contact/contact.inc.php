@@ -389,8 +389,8 @@ function contact_form ($opts = array()) {
             , 'lastName' => ''
             , 'email' => ''
             , 'phone' => ''
-            , 'emergencyName' => ''
-            , 'emergencyPhone' => ''
+            // , 'emergencyName' => ''
+            // , 'emergencyPhone' => ''
             );
     }
     // Add fields
@@ -428,18 +428,18 @@ function contact_form ($opts = array()) {
                 , 'name' => 'phone'
                 , 'value' => $contact['phone']
             )
-            , array(
-                'type' => 'text'
-                , 'label' => 'Emergency Contact'
-                , 'name' => 'emergencyName'
-                , 'value' => $contact['emergencyName']
-            )
-            , array(
-                'type' => 'text'
-                , 'label' => 'Emergency Phone'
-                , 'name' => 'emergencyPhone'
-                , 'value' => $contact['emergencyPhone']
-            )
+            // , array(
+            //     'type' => 'text'
+            //     , 'label' => 'Emergency Contact'
+            //     , 'name' => 'emergencyName'
+            //     , 'value' => $contact['emergencyName']
+            // )
+            // , array(
+            //     'type' => 'text'
+            //     , 'label' => 'Emergency Phone'
+            //     , 'name' => 'emergencyPhone'
+            //     , 'value' => $contact['emergencyPhone']
+            // )
         )
     );
     return $form;

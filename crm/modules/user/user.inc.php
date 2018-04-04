@@ -19,7 +19,6 @@
     You should have received a copy of the GNU General Public License
     along with Seltzer.  If not, see <http://www.gnu.org/licenses/>.
 */
-
 /**
  * @return This module's revision number.  Each new release should increment
  * this number.
@@ -42,7 +41,6 @@ function user_permissions () {
 }
 
 // Install /////////////////////////////////////////////////////////////////////
-
 /**
  * Install or upgrade this module.
  * @param $old_revision The last installed revision of this module, or 0 if the
@@ -141,7 +139,6 @@ function user_install ($old_revision = 0) {
 }
 
 // Data Model //////////////////////////////////////////////////////////////////
-
 /**
  * Return data for one or more users.
  *
@@ -351,7 +348,6 @@ function user_role_data ($opts = NULL) {
 }
 
 // User adding and deleting ////////////////////////////////////////////////////
-
 /**
  * Update user data when a contact is updated.
  * @param $contact The contact data array.
@@ -696,7 +692,6 @@ function user_hash ($password, $salt) {
 }
 
 // Command Handlers ////////////////////////////////////////////////////////////
-
 /**
  * Handle login request.
  *
@@ -1001,7 +996,6 @@ function command_user_role_update () {
 }
 
 // Forms ///////////////////////////////////////////////////////////////////////
-
 /**
  * @return login form structure.
 */
@@ -1250,7 +1244,6 @@ function user_role_edit_form ($cid) {
 }
 
 // Table, Theme & Page /////////////////////////////////////////////////////////
-
 /**
  * Generate a table structure for a given user's info.
  * @param $opts An associative array of options to be passed to user_data().

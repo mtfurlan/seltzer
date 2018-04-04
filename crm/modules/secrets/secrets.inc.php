@@ -20,7 +20,6 @@
 */
 
 // Installation functions //////////////////////////////////////////////////////
-
 /**
  * @return This module's revision number.  Each new release should increment
  * this number.
@@ -81,7 +80,6 @@ function secrets_install($old_revision = 0) {
 // Utility functions ///////////////////////////////////////////////////////////
 
 // DB to Object mapping ////////////////////////////////////////////////////////
-
 /**
  * Return data for one or more secrets.
  *
@@ -466,7 +464,6 @@ function secrets_delete_form ($name) {
 }
 
 // Themeing ////////////////////////////////////////////////////////////////////
-
 /**
  * Return the themed html for an add secret assignment form.
  *
@@ -488,7 +485,6 @@ function theme_secrets_edit_form ($name) {
 }
 
 // Pages ///////////////////////////////////////////////////////////////////////
-
 /**
  * @return An array of pages provided by this module.
  */
@@ -537,7 +533,6 @@ function secrets_page (&$page_data, $page_name, $options) {
 }
 // Request Handlers ////////////////////////////////////////////////////////////
 // Put request handlers here
-
 /**
  * Handle key secret request.
  *

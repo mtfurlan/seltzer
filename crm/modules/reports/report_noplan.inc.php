@@ -32,7 +32,6 @@ $report_noplan_theme = 'table';
 $report_noplan_theme_opts = 'noplan';
 $report_noplan_name = "Contact NoPlan";
 $report_noplan_desc = "List of contacts without any plan info";
-
 /**
  * @return A comma-separated list of user emails.
  * @param $opts - Options to pass to member_data().

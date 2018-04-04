@@ -792,7 +792,7 @@ function payment_history_table ($opts) {
         $row[] = payment_format_currency($balance);
         $ops = '';
         if (isset($_GET['pmtid']) && user_access('payment_edit')) {
-            $ops .= '<a href=' . crm_url('payment&pmtid=' . $payment[pmtid]) . '>edit</a> ';
+            $ops .= '<a href=' . crm_url('payment&pmtid=' . $payment['pmtid']) . '>edit</a> ';
         }
         if (user_access('payment_edit') && ! isset($opts['output'])) {
             $ops .= '<a href=' . crm_url('delete&type=payment&id=' . $payment['pmtid']) . '>delete</a>';

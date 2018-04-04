@@ -20,7 +20,6 @@
     You should have received a copy of the GNU General Public License
     along with Seltzer.  If not, see <http://www.gnu.org/licenses/>.
 */
-
 /**
  * @return This module's revision number.  Each new release should increment
  * this number.
@@ -30,7 +29,6 @@ function profile_picture_revision () {
 }
 
 // Installation functions //////////////////////////////////////////////////////
-
 /**
  * Install or upgrade this module.
  * @param $old_revision The last installed revision of this module, or 0 if the
@@ -62,7 +60,6 @@ function profile_picture_install ($old_revision = 0) {
 }
 
 // Pages ///////////////////////////////////////////////////////////////////////
-
 /**
  * @return An array of pages provided by this module.
  */
@@ -252,7 +249,6 @@ function command_profile_picture_upload () {
 }
 
 // DB to Object mapping ////////////////////////////////////////////////////////
-
 /**
  * Delete a profile picture.
  * @param $cid the cid of the profile picture to delete
@@ -287,7 +283,6 @@ function profile_picture_delete ($cid) {
 }
 
 // Themeing ////////////////////////////////////////////////////////////////////
-
 /**
  * Theme a contact's profile picture.
  * 

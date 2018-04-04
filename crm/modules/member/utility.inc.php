@@ -19,7 +19,6 @@
     You should have received a copy of the GNU General Public License
     along with Seltzer.  If not, see <http://www.gnu.org/licenses/>.
 */
-
 /**
  * Convert first, middle, last into a single name string. Deprecated, use
  * theme_contact_name() instead.

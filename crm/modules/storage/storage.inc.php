@@ -46,6 +46,9 @@ function storage_permissions () {
  *   module has never been installed.
  */
 function storage_install($old_revision = 0) {
+
+    global $db_connect;
+
     if ($old_revision < 1) {
 // create master list table
         $sql = 'CREATE TABLE IF NOT EXISTS `storage_plot` (

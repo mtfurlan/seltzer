@@ -32,7 +32,6 @@ $report_emaillapsed_theme = 'report_emaillapsed';
 $report_emaillapsed_theme_opts = array('filter'=>array('active'=>false));
 $report_emaillapsed_name = "Lapsed Emails";
 $report_emaillapsed_desc = "List of inactive member email addresses";
-
 /**
  * @return A comma-separated list of user emails.
  * @param $opts - Options to pass to member_data().

@@ -19,7 +19,6 @@
     You should have received a copy of the GNU General Public License
     along with Seltzer.  If not, see <http://www.gnu.org/licenses/>.
 */
-
 /**
  * Install or upgrade this module.
  * @param $old_revision The last installed revision of this module, or 0 if the

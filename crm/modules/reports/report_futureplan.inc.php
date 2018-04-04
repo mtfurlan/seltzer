@@ -32,7 +32,6 @@ $report_futureplan_theme = 'table';
 $report_futureplan_theme_opts = 'futureplan';
 $report_futureplan_name = "Contact Future Plan";
 $report_futureplan_desc = "Contacts whose plans start in the future";
-
 /**
  * @return A comma-separated list of user emails.
  * @param $opts - Options to pass to member_data().

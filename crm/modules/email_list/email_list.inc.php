@@ -784,7 +784,6 @@ function email_list_edit_form ($lid) {
             )
         )
     );
-    return $form;
 }
 
 /**
