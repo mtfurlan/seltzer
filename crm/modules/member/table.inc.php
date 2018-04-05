@@ -74,6 +74,9 @@ function member_table ($opts = NULL) {
         if (!array_key_exists('exclude', $opts) || !in_array('emergencyPhone', $opts['exclude'])) {
             $table['columns'][] = array('title'=>'Emergency Phone','class'=>'');
         }
+        if (!array_key_exists('exclude', $opts) || !in_array('emergencyRelation', $opts['exclude'])) {
+            $table['columns'][] = array('title'=>'Emergency Relation','class'=>'');
+        }
     }
     // Add ops column
     if (!$export && (user_access('member_edit') || user_access('member_delete'))) {
@@ -121,6 +124,29 @@ function member_table ($opts = NULL) {
             if (!array_key_exists('exclude', $opts) || !in_array('emergencyPhone', $opts['exclude'])) {
                 $row[] = $member['member']['emergencyPhone'];
             }
+            if (!array_key_exists('exclude', $opts) || !in_array('emergencyRelation', $opts['exclude'])) {
+                $row[] = $member['member']['emergencyRelation'];
+            }
+            // Construct ops array
+            $ops = array();
+            
+            // Add edit op
+            if (user_access('member_edit')) {
+                $ops[] = '<a href=' . crm_url('contact&cid=' . $member['cid'] . '&tab=edit') .'>edit</a>';
+            }
+            
+            // Add delete op
+            if (user_access('member_delete')) {
+                $ops[] = '<a href=' . crm_url('delete&type=contact&amp;id=' . $member['cid']) . '>delete</a>';
+            }
+            
+            // Add ops row
+            if (!$export && (user_access('member_edit') || user_access('member_delete'))) {
+                $row[] = join(' ', $ops);
+            }
+            
+            // Add row to table
+            $table['rows'][] = $row;
         }
         
         // Construct ops array
@@ -384,14 +410,13 @@ function member_contact_table ($opts) {
     return $table;
 }
 
-
 /**
- * Return a table structure representing members' needs.
+ * Return a table structure representing members' details.
  *
  * @param $opts Options to pass to member_data().
  * @return The table structure.
 */
-function member_info_table ($opts = NULL) {
+function member_details_table ($opts = NULL) {
     
     // Ensure user is allowed to view members
     if (!user_access('member_view')) {
@@ -428,6 +453,9 @@ function member_info_table ($opts = NULL) {
         if (!array_key_exists('exclude', $opts) || !in_array('emergencyPhone', $opts['exclude'])) {
             $table['columns'][] = array('title'=>'Emergency Phone','class'=>'');
         }
+        if (!array_key_exists('exclude', $opts) || !in_array('emergencyRelation', $opts['exclude'])) {
+            $table['columns'][] = array('title'=>'Emergency Relation','class'=>'');
+        }
     }
     // Add ops column
     if (!$export && (user_access('member_edit') || user_access('member_delete'))) {
@@ -445,6 +473,9 @@ function member_info_table ($opts = NULL) {
             }
             if (!array_key_exists('exclude', $opts) || !in_array('emergencyPhone', $opts['exclude'])) {
                 $row[] = $member['member']['emergencyPhone'];
+            }
+            if (!array_key_exists('exclude', $opts) || !in_array('emergencyRelation', $opts['exclude'])) {
+                $row[] = $member['member']['emergencyRelation'];
             }
         }
         

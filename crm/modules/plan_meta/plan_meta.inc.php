@@ -333,7 +333,7 @@ function plan_meta_delete ($plan_meta) {
 function plan_meta_cross_table ($opts) {
 
     global $db_connect;
-
+    
     // Determine settings
     $export = false;
     foreach ($opts as $option => $value) {

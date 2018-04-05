@@ -348,9 +348,9 @@ function user_meta_delete ($user_meta) {
  * @return The table structure.
  */
 function user_meta_cross_table ($opts) {
-
+    
     global $db_connect;
-
+    
     // Determine settings
     $export = false;
     foreach ($opts as $option => $value) {
