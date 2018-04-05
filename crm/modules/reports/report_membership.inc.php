@@ -35,7 +35,7 @@ $report_membership_desc = "Graphical history of memberships";
 /**
  * @return the earliest date of any membership.
  */
-function member_membership_earliest_date () {
+function report_membership_earliest_date () {
     global $db_connect;
     $sql = "SELECT `start` FROM `membership` ORDER BY `start` ASC LIMIT 1";
     $res = mysqli_query($db_connect, $sql);
