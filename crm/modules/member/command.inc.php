@@ -329,6 +329,7 @@ function command_member_filter () {
     
     // Construct query string
     $params = array();
+    $query = "";
     foreach ($_GET as $k=>$v) {
         if ($k == 'command' || $k == 'filter' || $k == 'q') {
             continue;

@@ -106,7 +106,7 @@ function member_data ($opts = array()) {
             $f_sql .= " ( (`membership`.`start` IS NULL OR `membership`.`start` > NOW()) OR (`membership`.`end` IS NOT NULL AND `membership`.`end` < NOW()) AND `member`.`cid` NOT IN $esc_list)";
             
         }
-        $sql .= " AND ( \n$f_sql\n )";
+        if (!empty($f_sql)) { $sql .= " AND ( \n$f_sql\n )"; }
     }
     if (isset($filter['voting'])) {
         $sql .= " AND (`membership`.`start` IS NOT NULL AND `membership`.`start` < NOW() AND (`membership`.`end` IS NULL OR `membership`.`end` > NOW()) AND `plan`.`voting` <> 0)";
@@ -117,8 +117,8 @@ function member_data ($opts = array()) {
 
     // var_dump_pre($sql);    
     $res = mysqli_query($db_connect, $sql);
-// var_dump_pre($res);
-// var_dump_pre("[EOF]");
+    // var_dump_pre($res);
+    // var_dump_pre("[EOF]");
     if (!$res) crm_error(mysqli_error($res));
     
     // Store data
