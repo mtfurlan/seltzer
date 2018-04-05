@@ -148,31 +148,7 @@ function member_table ($opts = NULL) {
             // Add row to table
             $table['rows'][] = $row;
         }
-        
-        // Construct ops array
-        $ops = array();
-        
-        // Add edit op
-        if (user_access('member_edit')) {
-            $ops[] = '<a href=' . crm_url('contact&cid=' . $member['cid'] . '&tab=edit') .'>edit</a>';
-        }
-        
-        // Add delete op
-        if (user_access('member_delete')) {
-            $ops[] = '<a href=' . crm_url('delete&type=contact&amp;id=' . $member['cid']) . '>delete</a>';
-        }
-        
-        // Add ops row
-        if (!$export && (user_access('member_edit') || user_access('member_delete'))) {
-            $row[] = join(' ', $ops);
-        }
-        
-        // Add row to table
-        $table['rows'][] = $row;
-    
-        // break;
     }
-    
     // Return table
     return $table;
 }
