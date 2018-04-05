@@ -35,14 +35,9 @@ $report_membership_desc = "Graphical history of memberships";
 /**
  * @return the earliest date of any membership.
  */
-<<<<<<< HEAD:crm/modules/reports/report_membership.inc.php
-function report_membership_earliest_date () {
-=======
 function member_membership_earliest_date () {
     global $db_connect;
->>>>>>> 0.5.5:crm/modules/member/report.inc.php
     $sql = "SELECT `start` FROM `membership` ORDER BY `start` ASC LIMIT 1";
-    global $db_connect;
     $res = mysqli_query($db_connect, $sql);
     $row = mysqli_fetch_assoc($res);
     if (!$row) {
@@ -129,7 +124,6 @@ function member_statistics () {
     $indexed = array($indexed[7], $indexed[9], $indexed[6], $indexed[5], $indexed[8], $indexed[4], $indexed[3], $indexed[2], $indexed[1], $indexed[0]);
     return json_encode($indexed);
 }
-<<<<<<< HEAD:crm/modules/reports/report_membership.inc.php
 
 // Forms ///////////////////////////////////////////////////////////////////////
 // Put form generators here
@@ -182,5 +176,3 @@ EOF;
 
 // Pages ///////////////////////////////////////////////////////////////////////
 // No pages
-=======
->>>>>>> 0.5.5:crm/modules/member/report.inc.php
