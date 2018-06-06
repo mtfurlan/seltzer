@@ -681,16 +681,30 @@ function payment_table ($opts) {
         $row = array();
         if (user_access('payment_view')) {
             $row[] = $payment['date'];
-            $row[] = $payment['description'];
+            
+            if(isset($opts['export']) && $opts['export']) {
+                $row[] = strip_tags($payment['description']);
+            } else {
+                $row[] = $payment['description'];
+            }
+            
             if (array_key_exists('credit_cid', $payment) && $payment['credit_cid']) {
                 $contact = $cid_to_contact[$payment['credit_cid']];
-                $row[] = theme('contact_name', $contact, true);
+                if(isset($opts['export']) && $opts['export']) {
+                    $row[] = "{$contact['firstName']} {$contact['lastName']}";
+                } else {
+                    $row[] = theme('contact_name', $contact, true);
+                }
             } else {
                 $row[] = '';
             }
             if ($payment['debit_cid']) {
                 $contact = $cid_to_contact[$payment['debit_cid']];
-                $row[] = theme('contact_name', $contact, true);
+                if(isset($opts['export']) && $opts['export']) {
+                    $row[] = "{$contact['firstName']} {$contact['lastName']}";
+                } else {
+                    $row[] = theme('contact_name', $contact, true);
+                }
             } else {
                 $row[] = '';
             }
@@ -722,6 +736,7 @@ function payment_table ($opts) {
         }
         $table['rows'][] = $row;
     }
+    
     return $table;
 }
 
