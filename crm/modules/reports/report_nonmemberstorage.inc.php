@@ -70,17 +70,32 @@ function nonmemberstorage_table ($opts = NULL) {
     $noncurrent_cids = get_storage_cids_without_plan();
 
      // Initialize table
-    $table = array(
-        'columns' => array(
-            array('title' => 'Name')
-            , array('title' => 'Plan')
-            , array('title' => 'Start')
-            , array('title' => 'End')
-            , array('title' => 'Plot#')
-            , array('title' => 'Description')
-        )
-        , 'rows' => array()
-    );
+    // $table = array(
+    //     'columns' => array(
+    //         array('title' => 'Name')
+    //         , array('title' => 'Plan')
+    //         , array('title' => 'Start')
+    //         , array('title' => 'End')
+    //         , array('title' => 'Plot#')
+    //         , array('title' => 'Description')
+    //     )
+    //     , 'rows' => array()
+    // );
+
+// Add columns
+    $table['columns'] = array();
+    $table['columns'][] = array('title'=>'Name');
+    if ($export) {
+        $table['columns'][] = array('title'=>'Phone');
+        $table['columns'][] = array('title'=>'eMail');
+    }
+    $table['columns'][] = array('title'=>'Plan');
+    $table['columns'][] = array('title'=>'Start');
+    $table['columns'][] = array('title'=>'End');
+    $table['columns'][] = array('title'=>'Plot#');
+    $table['columns'][] = array('title'=>'Description');
+    $table['rows'] = array();
+
 
     // Add rows
     foreach ($noncurrent_cids as $cid) {
@@ -94,12 +109,18 @@ function nonmemberstorage_table ($opts = NULL) {
         $member = $data[0];
         $contact = $member['contact'];
         $name = theme('contact_name', $contact['cid'], !$export);
+        $phone = $contact['phone'];
+        $email = $contact['email'];
         $recentMembership = end($member['membership']);
         $plan = $recentMembership['plan']['name']; // then this is an active plan
         $planstart = $recentMembership['start'];
         $planend = $recentMembership['end'];
         
         $row[] = $name;
+        if ($export) {
+            $row[] = $phone;
+            $row[] = $email;
+        }
         $row[] = $plan;
         $row[] = $planstart;
         $row[] = $planend;
