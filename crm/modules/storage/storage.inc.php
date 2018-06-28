@@ -1058,7 +1058,7 @@ function storage_edit_form ($name) {
                     ),
                     array(
                         'type' => 'text',
-                        'label' => 'Custom Contact',
+                        'label' => 'CID/Custom Name',
                         'name' => 'contact_name',
                         'value' => $data['cid'],
                     ),

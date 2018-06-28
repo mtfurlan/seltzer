@@ -519,8 +519,10 @@ function member_filter_form () {
     // Available filters    
     $filters = array(
         'all' => 'All',
-        'voting' => 'Voting',
-        'active' => 'Active'
+        'active' => 'Active',
+        'onboarding' => 'Onboarding',
+        'hiatus' => 'Hiatus',
+        'inactive' => 'Inactive'
     );
     
     // Default filter
