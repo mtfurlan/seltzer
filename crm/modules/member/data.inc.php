@@ -72,7 +72,7 @@ function member_data ($opts = array()) {
         if (isset($filter['active']) && $filter['active']) {
             $v_filter++;
             if ($v_filter > 1) $f_sql .= " OR";
-            $f_sql .= " (`plan`.`pid` = '10' AND (`membership`.`start` IS NOT NULL AND `membership`.`start` < NOW()) AND (`membership`.`end` IS NULL OR `membership`.`end` > NOW()))\n";
+            $f_sql .= " (`plan`.`pid` IN ('10','6') AND (`membership`.`start` IS NOT NULL AND `membership`.`start` < NOW()) AND (`membership`.`end` IS NULL OR `membership`.`end` > NOW()))\n";
         }
         if (isset($filter['scholarship']) && $filter['scholarship']) {
             $v_filter++;
