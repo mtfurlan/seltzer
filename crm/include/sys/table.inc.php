@@ -48,7 +48,7 @@ function crm_get_table ($table_id, $opts = array()) {
  * @param $opts Options to pass to the data function.
  * @return The themed html for a table.
 */
-function theme_table ($table_id, $opts = NULL) {
+function theme_table ($table_id, $opts = array()) {
 
     // Check if $table_name is a string
     if (is_string($table_id)) {
@@ -182,7 +182,7 @@ function theme_table ($table_id, $opts = NULL) {
  * @param $opts Options to pass to the data function.
  * @return The CSV for a table.
 */
-function theme_table_csv ($table_name, $opts = NULL) {
+function theme_table_csv ($table_name, $opts = array()) {
     
     // Check if $table_name is a string
     if (is_string($table_name)) {
