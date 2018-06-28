@@ -228,7 +228,8 @@ function theme_table_csv ($table_name, $opts = array()) {
  * @return The escaped string.
  */
 function table_escape_csv ($cell) {
-    return '"' . str_replace('"', '\"', $cell) . '"';    
+    // return '"' . str_replace('"', '\"', $cell) . '"';    
+    return '"' . strip_tags($cell) . '"';    
 }
 
 /**
