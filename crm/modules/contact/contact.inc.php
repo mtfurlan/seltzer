@@ -576,7 +576,7 @@ function command_contact_update () {
     $contact['phone'] = $_POST['phone'];
     // Save changes to database
     $contact = contact_save($contact);
-    return crm_url('members');
+    return crm_url('contact', array('query'=>array('cid'=>$_POST['cid'])));
 }
 
 /**
