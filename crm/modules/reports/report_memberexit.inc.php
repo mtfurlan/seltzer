@@ -126,7 +126,7 @@ function memberexit_search_form () {
 // Tables ///////////////////////////////////////////////////////////////////////
 function memberexit_results_table () {
     // Determine settings
-    $export = false;
+    // $export = false;
     // foreach ($opts as $option => $value) {
     //     switch ($option) {
     //         case 'export':
