@@ -57,12 +57,12 @@ function service_slack_getSlackID ($email, $username) {
         if (array_key_exists('email', $slackUsers['members'][$i]['profile']) &&
          $slackUsers['members'][$i]['profile']['email'] == $email) {
             $slackID = $slackUsers['members'][$i]['id'];
-            $slackName = $slackUsers['members'][$i]['name'];
+            $slackName = $slackUsers['members'][$i]['profile']['display_name'];
             $checkStatus = true;
         } elseif (array_key_exists('name', $slackUsers['members'][$i]) &&
          $slackUsers['members'][$i]['name'] == null) {
             $slackID = $slackUsers['members'][$i]['id'];
-            $slackName = $slackUsers['members'][$i]['name'];
+            $slackName = $slackUsers['members'][$i]['profile']['display_name'];
             $checkStatus = true;
         }
 
