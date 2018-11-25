@@ -44,12 +44,9 @@ function service_slack_getSlackID ($email, $username) {
             'content' => http_build_query($data),
         ),
     );
-    var_dump_pre($http_options);
     $context  = stream_context_create($http_options);
     $http_result = file_get_contents($slackUsersList, false, $context);
-    var_dump_pre($http_result);
     $slackUsers = json_decode($http_result,true);
-    var_dump_pre($slackUsers);
     // extract user from array if they exist
     $slackID = '';
     $slackName = '';
