@@ -44,9 +44,12 @@ function service_slack_getSlackID ($email, $username) {
             'content' => http_build_query($data),
         ),
     );
+    var_dump_pre($http_options);
     $context  = stream_context_create($http_options);
     $http_result = file_get_contents($slackUsersList, false, $context);
+    var_dump_pre($http_result);
     $slackUsers = json_decode($http_result,true);
+    var_dump_pre($slackUsers);
     // extract user from array if they exist
     $slackID = '';
     $slackName = '';
@@ -57,12 +60,12 @@ function service_slack_getSlackID ($email, $username) {
         if (array_key_exists('email', $slackUsers['members'][$i]['profile']) &&
          $slackUsers['members'][$i]['profile']['email'] == $email) {
             $slackID = $slackUsers['members'][$i]['id'];
-            $slackName = $slackUsers['members'][$i]['name'];
+            $slackName = $slackUsers['members'][$i]['profile']['display_name'];
             $checkStatus = true;
         } elseif (array_key_exists('name', $slackUsers['members'][$i]) &&
          $slackUsers['members'][$i]['name'] == null) {
             $slackID = $slackUsers['members'][$i]['id'];
-            $slackName = $slackUsers['members'][$i]['name'];
+            $slackName = $slackUsers['members'][$i]['profile']['display_name'];
             $checkStatus = true;
         }
 
