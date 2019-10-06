@@ -238,8 +238,11 @@ if ($product_code == "Donation" ){
     }
 }
 
-$description = "$product_name <a href='$receipt_url'>(receipt)</a> <a href='$sub_token_url'>(change/end subscription)</a>";
-
+if (empty($sub_token_url) {
+	$description = "$product_name <a href='$receipt_url'>(receipt)</a>";
+} else {
+	$description = "$product_name <a href='$receipt_url'>(receipt)</a> <a href='$sub_token_url>(change/end subscription)</a>";
+}
 switch ($payment_gateway_type) {
     case "amazon_mws":
         $method = "Amazon";
