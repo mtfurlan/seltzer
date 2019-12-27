@@ -13,6 +13,7 @@
     <script type="text/javascript" src="<?php print path_to_theme(); ?>/js/nv.d3.min.js"></script>
     <script type="text/javascript" src="<?php print path_to_theme(); ?>/js/sorttable.js"></script>
     <script type="text/javascript" src="<?php print path_to_theme(); ?>/js/ddtf.js"></script>
+    <script type="text/javascript" src="<?php print path_to_theme(); ?>/js/checkout.js?_=6"></script>
     <script type="text/javascript" src="<?php print path_to_theme(); ?>/script.js"></script>
     <?php print $scripts; ?>
     <title><?php print $title; ?></title>
