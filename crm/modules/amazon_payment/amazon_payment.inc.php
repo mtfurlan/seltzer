@@ -2,7 +2,7 @@
 
 /*
     Copyright 2009-2017 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     amazon_payment.inc.php - Amazon payments extensions for the payment module.
 
@@ -37,7 +37,7 @@ function amazon_payment_install($old_revision = 0) {
     global $db_connect;
     // Create initial database table
     if ($old_revision < 1) {
-        
+
         // Additional payment info for amazon payments
         $sql = '
             CREATE TABLE IF NOT EXISTS `payment_amazon` (
@@ -48,7 +48,7 @@ function amazon_payment_install($old_revision = 0) {
         ';
         $res = mysqli_query($db_connect, $sql);
         if (!$res) crm_error(mysqli_error($res));
-        
+
         // Additional contact info for amazon payments
         $sql = '
             CREATE TABLE IF NOT EXISTS `contact_amazon` (
@@ -159,7 +159,7 @@ function amazon_payment_contact_data ($opts = array()) {
 function amazon_payment_contact_save ($contact) {
     global $db_connect;
     $esc_name = mysqli_real_escape_string($db_connect, $contact['amazon_name']);
-    $esc_cid = mysqli_real_escape_string($db_connect, $contact['cid']);    
+    $esc_cid = mysqli_real_escape_string($db_connect, $contact['cid']);
     // Check whether the amazon contact already exists in the database
     $sql = "SELECT * FROM `contact_amazon` WHERE `amazon_name` = '$esc_name'";
     $res = mysqli_query($db_connect, $sql);
@@ -303,7 +303,7 @@ function amazon_payment_contact_table ($opts) {
         if (!empty($contact)) {
             $contactName = theme('contact_name', $contact, true);
         }
-        $row[] = $contactName; 
+        $row[] = $contactName;
         // Second column is union['amazon_name']
         $row[] = $union['amazon_name'];
         if (!$export && (user_access('payment_edit') || user_access('payment_delete'))) {
@@ -321,7 +321,7 @@ function amazon_payment_contact_table ($opts) {
         // Save row array into the $table structure
         $table['rows'][] = $row;
     }
-    return $table; 
+    return $table;
 }
 
 /**
@@ -394,12 +394,12 @@ function amazon_payment_import_form () {
  * @return The form structure.
 */
 function amazon_payment_contact_add_form () {
-    
+
     // Ensure user is allowed to edit amazon contacts
     if (!user_access('payment_edit')) {
         return crm_url('amazon-admin');
     }
-    
+
     // Create form structure
     $form = array(
         'type' => 'form',
@@ -429,7 +429,7 @@ function amazon_payment_contact_add_form () {
             )
         )
     );
-    
+
     return $form;
 }
 
@@ -440,12 +440,12 @@ function amazon_payment_contact_add_form () {
  * @return The form structure.
 */
 function amazon_payment_contact_delete_form ($amazon_name) {
-    
+
     // Ensure user is allowed to delete amazon contacts
     if (!user_access('payment_edit')) {
         return crm_url('amazon-admin');
     }
-    
+
     // Create form structure
     $form = array(
         'type' => 'form',
@@ -471,7 +471,7 @@ function amazon_payment_contact_delete_form ($amazon_name) {
             )
         )
     );
-    
+
     return $form;
 }
 
@@ -543,7 +543,7 @@ treasurer@i3detroit.org'
             )
         )
     );
-    
+
     return $form;
 }
 
@@ -611,7 +611,7 @@ treasurer@i3detroit.org'
             )
         )
     );
-    
+
     return $form;
 }
 
@@ -764,7 +764,7 @@ function command_amazon_payment_email () {
         // Construct button
         $params = array(
             'referenceId' => $cid
-            , 'amount' => $balance['code'] . ' ' . payment_format_currency($balance, false) 
+            , 'amount' => $balance['code'] . ' ' . payment_format_currency($balance, false)
             , 'description' => 'CRM Dues Payment'
         );
         $amount = payment_format_currency($balance);
@@ -801,7 +801,7 @@ function command_amazon_payment_email_100 () {
         // Construct button
         $params = array(
             'referenceId' => $cid
-            , 'amount' => $balance['code'] . ' ' . payment_format_currency($balance, false) 
+            , 'amount' => $balance['code'] . ' ' . payment_format_currency($balance, false)
             , 'description' => 'CRM Dues Payment'
         );
         $amount = payment_format_currency($balance);
@@ -853,7 +853,7 @@ function theme_amazon_payment_first_month ($cid) {
     $html = "<fieldset><legend>First month prorated dues</legend>";
     $params = array(
         'referenceId' => $cid
-        , 'amount' => $due['code'] . ' ' . payment_format_currency($due, false) 
+        , 'amount' => $due['code'] . ' ' . payment_format_currency($due, false)
         , 'description' => 'CRM Dues Payment'
     );
     $amount = payment_format_currency($due);
@@ -882,7 +882,7 @@ function theme_amazon_payment_account_info ($cid) {
     }
 /*    $params = array(
         'referenceId' => $cid
-        , 'amount' => $balance['code'] . ' ' . payment_format_currency($balance, false) 
+        , 'amount' => $balance['code'] . ' ' . payment_format_currency($balance, false)
         , 'description' => 'CRM Dues Payment'
     );*/
     $output = '<div>';

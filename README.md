@@ -16,7 +16,6 @@ The current features are:
 * Tracking of member contact and emergency contact info
 * Tracking of membership levels and dates
 * Automated Billing
-* Amazon Payments and PayPal integration
 * Tracking of RFID key assignments
 * Track members' mentors
 * Customizable permissions and roles
