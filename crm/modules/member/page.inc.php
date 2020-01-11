@@ -140,14 +140,11 @@ function member_page (&$page_data, $page_name, $options) {
 
             // Add plan and role tabs
             if (user_access('member_membership_edit') || $cid == user_id()) {
-                // $plan = theme('table', crm_get_table('member_membership', array('cid' => $cid)));
-                // $plan .= theme('form', crm_get_form('member_membership_add', $cid));
-                $makepiIframeUrl = variable_get('makepiiframeurl');
-                $plan = '<div id="makepi-checkout">';
-                $plan .= "<iframe id=\"makepi-iframe-ui\" src=\"{$makepiIframeUrl}\" style=\"border:none;width:600px;height:800px;\"></iframe>";
-                $plan .= '</div>';
+                $plan = theme('table', crm_get_table('member_membership', array('cid' => $cid)));
+                $plan .= theme('form', crm_get_form('member_membership_add', $cid));
                 page_add_content_top($page_data, $plan, 'Plan');
             }
+
             if (user_access('member_membership_edit')) {
                 $roles = theme('form', crm_get_form('user_role_edit', $cid));
                 page_add_content_top($page_data, $roles, 'Roles');

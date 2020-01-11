@@ -242,10 +242,19 @@ function billing_page (&$page_data, $page_name, $options) {
             break;
         case 'contact':
             if (user_access('payment_view') || $_GET['cid'] == user_id()) {
-                // page_add_content_bottom($page_data, theme('billing_account_info', $_GET['cid']), 'Account');
+                page_add_content_bottom($page_data, theme('billing_account_info', $_GET['cid']), 'Account');
             }
             if (user_access('payment_view') || $_GET['cid'] == user_id()) {
-                // page_add_content_bottom($page_data, theme('billing_first_month', $_GET['cid']), 'Plan');
+                page_add_content_bottom($page_data, theme('billing_first_month', $_GET['cid']), 'Plan');
+            }
+            if ($_GET['cid'] == user_id()) {
+                $makepiIframeUrl = variable_get('makepiiframeurl');
+                $plan .= '<h3>New Payment Authorization</h3>';
+                $plan .= '<p>All members must authorize the new membership rate and enter your payment information going forward. If you are currently in an annual plan, or on a scholarship, there is no need to fill this form out, unless you would like to have your payment information ready for your next billing cycle.</p>';
+                $plan .= '<div id="makepi-checkout">';
+                $plan .= "<iframe id=\"makepi-iframe-ui\" src=\"{$makepiIframeUrl}\" style=\"border:none;width:600px;height:800px;\"></iframe>";
+                $plan .= '</div>';
+                page_add_content_bottom($page_data, $plan, 'Plan');
             }
             break;
     }
