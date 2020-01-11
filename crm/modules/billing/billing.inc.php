@@ -252,7 +252,7 @@ function billing_page (&$page_data, $page_name, $options) {
                 $plan .= '<h3>New Payment Authorization</h3>';
                 $plan .= '<p>All members must authorize the new membership rate and enter your payment information going forward. If you are currently in an annual plan, or on a scholarship, there is no need to fill this form out, unless you would like to have your payment information ready for your next billing cycle.</p>';
                 $plan .= '<div id="makepi-checkout">';
-                $plan .= "<iframe id=\"makepi-iframe-ui\" src=\"{$makepiIframeUrl}\" style=\"border:none;width:600px;height:800px;\"></iframe>";
+                $plan .= "<iframe id=\"makepi-iframe-ui\" src=\"{$makepiIframeUrl}\" style=\"border:none;width: 100%;height:800px;\"></iframe>";
                 $plan .= '</div>';
                 page_add_content_bottom($page_data, $plan, 'Plan');
             }
