@@ -2,7 +2,7 @@
 
 /*
     Copyright 2009-2017 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     page.inc.php - Member module - tabbed page structures
 
@@ -45,14 +45,14 @@ function member_page_list () {
  * @param $options The array of options passed to theme('page').
 */
 function member_page (&$page_data, $page_name, $options) {
-    
+
     switch ($page_name) {
-        
+
         case 'members':
-            
+
             // Set page title
             page_set_title($page_data, 'Members');
-            
+
             // Add view tab
             if (user_access('member_view')) {
                 $view = theme('member_filter_form');
@@ -72,59 +72,59 @@ function member_page (&$page_data, $page_name, $options) {
                 $view .= theme('table', 'member', $opts);
                 page_add_content_top($page_data, $view, 'View');
             }
-            
+
             // Add add tab
             if (user_access('member_add')) {
                 page_add_content_top($page_data, theme('form', crm_get_form('member_add')), 'Add');
             }
-            
+
             // Add import tab
             if (user_access('contact_add') && user_access('user_add') && user_access('member_add')) {
                 page_add_content_top($page_data, theme('form', crm_get_form('member_import')), 'Import');
             }
-            
+
             break;
-        
+
         case 'plans':
-            
+
             // Set page title
             page_set_title($page_data, 'Plans');
-            
+
             // Add view, add and import tabs
             if (user_access('member_plan_edit')) {
                 page_add_content_top($page_data, theme('table', member_plan, array('show_export'=>true)), 'View');
                 page_add_content_top($page_data, theme('form', crm_get_form('member_plan_add')), 'Add');
                 page_add_content_top($page_data, theme('form', crm_get_form('plan_import')), 'Import');
             }
-            
+
             break;
-        
+
         case 'plan':
-            
+
             // Capture plan id
             $pid = $_GET['pid'];
             if (empty($pid)) {
                 return;
             }
-            
+
             // Set page title
             page_set_title($page_data, 'Plan: ' . theme('member_plan_description', $pid));
-            
+
             // Add edit tab
             if (user_access('member_plan_edit')) {
                 page_add_content_top($page_data, theme('form', crm_get_form('member_plan_edit', $pid)), 'Edit');
             }
-            
+
             break;
-        
+
         case 'contact':
-            
+
             // Capture member id
             $cid = $_GET['cid'];
             if (empty($cid)) {
                 return;
             }
-            
+
             // Add view tab
             $view_content = '';
             if (user_id() == $_GET['cid'] || ((user_access('contact_edit') && user_access('member_edit')))) {
@@ -137,37 +137,38 @@ function member_page (&$page_data, $page_name, $options) {
                 $edit = theme('form', crm_get_form('member_edit', $cid), 'Edit Member Details');
                 page_add_content_bottom($page_data, $edit, 'Edit');
             }
-            
+
             // Add plan and role tabs
             if (user_access('member_membership_edit') || $cid == user_id()) {
                 $plan = theme('table', crm_get_table('member_membership', array('cid' => $cid)));
                 $plan .= theme('form', crm_get_form('member_membership_add', $cid));
                 page_add_content_top($page_data, $plan, 'Plan');
             }
+
             if (user_access('member_membership_edit')) {
                 $roles = theme('form', crm_get_form('user_role_edit', $cid));
                 page_add_content_top($page_data, $roles, 'Roles');
             }
-            
+
             break;
-        
+
         case 'membership':
-            
+
             // Capture sid id
             $sid = $_GET['sid'];
             if (empty($sid)) {
                 return;
             }
-            
+
             // Set page title
             page_set_title($page_data, member_membership_description($sid));
-            
+
             // Add edit tab
             if (user_access('member_membership_edit') && user_access('member_edit')) {
                 page_add_content_top($page_data, theme('form', crm_get_form('member_membership_edit', $sid)), 'Edit');
             }
             break;
-        
+
         case 'reports':
             if (user_access('member_view')) {
                 $reports = theme('member_membership_report');

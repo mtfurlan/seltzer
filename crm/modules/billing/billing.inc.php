@@ -2,7 +2,7 @@
 
 /*
     Copyright 2009-2017 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     billing.inc.php - Billing module
 
@@ -58,10 +58,10 @@ function billing_install($old_revision = 0) {
  * @return The form structure.
  */
 function billing_form () {
-    
+
     $bill_date = variable_get('billing_last_date', '');
     $bill_label = empty($bill_date) ? 'never' : $bill_date;
-    
+
     // Create form structure
     $form = array(
         'type' => 'form'
@@ -91,7 +91,7 @@ function billing_form () {
             )
         )
     );
-    
+
     return $form;
 }
 
@@ -100,10 +100,10 @@ function billing_form () {
  * @return The form structure.
  */
 function email_bills_form () {
-    
+
     $email_date = variable_get('billing_last_email', '');
     $from_label = empty($email_date) ? 'never' : $email_date;
-    
+
     // Create form structure
     $form = array(
         'type' => 'form'
@@ -133,7 +133,7 @@ function email_bills_form () {
             )
         )
     );
-    
+
     return $form;
 }
 
@@ -185,7 +185,7 @@ function command_billing_email () {
         // Construct button
         $params = array(
             'referenceId' => $cid
-            , 'amount' => $balance['code'] . ' ' . payment_format_currency($balance, false) 
+            , 'amount' => $balance['code'] . ' ' . payment_format_currency($balance, false)
             , 'description' => 'Membership Dues Payment'
         );
         $amount = payment_format_currency($balance);
@@ -246,6 +246,15 @@ function billing_page (&$page_data, $page_name, $options) {
             }
             if (user_access('payment_view') || $_GET['cid'] == user_id()) {
                 page_add_content_bottom($page_data, theme('billing_first_month', $_GET['cid']), 'Plan');
+            }
+            if ($_GET['cid'] == user_id()) {
+                $makepiIframeUrl = variable_get('makepiiframeurl');
+                $plan .= '<h3>New Payment Authorization</h3>';
+                $plan .= '<p>All members must authorize the new membership rate and enter your payment information going forward. If you are currently in an annual plan, or on a scholarship, there is no need to fill this form out, unless you would like to have your payment information ready for your next billing cycle.</p>';
+                $plan .= '<div id="makepi-checkout">';
+                $plan .= "<iframe id=\"makepi-iframe-ui\" src=\"{$makepiIframeUrl}\" style=\"border:none;width: 100%;height:800px;\"></iframe>";
+                $plan .= '</div>';
+                page_add_content_bottom($page_data, $plan, 'Plan');
             }
             break;
     }
@@ -386,7 +395,7 @@ function theme_billing_first_month ($cid) {
     $html = "<fieldset><legend>First month prorated dues</legend>";
     $params = array(
         'referenceId' => $cid
-        , 'amount' => $due['code'] . ' ' . payment_format_currency($due, false) 
+        , 'amount' => $due['code'] . ' ' . payment_format_currency($due, false)
         , 'description' => 'Membership Dues Payment'
     );
     $amount = payment_format_currency($due);
@@ -413,7 +422,7 @@ function theme_billing_account_info ($cid) {
     $balance = $balances[$cid];
     $params = array(
         'referenceId' => $cid
-        , 'amount' => $balance['code'] . ' ' . payment_format_currency($balance, false) 
+        , 'amount' => $balance['code'] . ' ' . payment_format_currency($balance, false)
         , 'description' => 'Membership Dues Payment'
     );
     $output = '<div>';

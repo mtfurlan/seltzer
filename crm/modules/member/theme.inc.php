@@ -2,7 +2,7 @@
 
 /*
     Copyright 2009-2017 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     theme.inc.php - Member module - theming
 
@@ -31,7 +31,7 @@ function theme_member_table ($opts = NULL) {
 
 /**
  * Return the themed html for a single member's contact info.
- * 
+ *
  * @param $opts The options to pass to member_contact_data().
  * @return The themed html string.
 */
@@ -139,13 +139,13 @@ function theme_member_details_table ($opts = NULL) {
  * @return The themed html string.
  */
 function theme_member_contact_name ($cid) {
-    
+
     // Get member data
     $data = member_data(array('cid' => $cid));
     if (count($data) < 1) {
         return '';
     }
-    
+
     $output = member_name(
         $data[0]['contact']['firstName']
         , $data[0]['contact']['middleName']
@@ -161,15 +161,15 @@ function theme_member_contact_name ($cid) {
  * @return The themed html string.
  */
 function theme_member_plan_description ($pid) {
-    
+
     // Get plan data
     $data = member_plan_data(array('pid' => $pid));
     if (count($data) < 1) {
         return '';
     }
-    
+
     $output = $data[0]['name'] . ' : ' . $data[0]['price'];
-    
+
     return $output;
 }
 
@@ -178,23 +178,23 @@ function theme_member_plan_description ($pid) {
  * @param $cid The contact id of the new member.
  */
 function theme_member_created_email ($cid) {
-    
+
     // Get info on the logged in user
     $data = member_contact_data(array('cid'=>user_id()));
     $admin = $data[0];
     $adminName = theme_contact_name($admin['cid']);
-    
+
     // Get info on member
     $data = member_data(array('cid'=>$cid));
     $member = $data[0];
     $contact = $member['contact'];
     $name = theme_contact_name($contact['cid']);
-    
+
     // Get info on member's plan
     $data = member_membership_data(array('cid'=>$cid, $filter=>array('active'=>true)));
     $date = $data[0]['start'];
     $plan = $data[0]['plan']['name'];
-    
+
     $output = "<p>Contact info:<br/>\n";
     $output .= "Name: $name<br/>\n";
     $output .= "Email: $contact[email]<br/>\n";
@@ -227,7 +227,7 @@ function theme_member_welcome_email ($cid, $confirm_url) {
 
 /**
  * Theme a plan name.
- * 
+ *
  * @param $plan The plan data structure or pid.
  * @param $link True if the name should be a link (default: false).
  * @param $path The path that should be linked to.  The pid will always be added
