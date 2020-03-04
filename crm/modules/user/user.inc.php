@@ -2,7 +2,7 @@
 
 /*
     Copyright 2009-2018 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     user.inc.php - User module
 
@@ -24,7 +24,7 @@
  * this number.
  */
 function user_revision () {
-    return 1;
+    return 2;
 }
 
 /**
@@ -61,7 +61,7 @@ function user_install ($old_revision = 0) {
             ';
             $res = mysqli_query($db_connect, $sql);
             if (!$res) crm_error(mysqli_error($res));
-            
+
             $sql = '
                 CREATE TABLE IF NOT EXISTS `role` (
                   `rid` mediumint(9) NOT NULL AUTO_INCREMENT,
@@ -71,7 +71,7 @@ function user_install ($old_revision = 0) {
             ';
             $res = mysqli_query($db_connect, $sql);
             if (!$res) crm_error(mysqli_error($res));
-            
+
             $sql = '
                 CREATE TABLE IF NOT EXISTS `role_permission` (
                   `rid` mediumint(8) unsigned NOT NULL,
@@ -81,7 +81,7 @@ function user_install ($old_revision = 0) {
             ';
             $res = mysqli_query($db_connect, $sql);
             if (!$res) crm_error(mysqli_error($res));
-            
+
             $sql = "
                 CREATE TABLE IF NOT EXISTS `user` (
                   `cid` mediumint(11) unsigned NOT NULL,
@@ -93,7 +93,7 @@ function user_install ($old_revision = 0) {
             ";
             $res = mysqli_query($db_connect, $sql);
             if (!$res) crm_error(mysqli_error($res));
-            
+
             $sql = '
                 CREATE TABLE IF NOT EXISTS `user_role` (
                   `cid` mediumint(8) unsigned NOT NULL,
@@ -103,7 +103,7 @@ function user_install ($old_revision = 0) {
             ';
             $res = mysqli_query($db_connect, $sql);
             if (!$res) crm_error(mysqli_error($res));
-            
+
             // Create default roles
             $roles = array(
                 '1' => 'authenticated'
@@ -136,6 +136,17 @@ function user_install ($old_revision = 0) {
             }
         }
     }
+
+    if ($old_revision < 7) {
+        // Alter member table
+        $sql = '
+            ALTER TABLE `user`
+              ADD COLUMN `makepi-uuid` varchar(255) NULL
+            ;
+        ';
+        $res = mysqli_query($db_connect, $sql);
+        if (!$res) crm_error(mysqli_error($res));
+    }
 }
 
 // Data Model //////////////////////////////////////////////////////////////////
@@ -148,7 +159,7 @@ function user_install ($old_revision = 0) {
  *   'join' Array of entities to be included in the results, options are:
  *     - role: adds 'roles' key with array of roles as a value.
  * @return An array with each element representing a user.
-*/ 
+*/
 function user_data ($opts) {
     global $db_connect;
     // Create a map of user permissions if join was specified
@@ -186,7 +197,7 @@ function user_data ($opts) {
             $row = mysqli_fetch_assoc($res);
         }
     }
-    
+
     // Create a map of user roles if role join was specified
     $join_role = !array_key_exists('join', $opts) || in_array('role', $opts['join']);
     if ($join_role) {
@@ -207,10 +218,10 @@ function user_data ($opts) {
             $row = mysqli_fetch_assoc($res);
         }
     }
-    
+
     // Construct query for users
     $sql = "
-        SELECT `user`.`cid`, `user`.`username`, `user`.`hash`, `user`.`salt`
+        SELECT `user`.`cid`, `user`.`username`, `user`.`hash`, `user`.`salt`, `user`.`makepi-uuid`
         FROM `user`
         INNER JOIN `contact` ON `contact`.`cid` = `user`.`cid`
         WHERE 1
@@ -239,9 +250,9 @@ function user_data ($opts) {
     }
     $res = mysqli_query($db_connect, $sql);
     if (!$res) { crm_error(mysqli_error($res)); }
-    
+
     // Create result array
-    $users = array();    
+    $users = array();
     $row = mysqli_fetch_assoc($res);
     while ($row) {
         $user = $row;
@@ -262,7 +273,7 @@ function user_data ($opts) {
         $users[] = $user;
         $row = mysqli_fetch_assoc($res);
     }
-    
+
     return $users;
 }
 
@@ -308,7 +319,7 @@ function user_data_alter ($type, $data = array(), $opts = array()) {
  *
  * @param $opts An associative array of options.
  * @return An array with each element representing a role.
-*/ 
+*/
 function user_role_data ($opts = NULL) {
     global $db_connect;
     // Construct map from role ids to arrays of permissions granted
@@ -327,7 +338,7 @@ function user_role_data ($opts = NULL) {
         $permissionMap[$row['rid']][] = $row['permission'];
         $row = mysqli_fetch_assoc($res);
     }
-    
+
     // Construct query for roles
     $sql = "SELECT `rid`, `name` FROM `role` WHERE 1 ";
     $res = mysqli_query($db_connect, $sql);
@@ -378,7 +389,7 @@ function user_contact_api ($contact, $op) {
 
 /**
  * Saves a user into the database
- * 
+ *
  * @param $user the user to save.
  * @return an array representing the user that was saved in the database.
  */
@@ -412,7 +423,7 @@ function user_save ($user) {
         $res = mysqli_query($db_connect, $sql);
         if (!$res) crm_error(mysqli_error($res));
     }
-    
+
     return $user;
 }
 
@@ -449,7 +460,7 @@ $user_permission_cache = array();
  */
 function user_init () {
     global $user_permissions;
-    
+
     foreach (module_list() as $module) {
         $func = $module . '_permissions';
         if (function_exists($func)) {
@@ -527,14 +538,14 @@ function user_role_list () {
     $sql = "SELECT * FROM `role` WHERE 1";
     $res = mysqli_query($db_connect, $sql);
     if (!$res) { crm_error(mysqli_error($res)); }
-    
+
     $roles = array();
     $row = mysqli_fetch_assoc($res);
     while ($row) {
         $roles[] = $row['name'];
         $row = mysqli_fetch_assoc($res);
     }
-    
+
     return $roles;
 }
 
@@ -546,22 +557,22 @@ function user_role_list () {
 */
 function user_access ($permission) {
     global $user_permission_cache;
-    
+
     // If a user is not logged in, they don't have access to anything
     if (!user_id()) {
         return false;
     }
-    
+
     // The admin user has access to everything
     if (user_id() == 1) {
         return true;
     }
-    
+
     // Check cache
     if (array_key_exists($permission, $user_permission_cache)) {
         return $user_permission_cache[$permission];
     }
-    
+
     // Get list of the users roles and check each for the permission
     $data = user_data(array('cid'=>user_id()));
     $access = in_array($permission, $data[0]['permissions']);
@@ -582,17 +593,17 @@ function user_access ($permission) {
 */
 function user_subject_access ($cid, $permission) {
     global $user_permission_cache;
-    
+
     // The admin user has access to everything
     if ($cid == 1) {
         return true;
     }
-    
+
     // Check cache
     if (array_key_exists($permission, $user_permission_cache)) {
         return $user_permission_cache[$permission];
     }
-    
+
     // Get list of the users roles and check each for the permission
     $data = user_data(array('cid'=>$cid));
     $access = in_array($permission, $data[0]['permissions']);
@@ -609,7 +620,7 @@ function user_reset_password_url ($username) {
     global $db_connect;
     global $config_host;
     global $config_base_path;
-    
+
     // Get user info
     $esc_username = mysqli_real_escape_string($db_connect, $username);
     $sql = "
@@ -620,16 +631,16 @@ function user_reset_password_url ($username) {
     $res = mysqli_query($db_connect, $sql);
     if (!$res) crm_error(mysqli_error($res));
     $row = mysqli_fetch_assoc($res);
-    
+
     // Make sure user exists
     if (empty($row)) {
         error_register('No such username');
         return '';
     }
-    
+
     // Generate code
     $code = sha1(uniqid(time()));
-    
+
     // Insert code into reminder table
     $esc_cid = mysqli_real_escape_string($db_connect, $row['cid']);
     $esc_code = mysqli_real_escape_string($db_connect, $code);
@@ -639,7 +650,7 @@ function user_reset_password_url ($username) {
         VALUES
         ('$esc_cid', '$esc_code')";
     $res = mysqli_query($db_connect, $sql);
-    
+
     // Generate reset url
     $url = 'http://' . $config_host . crm_url("reset-confirm&v=" . $code);
     return $url;
@@ -658,10 +669,10 @@ function user_check_reset_code ($code) {
     $sql = "SELECT * FROM `resetPassword` WHERE `code`='$esc_code'";
     $res = mysqli_query($db_connect, $sql);
     if (!$res) { crm_error(mysqli_error($res)); }
-    
+
     // Fetch first row
     $row = mysqli_fetch_assoc($res);
-    
+
     // Return true if row is not empty
     return (boolean)$row;
 }
@@ -699,7 +710,7 @@ function user_hash ($password, $salt) {
  */
 function command_login () {
     global $esc_post;
-    
+
     //Check to see if there was an @ sign in the 'username'. This will signify that the user
     //probably entered their email, and not their username.
     if (strpos($_POST['username'], "@") === False){
@@ -719,7 +730,7 @@ function command_login () {
         );
         $users = user_data($user_opts);
     }
-    
+
     // Check for user
     if (sizeof($users) < 1) {
         error_register('No user found');
@@ -727,12 +738,20 @@ function command_login () {
         $next = crm_url('login');
         return;
     }
-    
+
     // Check password
     $user = $users[0];
     $valid = user_check_password($_POST['password'], $user);
-    
+
     if ($valid) {
+        // Initialize user token session
+        setcookie('makepi-token',
+            json_web_token($user['makepi-uuid']),
+            time() + (1 * 7 * 60 * 60),
+            $params["path"], $params["domain"],
+            $params["secure"], $params["httponly"]
+        );
+
         user_login($user['cid']);
         $next = crm_url('contact',array('query'=>array('cid'=>$user['cid'])));
         // $next = crm_url();
@@ -740,7 +759,7 @@ function command_login () {
         error_register('Invalid username/password');
         $next = crm_url('login');
     }
-    
+
     // Redirect to index
     return $next;
 }
@@ -754,7 +773,7 @@ function command_logout () {
 
     // Unset all of the session variables.
     $_SESSION = array();
-    
+
     // If it's desired to kill the session, also delete the session cookie.
     // Note: This will destroy the session, and not just the session data!
     if (ini_get("session.use_cookies")) {
@@ -763,8 +782,12 @@ function command_logout () {
             $params["path"], $params["domain"],
             $params["secure"], $params["httponly"]
         );
+        setcookie('makepi-token', '', time() - 42000,
+            $params["path"], $params["domain"],
+            $params["secure"], $params["httponly"]
+        );
     }
-    
+
     // Finally, destroy the session.
     session_destroy();
 
@@ -780,7 +803,7 @@ function command_reset_password () {
     global $config_base_path;
     global $config_email_from;
     global $config_site_title;
-    
+
     // Send code to user by username
     $user = crm_get_one('user', array('filter'=>array('username'=>$_POST['username'])));
     if (empty($user)) {
@@ -813,31 +836,31 @@ function command_reset_password () {
 function command_reset_password_confirm () {
     global $db_connect;
     global $esc_post;
-    
+
     // Check code
     if (!user_check_reset_code($_POST['code'])) {
         error_register('Invalid reset code');
         return crm_url();
     }
-    
+
     // Check that passwords match
     if ($_POST['password'] != $_POST['confirm']) {
         error_register('Passwords do not match');
         return crm_url();
     }
-    
+
     // Get user id
     $sql = "SELECT * FROM `resetPassword` WHERE `code`='$esc_post[code]'";
     $res = mysqli_query($db_connect, $sql);
     if (!$res) { crm_error(mysqli_error($res)); }
     $row = mysqli_fetch_assoc($res);
     $esc_cid = mysqli_real_escape_string($db_connect, $row['cid']);
-    
+
     // Calculate hash
     $salt = user_salt();
     $esc_hash = mysqli_real_escape_string($db_connect, user_hash($_POST['password'], $salt));
     $esc_salt = mysqli_real_escape_string($db_connect, $salt);
-    
+
     // Update password
     $sql = "
         UPDATE `user`
@@ -847,10 +870,10 @@ function command_reset_password_confirm () {
         ";
     $res = mysqli_query($db_connect, $sql);
     if (!$res) { crm_error(mysqli_error($res)); }
-    
+
     // Notify user to check their email
     message_register('Your password has been reset, you may now log in');
-    
+
     return crm_url('login');
 }
 
@@ -861,31 +884,31 @@ function command_reset_password_confirm () {
 function command_set_password () {
     global $db_connect;
     global $esc_post;
-    
+
     // Check permissions
     if ((user_id() != $esc_post['cid']) && !user_access('user_edit')) {
         error_register('Current user does not have permission: user_edit');
         return crm_url("contact&cid=$esc_cid");
     }
-    
+
     // Check that passwords match
     if ($_POST['password'] != $_POST['confirm']) {
         error_register('Passwords do not match');
         return crm_url("contact&cid=$esc_cid");
     }
-    
+
     // Get user id
     $sql = "SELECT * FROM `user` WHERE `cid`='$esc_post[cid]'";
     $res = mysqli_query($db_connect, $sql);
     if (!$res) { crm_error(mysqli_error($res)); }
     $row = mysqli_fetch_assoc($res);
     $esc_cid = mysqli_real_escape_string($db_connect, $row['cid']);
-    
+
     // Calculate hash
     $salt = user_salt();
     $esc_hash = mysqli_real_escape_string($db_connect, user_hash($_POST['password'], $salt));
     $esc_salt = mysqli_real_escape_string($db_connect, $salt);
-    
+
     // Update password
     $sql = "
         UPDATE `user`
@@ -896,7 +919,7 @@ function command_set_password () {
     $res = mysqli_query($db_connect, $sql);
     if (!$res) { crm_error(mysqli_error($res)); }
     message_register("The user's password has been reset");
-    
+
     return crm_url("contact&cid=$esc_cid");
 }
 
@@ -908,13 +931,13 @@ function command_set_password () {
 function command_user_permissions_update () {
     global $db_connect;
     global $esc_post;
-    
+
     // Check permissions
     if (!user_access('user_edit')) {
         error_register('Current user does not have permission: user_edit');
         return crm_url('permissions');
     }
-    
+
     // Check status of each permission for each role
     $perms = user_permissions_list();
     $roles = user_role_data();
@@ -952,7 +975,7 @@ function command_user_permissions_update () {
             }
         }
     }
-    
+
     return crm_url('permissions');
 }
 
@@ -964,24 +987,24 @@ function command_user_permissions_update () {
 function command_user_role_update () {
     global $db_connect;
     global $esc_post;
-    
+
     // Check permissions
     if (!user_access('user_edit')) {
         error_register('Current user does not have permission: user_edit');
         return crm_url('members');
     }
-    
+
     // Check permissions
     if (!user_access('user_role_edit')) {
         error_register('Current user does not have permission: user_role_edit');
         return crm_url('members');
     }
-    
+
     // Delete all roles for specified user
     $sql = "DELETE FROM `user_role` WHERE `cid`='$esc_post[cid]'";
     $res = mysqli_query($db_connect, $sql);
     if (!$res) { crm_error(mysqli_error($res)); }
-    
+
     // Re-add each role
     $roles = user_role_data();
     foreach ($roles as $role) {
@@ -997,7 +1020,7 @@ function command_user_role_update () {
             if (!$res) { crm_error(mysqli_error($res)); }
         }
     }
-    
+
     return crm_url("contact&cid=$_POST[cid]&tab=roles");
 }
 
@@ -1073,7 +1096,7 @@ function user_reset_password_form () {
  * @return The password reset confirmation form structure.
 */
 function user_reset_password_confirm_form ($code) {
-    
+
     $form = array(
         'type' => 'form',
         'method' => 'post',
@@ -1150,20 +1173,20 @@ function user_set_password_form ($cid) {
  * @return Form structure for updating user permissions.
  */
 function user_permissions_form () {
-    
+
     // Form table rows and columns
     $columns = array();
     $rows = array();
-    
+
     // Get role data
     $roles = user_role_data();
-    
+
     // Add a column for permissions names, and each role
     $columns[] = array('title' => '');
     foreach ($roles as $role) {
         $columns[] = array('title'=>$role['name']);
     }
-    
+
     // Add a row for each permission
     foreach (user_permissions_list() as $permission) {
         $row = array();
@@ -1181,7 +1204,7 @@ function user_permissions_form () {
         }
         $rows[] = $row;
     }
-    
+
     $form = array(
         'type' => 'form'
         , 'method' => 'post'
@@ -1199,7 +1222,7 @@ function user_permissions_form () {
             )
         )
     );
-    
+
     return $form;
 }
 
@@ -1210,14 +1233,14 @@ function user_permissions_form () {
  * @return The form structure.
 */
 function user_role_edit_form ($cid) {
-    
+
     // Get user data
     $data = user_data(array('cid'=>$cid));
     $user = $data[0];
-    
+
     // Get role data
     $roles = user_role_list();
-    
+
     // Construct fields
     $fields = array();
     foreach ($roles as $role) {
@@ -1236,7 +1259,7 @@ function user_role_edit_form ($cid) {
         'name' => 'submitted',
         'value' => 'Update'
     );
-    
+
     $form = array(
         'type' => 'form',
         'method' => 'post',
@@ -1257,7 +1280,7 @@ function user_role_edit_form ($cid) {
  */
 function user_table ($opts) {
     $users = user_data($opts);
-    
+
     $table = array(
         'id' => ''
         , 'class' => ''
@@ -1270,13 +1293,13 @@ function user_table ($opts) {
         )
         , 'rows' => array()
     );
-    
+
     foreach ($users as $user) {
         $user_row = array();
         $user_row[] = $user['username'];
         $table['rows'][] = $user_row;
     }
-    
+
     return $table;
 }
 
@@ -1299,11 +1322,11 @@ function theme_user_reset_password_form () {
  * @return The themed html for a password reset form.
  */
 function theme_user_reset_password_confirm_form ($code) {
-    
+
     if (!user_check_reset_code($code)) {
         return '<p>Invalid code</p>';
     }
-    
+
     return theme('form', crm_get_form('user_reset_password_confirm', $code));
 }
 
@@ -1325,11 +1348,11 @@ function theme_user_role_edit_form ($cid) {
  * @param $options The array of options passed to theme('page').
 */
 function user_page (&$page_data, $page_name, $options) {
-    
+
     switch ($page_name) {
-        
+
         case 'contact':
-            
+
             // Capture user id
             $cid = $_GET['cid'];
             if (empty($cid)) {
@@ -1346,7 +1369,26 @@ function user_page (&$page_data, $page_name, $options) {
             if (!empty($view_content)) {
                 page_add_content_bottom($page_data, $view_content, 'View');
             }
-            
+
             break;
     }
+}
+
+
+function json_web_token($uuid) {
+    // Fetch JWT Secret
+    $jwtsecret = variable_get('jwtsecret');
+    // Generate JWT Header and Payload
+    $header = json_encode(['typ' => 'JWT', 'alg' => 'HS256']);
+    $payload = json_encode(['sub' => $uuid, 'iat' => time(), 'exp' => time() + (1 * 24 * 60 * 60)]);
+    // Base 64 Encode Header and Payload
+    $base64UrlHeader = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($header));
+    $base64UrlPayload = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($payload));
+    // Generate Signature
+    $signature = hash_hmac('sha256', $base64UrlHeader . "." . $base64UrlPayload, $jwtsecret, true);
+    // Base 64 Encode Signature
+    $base64UrlSignature = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($signature));
+    // Render JWT
+    $jwt = $base64UrlHeader . "." . $base64UrlPayload . "." . $base64UrlSignature;
+    return $jwt;
 }
