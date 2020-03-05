@@ -238,22 +238,26 @@ if ($product_code == "Donation" ){
     }
 }
 
-if (empty($sub_token_url) {
-	$description = "$product_name <a href='$receipt_url'>(receipt)</a>";
-} else {
-	$description = "$product_name <a href='$receipt_url'>(receipt)</a> <a href='$sub_token_url>(change/end subscription)</a>";
-}
+$description = "$product_name <a href='$receipt_url'>(receipt)</a>";
 switch ($payment_gateway_type) {
     case "amazon_mws":
-        $method = "Amazon";
+        if (empty($sub_token_url)) {
+            $method = "Amazon";
+        } else {
+            $method = "Amazon <a href='$sub_token_url'>(change/end subscription)</a>";
+        }
     break;
     case "paypal_express":
-        $method = "PayPal";
+        if (empty($sub_token_url)) {
+            $method = "PayPal";
+        } else {
+            $method = "PayPal <a href='$sub_token_url'>(change/end subscription)</a>";
+        }
     break;
     default:
         $method = "FoxyCart";
 }
-        
+ 
 $payment = array(
     'date' => date('Y-m-d', strtotime( $transaction_date))
     , 'credit_cid' => $cid

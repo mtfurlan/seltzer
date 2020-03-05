@@ -860,6 +860,7 @@ function payment_method_options () {
     $options['cash'] = 'Cash';
     $options['cheque'] = 'Cheque';
     $options['FoxyCart'] = 'FoxyCart';
+    $options['Stripe'] = 'Stripe';
     $options['other'] = 'Other';
     return $options;
 }
