@@ -325,6 +325,9 @@ function payment_data ($opts = array()) {
                 case 'recent':
                     $sql .= " AND (`date`>=DATE_SUB(CURDATE(), INTERVAL 3 MONTH)) ";
                     break;
+                case 'last':
+                    $sql .= " AND (`date`>=DATE_SUB(CURDATE(), INTERVAL 1 MONTH)) ";
+                    break;
             }
         }
     }

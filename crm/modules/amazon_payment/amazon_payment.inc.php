@@ -945,6 +945,24 @@ function theme_amazon_payment_button ($cid, $params = array()) {
     $host = 'authorize.payments.amazon.com';
     $path = '/pba/paypipeline';
     $params['signature'] = amazon_payment_signature($params, $host, $path, 'POST');*/
+    $payment_opts = array(
+        'filter' => array('credit' => 'cid', 'last'=>'yes'));
+    $last_payment = crm_get_data('payment', $payment_opts);
+    if (preg_match ( "/sub_token=([0-9A-Fa-f]*)/", $last_payment[0]['method'], $matches ))
+    {
+        $params['button'] = '<script src="//cdn.foxycart.com/i3detroit/loader.js" async="" defer="defer"></script>
+<form accept-charset="utf-8" action="https://i3detroit.foxycart.com/cart" method="post">
+<input class="submit" type="submit" value="Cancel FoxyCart/Amazon/Paypal Automatic Payments" />
+<input name="sub_token" type="hidden" value="'. $matches[1] . '" />
+<input name="name" type="hidden" value="Dues Subscription" />
+<input name="cart" type="hidden" value="checkout" />
+<input name="sub_cancel" type="hidden" value="next_transaction_date" />
+</form>
+';
+    } else
+    {
+        $params['button'] = "";
+}
     $html = <<<EOF
 <!--<form action ="https://authorize.payments.amazon.com/pba/paypipeline" method="POST"/>
 <input type="image" src="https://authorize.payments.amazon.com/pba/images/SLPayNowWithLogo.png" border="0"/>
@@ -963,7 +981,8 @@ function theme_amazon_payment_button ($cid, $params = array()) {
 <input type="hidden" name="signatureVersion" value="$params[signatureVersion]"/>
 <input type="hidden" name="signature" value="$params[signature]"/>
 </form>-->
-<p>Go to the <a href="/membership">membership</a> page to make a payment.</p>
+<!-- p>Go to the <a href="/membership">membership</a> page to make a payment.</p -->
+<p>$params[button]</p> 
 EOF;
     return $html;
 }
