@@ -946,20 +946,14 @@ function theme_amazon_payment_button ($cid, $params = array()) {
     $path = '/pba/paypipeline';
     $params['signature'] = amazon_payment_signature($params, $host, $path, 'POST');*/
     $payment_opts = array(
-        'filter' => array('credit' => 'cid', 'last'=>'yes'));
+        'cid' => $cid,
+        'filter' => array( 'last'=>'yes'));
     $last_payment = crm_get_data('payment', $payment_opts);
     if (preg_match ( "/sub_token=([0-9A-Fa-f]*)/", $last_payment[0]['method'], $matches ))
     {
-        $params['button'] = '<script src="//cdn.foxycart.com/i3detroit/loader.js" async="" defer="defer"></script>
-<form accept-charset="utf-8" action="https://i3detroit.foxycart.com/cart" method="post">
-<input class="submit" type="submit" value="Cancel FoxyCart/Amazon/Paypal Automatic Payments" />
-<input name="sub_token" type="hidden" value="'. $matches[1] . '" />
-<input name="name" type="hidden" value="Dues Subscription" />
-<input name="cart" type="hidden" value="checkout" />
-<input name="sub_cancel" type="hidden" value="next_transaction_date" />
-</form>
-';
-    } else
+        $params['button'] = '<a href="https://i3detroit.foxycart.com/cart?sub_token='. $matches[1] . '&empty=true&cart=checkout&sub_cancel=true">Cancel Amazon Automatic Payments</a>';
+    } 
+    else
     {
         $params['button'] = "";
 }

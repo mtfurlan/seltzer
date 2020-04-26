@@ -123,12 +123,12 @@ if (isset($_POST["FoxyData"])) {
 $rerun = False; //Default: well check later
 $notes = "";
 
-if ((!EMPTY($STATUS)) && ($STATUS != "APPROVED"))
+if ($STATUS != "APPROVED")
 { // Money not received yet.  Bail out now.
     $notes .= "transaction is $status. ";
     $cents = 0;
 //    $transaction_id .= "-$status";
-} else if (($payment_gateway_type == "paypal_express") && (EMPTY($processor_response)))
+} else if (($payment_gateway_type == "paypal_express") && (EMPTY($processor_response) || $processor_response == "N/A"))
 {   
     $notes .= "PayPal transaction failed. Contact <a href='mailto:treasurer@i3detroit.com'>treasurer@i3detroit.com</a>.";
     $cents = 0;
@@ -244,14 +244,14 @@ switch ($payment_gateway_type) {
         if (empty($sub_token_url)) {
             $method = "Amazon";
         } else {
-            $method = "Amazon <a href='$sub_token_url'>(change/end subscription)</a>";
+            $method = "Amazon <a href='$sub_token_url'>(change payment method)</a>";
         }
     break;
     case "paypal_express":
         if (empty($sub_token_url)) {
             $method = "PayPal";
         } else {
-            $method = "PayPal <a href='$sub_token_url'>(change/end subscription)</a>";
+            $method = "PayPal <a href='$sub_token_url'>(view cart)</a>";
         }
     break;
     default:
