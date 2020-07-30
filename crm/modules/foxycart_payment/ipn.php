@@ -123,7 +123,7 @@ if (isset($_POST["FoxyData"])) {
 $rerun = False; //Default: well check later
 $notes = "";
 
-if ($STATUS != "APPROVED")
+if (!preg_match("/approved/i", $status) && !EMPTY($sub_token_url))
 { // Money not received yet.  Bail out now.
     $notes .= "transaction is $status. ";
     $cents = 0;
