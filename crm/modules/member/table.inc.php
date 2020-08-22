@@ -65,7 +65,9 @@ function member_table ($opts = NULL) {
         } else {
             $table['columns'][] = array('title'=>'Name','class'=>'');
         }
-        $table['columns'][] = array('title'=>'Membership','class'=>'');
+        if (user_access('member_membership_view')) {
+            $table['columns'][] = array('title'=>'Membership','class'=>'');
+        }
         $table['columns'][] = array('title'=>'E-Mail','class'=>'');
         $table['columns'][] = array('title'=>'Phone','class'=>'');
         if (!array_key_exists('exclude', $opts) || !in_array('emergencyName', $opts['exclude'])) {
@@ -115,7 +117,9 @@ function member_table ($opts = NULL) {
             } else {
                 $row[] = $name_link;
             }
-            $row[] = $plan;
+            if (user_access('member_membership_view')) {
+                $row[] = $plan;
+            }
             $row[] = $member['contact']['email'];
             $row[] = $member['contact']['phone'];
             if (!array_key_exists('exclude', $opts) || !in_array('emergencyName', $opts['exclude'])) {

@@ -520,6 +520,7 @@ function member_filter_form () {
     $filters = array(
         'all' => 'All',
         'active' => 'Active',
+        'voting' => 'Voting',
         'onboarding' => 'Onboarding',
         'hiatus' => 'Hiatus',
         'inactive' => 'Inactive'

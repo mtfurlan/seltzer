@@ -364,6 +364,9 @@ function command_member_filter () {
     if ($_GET['filter'] == 'active') {
         $_SESSION['member_filter'] = array('active'=>true);
     }
+    if ($_GET['filter'] == 'voting') {
+        $_SESSION['member_filter'] = array('voting'=>true);
+    }
     if ($_GET['filter'] == 'onboarding') {
         $_SESSION['member_filter'] = array('onboarding'=>true);
     }
