@@ -2,7 +2,7 @@
 
 /*
     Copyright 2009-2017 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     contact.inc.php - Defines contact entity
 
@@ -71,7 +71,7 @@ function contact_install ($old_revision = 0) {
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
         ';
         $res = mysqli_query($db_connect, $sql);
-        if (!$res) crm_error(mysqli_error($res));
+        if (!$res) crm_error(mysqli_error($db_connect));
     }
     if ($old_revision < 2) {
         // Set default permissions
@@ -98,7 +98,7 @@ function contact_install ($old_revision = 0) {
                         INSERT INTO `role_permission` (`rid`, `permission`) VALUES ('$esc_rid', '$esc_perm')
                     ";
                     $res = mysqli_query($db_connect, $sql);
-                    if (!$res) crm_error(mysqli_error($res));
+                    if (!$res) crm_error(mysqli_error($db_connect));
                 }
             }
         }
@@ -109,12 +109,12 @@ function contact_install ($old_revision = 0) {
 
 /**
  * Return data for one or more contacts.
- * 
+ *
  * @param $opts An associative array of options, possible keys are:
  *   'cid' A cid or array of cids to return contacts for.
  *   'filter' An array mapping filter names to filter values
  * @return An array with each element representing a contact.
-*/ 
+*/
 function contact_data ($opts = array()) {
     global $db_connect;
     // Query database
@@ -141,7 +141,7 @@ function contact_data ($opts = array()) {
     if (isset($opts['filter'])) {
         foreach ($opts['filter'] as $name => $param) {
             switch ($name) {
-                case 'nameLike':                    
+                case 'nameLike':
                     // Split on first comma and create an array of name parts in "first middle last" order
                     $parts = explode(',', $param, 2);
                     $names = array();
@@ -180,7 +180,7 @@ function contact_data ($opts = array()) {
         ORDER BY `lastName`, `firstName`, `middleName` ASC
     ";
     $res = mysqli_query($db_connect, $sql);
-    if (!$res) crm_error(mysqli_error($res));
+    if (!$res) crm_error(mysqli_error($db_connect));
     // Store data
     $contacts = array();
     $row = mysqli_fetch_assoc($res);
@@ -223,7 +223,7 @@ function contact_save ($contact) {
             WHERE `cid`='$escaped[cid]'
         ";
         $res = mysqli_query($db_connect, $sql);
-        if (!$res) crm_error(mysqli_error($res));
+        if (!$res) crm_error(mysqli_error($db_connect));
         if (mysqli_affected_rows($db_connect) < 1) {
             return null;
         }
@@ -237,7 +237,7 @@ function contact_save ($contact) {
             ('$escaped[firstName]','$escaped[middleName]','$escaped[lastName]','$escaped[email]','$escaped[phone]')
         ";
         $res = mysqli_query($db_connect, $sql);
-        if (!$res) crm_error(mysqli_error($res));
+        if (!$res) crm_error(mysqli_error($db_connect));
         $contact['cid'] = mysqli_insert_id($db_connect);
         $contact = module_invoke_api('contact', $contact, 'create');
     }
@@ -261,7 +261,7 @@ function contact_delete ($cid) {
     // Remove the contact from the database
     $sql = "DELETE FROM `contact` WHERE `cid`='$esc_cid'";
     $res = mysqli_query($db_connect, $sql);
-    if (!$res) crm_error(mysqli_error($res));
+    if (!$res) crm_error(mysqli_error($db_connect));
     message_register('Deleted contact info for: ' . theme('contact_name', $contact));
 }
 
@@ -332,12 +332,12 @@ function contact_table ($opts = array()) {
     // Loop through contact data and add rows to the table
     $table['rows'] = array();
     foreach ($contact_data as $contact) {
-        
+
         $row = array();
         if ((user_access('contact_view') && $contact['cid'] == user_id()) || user_access('contact_list')) {
             // Construct name
             $name_link = theme('contact_name', $contact, true);
-            
+
             // Add cells
             if ($export) {
                 $row[] = $contact['cid'];
@@ -349,30 +349,30 @@ function contact_table ($opts = array()) {
             }
             $row[] = $contact['email'];
             $row[] = $contact['phone'];
-            
+
             // Construct ops array
             $ops = array();
-            
+
             // Add edit op
             if (user_access('contact_edit')) {
                 $ops[] = '<a href=' . crm_url('contact&cid=' . $contact['cid'] . '&tab=edit') . '>edit</a> ';
             }
-            
+
             // Add delete op
             if (user_access('contact_delete')) {
                 $ops[] = '<a href=' . crm_url('delete&type=contact&amp;id=' . $contact['cid']) . '>delete</a>';
             }
-            
+
             // Add ops row
             if ($show_ops && !$export && (user_access('contact_edit') || user_access('contact_delete'))) {
                 $row[] = join(' ', $ops);
             }
-            
+
             // Add row to table
             $table['rows'][] = $row;
         }
     }
-    
+
     // Return table
     return $table;
 }
@@ -383,7 +383,7 @@ function contact_table ($opts = array()) {
  * Return the form structure for adding or editing a contact.  If $opts['cid']
  * is specified, an edit form will be returned, otherwise an add form will be
  * returned.
- * 
+ *
  * @param $opts An associative array of options, possible keys are:
  * @return The form structure.
 */
@@ -673,7 +673,7 @@ function contact_page (&$page_data, $page_name) {
 
 /**
  * Theme a contact's name.
- * 
+ *
  * @param $contact The contact data structure or cid.
  * @param $link True if the name should be a link (default: false).
  * @param $path The path that should be linked to.  The cid will always be added
