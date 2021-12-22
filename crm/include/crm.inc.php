@@ -2,7 +2,7 @@
 
 /*
     Copyright 2009-2018 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     crm.inc.php - Loads all core libraries and modules
 

@@ -952,7 +952,7 @@ function theme_amazon_payment_button ($cid, $params = array()) {
     if (preg_match ( "/sub_token=([0-9A-Fa-f]*)/", $last_payment[0]['method'], $matches ))
     {
         $params['button'] = '<a href="https://i3detroit.foxycart.com/cart?sub_token='. $matches[1] . '&empty=true&cart=checkout&sub_cancel=true">Cancel Amazon Automatic Payments</a>';
-    } 
+    }
     else
     {
         $params['button'] = "";
@@ -976,7 +976,7 @@ function theme_amazon_payment_button ($cid, $params = array()) {
 <input type="hidden" name="signature" value="$params[signature]"/>
 </form>-->
 <!-- p>Go to the <a href="/membership">membership</a> page to make a payment.</p -->
-<p>$params[button]</p> 
+<p>$params[button]</p>
 EOF;
     return $html;
 }

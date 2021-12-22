@@ -2,7 +2,7 @@
 
 /*
     Copyright 2009-2014 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     report_planinfo.inc.php - Membership plan reports
     Part of the Reports module
@@ -48,14 +48,14 @@ function memberexit_query ($from, $to) {
     global $db_connect;
     $res = mysqli_query($db_connect, $sql);
     if (!$res) crm_error(mysqli_error($db_connect));
- 
+
     $row = mysqli_fetch_assoc($res);
     while (!empty($row)) {
         // Contents of row are kid, cid, start, end, serial, slot
         $result[] = $row;
         $row = mysqli_fetch_assoc($res);
     }
-   
+
     return $result;
 }
 
@@ -161,18 +161,18 @@ function memberexit_results_table () {
         $contact = $member['contact'];
         $name = theme('contact_name', $contact['cid'], true);
         $row[] = $name;
-        
+
         // Plan Name
         $row[] = $exitdata['name'];
-        
+
         // Start and end dates
         $row[] = $exitdata['start'];
         $row[] = $exitdata['end'];
-    
 
-        $table['rows'][] = $row;  
 
-    }   
+        $table['rows'][] = $row;
+
+    }
     // Return table
     return $table;
 }

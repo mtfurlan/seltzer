@@ -1,7 +1,7 @@
 <?php
 /*
     Copyright 2009-2014 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     ipn.php - Amazon Payment module IPN interface
 
@@ -27,17 +27,17 @@ $_SESSION['userId'] = 1;
 
 //Script by David Hollander, www.foxy-shop.com
 //version 1.0, 7/9/2012
- 
+
 //Set Globals and Get Settings
 $apikey = variable_get('foxycart_apikey','');
- 
+
 //-----------------------------------------------------
 // TRANSACTION DATAFEED
 //-----------------------------------------------------
 if (isset($_POST["FoxyData"])) {
 
     global $db_connect;
- 
+
     //DECRYPT (required)
     //-----------------------------------------------------
     $FoxyData_decrypted = foxycart_decrypt($_POST["FoxyData"]);
@@ -53,13 +53,13 @@ if (isset($_POST["FoxyData"])) {
             ' $stuff '
         )
     ";
-    $res = mysqli_query($db_connect, $sql); 
+    $res = mysqli_query($db_connect, $sql);
     //For Each Transaction
     foreach($xml->transactions->transaction as $transaction) {
- 
+
         //This variable will tell us whether this is a multi-ship store or not
         $is_multiship = 0;
- 
+
         //Get FoxyCart Transaction Information
         //Simply setting lots of helpful data to PHP variables so you can access it easily
         //If you need to access more variables, you can see some sample XML here: http://wiki.foxycart.com/v/1.1/transaction_xml_datafeed
@@ -82,7 +82,7 @@ if (isset($_POST["FoxyData"])) {
         $customer_phone = (string)$transaction->customer_phone;
         $payment_gateway_type = (string)$transaction->payment_gateway_type;
         $processor_response = (string)$transaction->processor_response;
-        
+
         $custom_fields = array();
         $receipt_url = (string)$transaction->receipt_url;
         if (!empty($transaction->custom_fields)) {
@@ -90,7 +90,7 @@ if (isset($_POST["FoxyData"])) {
                 $custom_fields[(string)$custom_field->custom_field_name] = (string)$custom_field->custom_field_value;
             }
         }
- 
+
         //For Each Transaction Detail
         foreach($transaction->transaction_details->transaction_detail as $transaction_detail) {
             $product_name = (string)$transaction_detail->product_name;
@@ -105,7 +105,7 @@ if (isset($_POST["FoxyData"])) {
             $subscription_startdate = (string)$transaction_detail->subscription_startdate;
             $subscription_nextdate = (string)$transaction_detail->subscription_nextdate;
             $subscription_enddate = (string)$transaction_detail->subscription_enddate;
- 
+
             //These are the options for the product
             $transaction_detail_options = array();
             foreach($transaction_detail->transaction_detail_options->transaction_detail_option as $transaction_detail_option) {
@@ -113,12 +113,12 @@ if (isset($_POST["FoxyData"])) {
                 $product_option_value = (string)$transaction_detail_option->product_option_value;
                 $price_mod = (double)$transaction_detail_option->price_mod;
                 $weight_mod = (double)$transaction_detail_option->weight_mod;
- 
+
             }
 
         foreach($transaction->discounts->discount as $discount) { //FIXME: make this handle edge cases that i don't really want to think about right now
             $discount_amount = (double)$discount->amount;
-        } 
+        }
 
 $rerun = False; //Default: well check later
 $notes = "";
@@ -129,7 +129,7 @@ if (!preg_match("/approved/i", $status) && !EMPTY($sub_token_url))
     $cents = 0;
 //    $transaction_id .= "-$status";
 } else if (($payment_gateway_type == "paypal_express") && (EMPTY($processor_response) || $processor_response == "N/A"))
-{   
+{
     $notes .= "PayPal transaction failed. Contact <a href='mailto:treasurer@i3detroit.com'>treasurer@i3detroit.com</a>.";
     $cents = 0;
     $notify_foxy = True;
@@ -190,7 +190,7 @@ if (!preg_match("/approved/i", $status) && !EMPTY($sub_token_url))
 $fullname = "$customer_first_name $customer_last_name";
 $cid = '';
 if (empty($cid)) {
-    $esc_email = mysqli_real_escape_string($db_connect, $customer_email); 
+    $esc_email = mysqli_real_escape_string($db_connect, $customer_email);
     if (!empty($esc_email)) {
         $sql = "
             SELECT `cid` FROM `contact`
@@ -257,7 +257,7 @@ switch ($payment_gateway_type) {
     default:
         $method = "FoxyCart";
 }
- 
+
 $payment = array(
     'date' => date('Y-m-d', strtotime( $transaction_date))
     , 'credit_cid' => $cid
@@ -267,23 +267,23 @@ $payment = array(
     , 'description' => $description
     , 'method' => $method
     , 'confirmation' => $transaction_id
-    , 'notes' => $notes 
+    , 'notes' => $notes
 );
 
 $payment = payment_save($payment);
         }
- 
+
         //If you have custom code to run for each order, put it here:
- 
+
     }
- 
+
     //All Done!
     session_destroy();
     if (isset($notify_foxy) && $notify_foxy) {
         die("Test payment detected");
     }
     die("foxy"); //Acknowledge notification received and logged
- 
+
 //-----------------------------------------------------
 // NO POST CONTENT SENT
 //-----------------------------------------------------
@@ -291,17 +291,17 @@ $payment = payment_save($payment);
     session_destroy();
     die('No Content Received From Datafeed');
 }
- 
- 
- 
- 
+
+
+
+
 //Decrypt Data From Source
 function foxycart_decrypt($src) {
         global $apikey;
     return rc4crypt::decrypt($apikey,urldecode($src));
 }
- 
- 
+
+
 // ======================================================================================
 // RC4 ENCRYPTION CLASS
 // Do not modify.

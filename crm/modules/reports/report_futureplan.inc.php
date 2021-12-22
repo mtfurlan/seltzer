@@ -2,7 +2,7 @@
 
 /*
     Copyright 2009-2014 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     report_planinfo.inc.php - Membership plan reports
     Part of the Reports module
@@ -44,16 +44,16 @@ function get_cids_with_future_plan () {
         SELECT c.cid, p.name, m.start, m.end
             FROM contact c, plan p, membership m
             WHERE m.start > NOW()
-            AND m.cid = c.cid 
+            AND m.cid = c.cid
             AND m.pid = p.pid;
     ";
     global $db_connect;
     $res = mysqli_query($db_connect, $sql);
     if (!$res) crm_error(mysqli_error($db_connect));
- 
+
     $cids=array();
     while ($row = mysqli_fetch_row($res)) $cids[]=$row;
-   
+
     return $cids;
 }
 
@@ -68,7 +68,7 @@ function futureplan_table ($opts = NULL) {
                 break;
         }
     }
-    
+
     $futureplan_cids = get_cids_with_future_plan();
 
      // Initialize table
@@ -86,22 +86,22 @@ function futureplan_table ($opts = NULL) {
     foreach ($futureplan_cids as list($cid,$plan,$date,$end)) {
         // Add secrets data
         $row = array();
-        
+
         // Get info on member
         $data = member_data(array('cid'=>$cid));
         $member = $data[0];
         $contact = $member['contact'];
         $name = theme('contact_name', $contact['cid'], !$export);
        // $name_link = theme('contact_name', $member, true);
-   
+
         $row[] = $name;
         $row[] = $plan;
         $row[] = $date;
         $row[] = $end;
 
-        $table['rows'][] = $row;  
+        $table['rows'][] = $row;
 
-    }   
+    }
     // Return table
     return $table;
 }

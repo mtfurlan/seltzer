@@ -2,7 +2,7 @@
 
 /*
     Copyright 2009-2017 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     csv.inc.php - Parses comma-separated variable files
 
@@ -53,20 +53,20 @@ function remove_utf8_bom($text) {
  * @return The data structure corresponding to the csv data.
  */
 function csv_parse ($content, $row_terminate = "\n", $field_terminate = ",", $field_quote = '"', $field_escape = "\\") {
-    
+
     $content = trim(csv_normalize($content)) . "\n";
-    
+
     $result = array();
     $header = array();
     $row = array();
 
     $field = '';
     $is_quoted = false;
-    
+
     $in_body = false;
-    
+
     $field_index = 0;
-    
+
     $index = 0;
     $length = strlen($content);
     while ($index < $length) {
@@ -126,7 +126,7 @@ function csv_parse ($content, $row_terminate = "\n", $field_terminate = ",", $fi
             }
             $field = '';
             $is_quoted = false;
-            
+
             // End row
             $field_index = 0;
             if ($in_body) {
@@ -143,6 +143,6 @@ function csv_parse ($content, $row_terminate = "\n", $field_terminate = ",", $fi
         }
         $index++;
     }
-    
+
     return $result;
 }

@@ -2,7 +2,7 @@
 
 /*
     Copyright Matthew J. Gardeski <mjgardes@mtu.edu>
-    
+
     This file doesn't do anything
     foxycart.inc.php integration with FoxyCart because apparently FoxyCart > *
 
@@ -36,7 +36,7 @@ function foxycart_revision () {
 function foxycart_install($old_revision = 0) {
     // Create initial database table
     if ($old_revision < 1) {
-        
+
         // Additional payment info for amazon payments
         $sql = '
             CREATE TABLE IF NOT EXISTS `payment_foxycart` (
@@ -48,7 +48,7 @@ function foxycart_install($old_revision = 0) {
         global $db_connect;
         $res = mysqli_query($db_connect, $sql);
         if (!$res) crm_error(mysqli_error($db_connect));
- 
+
         // Additional contact info for amazon payments
         $sql = '
             CREATE TABLE IF NOT EXISTS `contact_foxycart` (
@@ -158,7 +158,7 @@ function foxycart_contact_data ($opts = array()) {
  */
 function foxycart_contact_save ($contact) {
     $esc_name = mysql_real_escape_string($contact['amazon_name']);
-    $esc_cid = mysql_real_escape_string($contact['cid']);    
+    $esc_cid = mysql_real_escape_string($contact['cid']);
     // Check whether the amazon contact already exists in the database
     $sql = "SELECT * FROM `contact_amazon` WHERE `amazon_name` = '$esc_name'";
     global $db_connect;
@@ -300,7 +300,7 @@ function foxycart_contact_table ($opts) {
         if (!empty($contact)) {
             $contactName = theme('contact_name', $contact, true);
         }
-        $row[] = $contactName; 
+        $row[] = $contactName;
         // Second column is union['amazon_name']
         $row[] = $union['amazon_name'];
         if (!$export && (user_access('payment_edit') || user_access('payment_delete'))) {
@@ -318,7 +318,7 @@ function foxycart_contact_table ($opts) {
         // Save row array into the $table structure
         $table['rows'][] = $row;
     }
-    return $table; 
+    return $table;
 }
 
 /**
@@ -387,12 +387,12 @@ function foxycart_import_form () {
  * @return The form structure.
 */
 function foxycart_contact_add_form () {
-    
+
     // Ensure user is allowed to edit amazon contacts
     if (!user_access('payment_edit')) {
         return crm_url('amazon-admin');
     }
-    
+
     // Create form structure
     $form = array(
         'type' => 'form',
@@ -422,7 +422,7 @@ function foxycart_contact_add_form () {
             )
         )
     );
-    
+
     return $form;
 }
 
@@ -433,12 +433,12 @@ function foxycart_contact_add_form () {
  * @return The form structure.
 */
 function foxycart_contact_delete_form ($amazon_name) {
-    
+
     // Ensure user is allowed to delete amazon contacts
     if (!user_access('payment_edit')) {
         return crm_url('amazon-admin');
     }
-    
+
     // Create form structure
     $form = array(
         'type' => 'form',
@@ -464,7 +464,7 @@ function foxycart_contact_delete_form ($amazon_name) {
             )
         )
     );
-    
+
     return $form;
 }
 

@@ -1,7 +1,7 @@
 <?php
 /*
     Copyright 2014 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     template.inc.php - Template for contributed modules
 

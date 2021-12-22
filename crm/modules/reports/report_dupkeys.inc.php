@@ -2,7 +2,7 @@
 
 /*
     Copyright 2009-2014 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     report_dupkeys.inc.php - Duplicate key assignments
     Part of the Reports module
@@ -52,7 +52,7 @@ function get_dupkeys () {
     global $db_connect;
     $res = mysqli_query($db_connect, $sql);
     if (!$res) crm_error(mysqli_error($db_connect));
-    
+
     $keys=array();
     $row = mysqli_fetch_assoc($res);
     while (!empty($row)) {
@@ -74,7 +74,7 @@ function dupkeys_table ($opts = NULL) {
                 break;
         }
     }
-    
+
      // Initialize table
     $table = array(
         'columns' => array(
@@ -85,7 +85,7 @@ function dupkeys_table ($opts = NULL) {
             , array ('title' => 'Key')
             , array ('title' => 'Key Start')
             , array ('title' => 'Key End')
-            
+
         )
         , 'rows' => array()
     );
@@ -95,7 +95,7 @@ function dupkeys_table ($opts = NULL) {
     foreach ($dupkeys as $key) {
         // Add secrets data
         $row = array();
-        
+
         // Get info on member
         $data = member_data(array('cid'=>$key['cid']));
         $member = $data[0];
@@ -113,10 +113,10 @@ function dupkeys_table ($opts = NULL) {
         $row[] = $key['serial'];
         $row[] = $key['start'];
         $row[] = $key['end'];
-        
-        $table['rows'][] = $row;  
 
-    }   
+        $table['rows'][] = $row;
+
+    }
     // Return table
     return $table;
 }

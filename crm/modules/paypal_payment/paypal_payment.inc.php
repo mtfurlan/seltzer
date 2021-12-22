@@ -3,7 +3,7 @@
 /*
     Copyright 2009-2017 Edward L. Platt <ed@elplatt.com>
     Copyright 2013-2017 Chris Murray <chris.f.murray@hotmail.co.uk>
-    
+
     This file is part of the Seltzer CRM Project
     paypal_payment.inc.php - Paypal payments extensions for the payment module.
 
@@ -38,7 +38,7 @@ function paypal_payment_install($old_revision = 0) {
     global $db_connect;
     // Create initial database table
     if ($old_revision < 1) {
-        
+
         // Additional payment info for paypal payments
         $sql = '
             CREATE TABLE IF NOT EXISTS `payment_paypal` (
@@ -49,7 +49,7 @@ function paypal_payment_install($old_revision = 0) {
         ';
         $res = mysqli_query($db_connect, $sql);
         if (!$res) crm_error(mysqli_error($db_connect));
-        
+
         // Additional contact info for paypal payments
         $sql = '
             CREATE TABLE IF NOT EXISTS `contact_paypal` (
@@ -65,17 +65,17 @@ function paypal_payment_install($old_revision = 0) {
         $sql = '
             ALTER TABLE `payment_paypal`
             CHANGE COLUMN paypal_email email varchar(255);
-        ';    
+        ';
         $res = mysqli_query($db_connect, $sql);
         if (!$res) crm_error(mysqli_error($db_connect));
         $sql = '
             ALTER TABLE `contact_paypal`
             CHANGE COLUMN paypal_email email varchar(255);
-        ';    
+        ';
         $res = mysqli_query($db_connect, $sql);
         if (!$res) crm_error(mysqli_error($db_connect));
         $sql = '
-            ALTER TABLE `contact_paypal` DROP PRIMARY KEY, 
+            ALTER TABLE `contact_paypal` DROP PRIMARY KEY,
             ADD PRIMARY KEY(`email`);
         ';
         $res = mysqli_query($db_connect, $sql);
@@ -200,7 +200,7 @@ function paypal_payment_contact_api ($contact, $op) {
 function paypal_payment_contact_save ($contact) {
     global $db_connect;
     $esc_email = mysqli_real_escape_string($db_connect, $contact['email']);
-    $esc_cid = mysqli_real_escape_string($db_connect, $contact['cid']);    
+    $esc_cid = mysqli_real_escape_string($db_connect, $contact['cid']);
     // Check whether the paypal contact already exists in the database
     $sql = "SELECT * FROM `contact_paypal` WHERE `email` = '$esc_email'";
     $res = mysqli_query($db_connect, $sql);
@@ -345,7 +345,7 @@ function paypal_payment_contact_table ($opts) {
         if (!empty($contact)) {
             $contactName = theme('contact_name', $contact, true);
         }
-        $row[] = $contactName; 
+        $row[] = $contactName;
         // Second column is union['email']
         $row[] = $union['email'];
         if (!$export && (user_access('payment_edit') || user_access('payment_delete'))) {
@@ -363,7 +363,7 @@ function paypal_payment_contact_table ($opts) {
         // Save row array into the $table structure
         $table['rows'][] = $row;
     }
-    return $table; 
+    return $table;
 }
 
 /**
@@ -432,12 +432,12 @@ function paypal_payment_import_form () {
  * @return The form structure.
 */
 function paypal_payment_contact_add_form () {
-    
+
     // Ensure user is allowed to edit paypal contacts
     if (!user_access('payment_edit')) {
         return crm_url('paypal-admin');
     }
-    
+
     // Create form structure
     $form = array(
         'type' => 'form',
@@ -467,7 +467,7 @@ function paypal_payment_contact_add_form () {
             )
         )
     );
-    
+
     return $form;
 }
 
@@ -478,19 +478,19 @@ function paypal_payment_contact_add_form () {
  * @return The form structure.
 */
 function paypal_payment_contact_delete_form ($cid) {
-    
+
     // Ensure user is allowed to delete paypal contacts
     if (!user_access('payment_edit')) {
         return crm_url('paypal-admin');
     }
-    
+
     // Get paypal contact data
     $data = crm_get_data('paypal_payment_contact', array('cid'=>$cid));
     $paypal_payment_contact = $data[0];
-    
+
     // Construct paypal contact name
     $paypal_payment_contact_name = "paypal contact:$paypal_payment_contact[cid] email:$paypal_payment_contact[email]";
-    
+
     // Create form structure
     $form = array(
         'type' => 'form',
@@ -516,7 +516,7 @@ function paypal_payment_contact_delete_form ($cid) {
             )
         )
     );
-    
+
     return $form;
 }
 
@@ -586,7 +586,7 @@ function command_paypal_payment_import () {
     $count = 0;
     message_register("Processing " . count($data) . " row(s)");
     foreach ($data as $row) {
-        
+
         // Skip transactions that have already been imported
         $payment_opts = array(
             'filter' => array('confirmation' => $row['Transaction ID'])
