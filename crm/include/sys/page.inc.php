@@ -2,7 +2,7 @@
 
 /*
     Copyright 2009-2017 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     page.inc.php - Core page system
 
@@ -58,20 +58,20 @@ function page_sitemap () {
  * @return The page data structure.
  */
 function page ($page, $options) {
-    
+
     // Initialize page structure
     $data = array();
-    
+
     // Loop through modules
     foreach (module_list() as $module) {
-        
+
         // Check if hook exists and execute
         $hook = $module . '_page';
         if (function_exists($hook)) {
             $hook($data, $page, $options);
         }
     }
-    
+
     return $data;
 }
 
@@ -124,41 +124,41 @@ function page_add_content_bottom (&$page_data, $content, $tab_name = NULL) {
  * @return The themed html for the page.
  */
 function theme_page ($page_name, $options = array()) {
-    
+
     // Front page has no page name
     if (empty($page_name)) {
         $page_name = '<front>';
     }
-    
+
     // Create data structure
     $data = page($page_name, $options);
-    
+
     // Initialize output
     $tabs = '';
     $header = '';
     $content = '';
-    
+
     // Add page title to header
     if (!empty($data['#title'])) {
         $header .= '<h1>' . $data['#title'] . '</h1>';
     }
-    
+
     // Output main content
     if (!empty($data['#main'])) {
         $content = '<div class="page-content">' . join($data['#main']) . '</div>';
     }
-    
+
     // Add button list to header
     $header .= '<ul class="page-nav">';
-    
+
     // Loop through each tab
     foreach ($data as $tab => $tab_data) {
-        
+
         // Skip special keys
         if ($tab{0} === '#') {
             continue;
         }
-        
+
         // Generate tab name
         $tab_name = preg_replace('/\W+/', '-', strtolower($tab));
         $header .= '<li><a href="#tab-' . $tab_name . '">' . $tab . '</a></li>';
@@ -167,10 +167,10 @@ function theme_page ($page_name, $options = array()) {
         $tabs .= join($tab_data);
         $tabs .= '</fieldset>';
     }
-    
+
     // Close header button list
     $header .= '</ul>';
-    
+
     return $header . $content . $tabs;
 }
 

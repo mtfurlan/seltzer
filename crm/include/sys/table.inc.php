@@ -2,7 +2,7 @@
 
 /*
     Copyright 2009-2017 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     theme.inc.php - Core table system
 
@@ -57,16 +57,16 @@ function theme_table ($table_id, $opts = array()) {
         // Support old style of passing the data directly
         $table = $table_id;
     }
-    
+
     // Check if table is empty
     if (empty($table['rows'])) {
         return '';
     }
-    
+
     // Count rows
     $column_count = sizeof($table['columns']);
     $row_count = sizeof($table['rows']);
-    
+
     // Generate url for export
     $new_opts = $opts;
     $new_opts['export'] = true;
@@ -74,14 +74,14 @@ function theme_table ($table_id, $opts = array()) {
         $table_id = $table_id['id'];
     }
      $export = 'export-csv.php?name=' . $table_id . '&opts=' . urlencode(json_encode($new_opts));
-    
+
     // Open table
     $output = "<table";
     if (empty($table['id'])) {
         $table['id'] = 'crm-table';
     }
     $output .= ' id="' . $table['id'] . '"';
-    
+
     $class = "seltzer-table sortable";
     if (!empty($table['class'])) {
         $class .= ' ' . $table['class'];
@@ -94,10 +94,10 @@ function theme_table ($table_id, $opts = array()) {
     }
 
     $output .= "<thead><tr>";
-    
+
     // Loop through headers
     foreach ($table['columns'] as $col) {
-        
+
         // Open header cell
         $output .= '<th';
         if (!empty($col['id'])) {
@@ -119,17 +119,17 @@ function theme_table ($table_id, $opts = array()) {
     //     }
     // }
     $output .= "</thead>";
-    
+
     // Output table body
     $output .= "<tbody>";
-    
+
     // Initialize zebra striping
     // Stripped out and moved to sorttable.css
     // $zebra = 1;
-    
+
     // Loop through rows
     foreach ($table['rows'] as $row) {
-        
+
         $output .= '<tr';
         // if ($zebra % 2 === 0) {
         //     $output .= ' class="even"';
@@ -138,7 +138,7 @@ function theme_table ($table_id, $opts = array()) {
         // }
         // $zebra++;
         $output .= '>';
-        
+
         foreach ($row as $i => $cell) {
             $output .= '<td';
             if (!empty($table['columns'][$i]['id'])) {
@@ -151,7 +151,7 @@ function theme_table ($table_id, $opts = array()) {
             $output .= $cell;
             $output .= '</td>';
         }
-        
+
         $output .= '</tr>';
     }
     $output .= "</tbody>";
@@ -164,9 +164,9 @@ function theme_table ($table_id, $opts = array()) {
             $output .= '</tfoot>';
         }
     }
-    
+
     $output .= "</table>";
-    
+
     if (array_key_exists('filter', $table)) {
         $output .= "<script>
             jQuery('#".$table['id']."').ddTableFilter();
@@ -183,7 +183,7 @@ function theme_table ($table_id, $opts = array()) {
  * @return The CSV for a table.
 */
 function theme_table_csv ($table_name, $opts = array()) {
-    
+
     // Check if $table_name is a string
     if (is_string($table_name)) {
         // Construct the name of the function to generate a table
@@ -202,14 +202,14 @@ function theme_table_csv ($table_name, $opts = array()) {
     if (empty($table['rows'])) {
         return '';
     }
-    
+
     // Loop through headers
     $cells = array();
     foreach ($table['columns'] as $col) {
         $cells[] = table_escape_csv($col['title']);
     }
     $output .= join(',', $cells) . "\n";
-    
+
     // Loop through rows
     foreach ($table['rows'] as $row) {
         $cells = array();
@@ -218,7 +218,7 @@ function theme_table_csv ($table_name, $opts = array()) {
         }
         $output .= join(',', $cells) . "\n";
     }
-    
+
     return $output;
 }
 
@@ -228,8 +228,8 @@ function theme_table_csv ($table_name, $opts = array()) {
  * @return The escaped string.
  */
 function table_escape_csv ($cell) {
-    // return '"' . str_replace('"', '\"', $cell) . '"';    
-    return '"' . strip_tags($cell) . '"';    
+    // return '"' . str_replace('"', '\"', $cell) . '"';
+    return '"' . strip_tags($cell) . '"';
 }
 
 /**
@@ -240,7 +240,7 @@ function table_escape_csv ($cell) {
  * @return The themed html for a vertical table
 */
 function theme_table_vertical ($table_name, $opts = array()) {
-    
+
     // Check if $table_name is a string
     if (is_string($table_name)) {
         // Construct the name of the function to generate a table
@@ -254,12 +254,12 @@ function theme_table_vertical ($table_name, $opts = array()) {
         // Support old style of passing the data directly
         $table = $table_name;
     }
-    
+
     // Check if table is empty
     if (empty($table['rows'])) {
         return '';
     }
-    
+
     // Open table
     $output = "<table";
     if (!empty($table['id'])) {
@@ -271,16 +271,16 @@ function theme_table_vertical ($table_name, $opts = array()) {
     }
     $output .= ' class="' . $class . '"';
     $output .= '>';
-    
+
     // Output table body
     $output .= "<tbody>";
-    
+
     // Loop through headers
     foreach ($table['columns'] as $i => $col) {
-        
+
         // Open row
         $output .= '<tr>';
-        
+
         // Print header
         $output .= '<td';
         if (!empty($col['id'])) {
@@ -290,13 +290,13 @@ function theme_table_vertical ($table_name, $opts = array()) {
             $output .= ' class="' . $col['class'] . '"';
         }
         $output .= '>';
-        
+
         $output .= $col['title'];
         $output .= '</td>';
-        
+
         // Loop through rows
         foreach ($table['rows'] as $row) {
-            
+
             $output .= '<td';
             if (!empty($table['columns'][$i]['id'])) {
                 $output .= ' id="' . $col['id'] . '"';
@@ -308,12 +308,12 @@ function theme_table_vertical ($table_name, $opts = array()) {
             $output .= $row[$i];
             $output .= '</td>';
         }
-        
+
         $output .= '</tr>';
     }
-    
+
     $output .= "</tbody>";
     $output .= "</table>";
-    
+
     return $output;
 }

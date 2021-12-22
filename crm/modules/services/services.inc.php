@@ -1,7 +1,7 @@
 <?php
 /*
     Copyright 2014 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     template.inc.php - Template for contributed modules
 
@@ -121,7 +121,7 @@ function services_table ($opts) {
                 break;
         }
     }
-    
+
     // Initialize table
     $table = array(
         "id" => '',
@@ -206,7 +206,7 @@ function services_page (&$page_data, $page_name, $options) {
             if (empty($cid)) {
                 return;
             }
-            
+
             // Add Services Table
             if (user_access('services_view') || user_access('services_edit') || user_access('services_delete') || $cid == user_id()) {
                 $services = theme('table', 'services', array('cid' => $cid));

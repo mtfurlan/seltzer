@@ -2,7 +2,7 @@
 
 /*
     Copyright 2009-2014 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     report_storagelog.inc.php - Full log of the storage module
     Part of the Reports module

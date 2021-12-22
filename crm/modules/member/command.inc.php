@@ -2,7 +2,7 @@
 
 /*
     Copyright 2009-2017 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     command.inc.php - Member module - request handlers
 
@@ -31,7 +31,7 @@ function command_member_add () {
     global $config_org_name;
     global $config_email_to;
     global $config_email_from;
-    
+
     // Verify permissions
     if (!user_access('member_add')) {
         error_register('Permission denied: member_add');
@@ -45,18 +45,18 @@ function command_member_add () {
         error_register('Permission denied: user_add');
         return crm_url('members');
     }
-    
+
     // Find username or create a new one
     $username = $_POST['username'];
     $n = 0;
     while (empty($username) && $n < 100) {
-        
+
         // Construct test username
         $test_username = strtolower($_POST['firstName']{0} . $_POST['lastName']);
         if ($n > 0) {
             $test_username .= $n;
         }
-        
+
         // Check whether username is taken
         $esc_test_name = mysqli_real_escape_string($db_connect, $test_username);
         $sql = "SELECT * FROM `user` WHERE `username`='$esc_test_name'";
@@ -72,10 +72,10 @@ function command_member_add () {
         error_register('Please specify a username');
         return crm_url('members&tab=add');
     }
-    
+
     // Check for duplicate usernames
     if (!empty($username)) {
-        
+
         // Check whether username is in use
         $test_username = $username;
         $esc_test_username = mysqli_real_escape_string($db_connect, $test_username);
@@ -90,11 +90,11 @@ function command_member_add () {
             return crm_url('members&tab=add');
         }
     }
-    
+
     // Check for duplicate email addresses
     $email = $_POST['email'];
     if (!empty($email)) {
-        
+
         // Check whether email address is in use
         $test_email = $email;
         $esc_test_email = mysqli_real_escape_string($db_connect, $test_email);
@@ -110,7 +110,7 @@ function command_member_add () {
             return crm_url('members&tab=add');
         }
     }
-    
+
     // Build contact object
     $contact = array(
         'firstName' => $_POST['firstName']
@@ -119,11 +119,11 @@ function command_member_add () {
         , 'email' => $email
         , 'phone' => $_POST['phone']
     );
-    
+
     // Add user fields
     $user = array('username' => $username);
     $contact['user'] = $user;
-    
+
     // Add member fields
     $membership = array(
         array(
@@ -138,12 +138,12 @@ function command_member_add () {
         , 'emergencyRelation' => $_POST['emergencyRelation']
     );
     $contact['member'] = $member;
-    
+
     // Save to database
     $contact = contact_save($contact);
-    
+
     $esc_cid = mysqli_real_escape_string($db_connect, $contact['cid']);
-    
+
     // Notify admins
     $from = "\"$config_org_name\" <$config_email_from>";
     $headers = "From: $from\r\nContent-Type: text/html; charset=ISO-8859-1\r\n";
@@ -152,12 +152,12 @@ function command_member_add () {
         $content = theme('member_created_email', $contact['cid']);
         mail($config_email_to, "New Member: $name", $content, $headers);
     }
-    
+
     // Notify user
     $confirm_url = user_reset_password_url($contact['user']['username']);
     $content = theme('member_welcome_email', $contact['user']['cid'], $confirm_url);
     mail($_POST['email'], "Welcome to $config_org_name", $content, $headers);
-    
+
     return crm_url("contact&cid=$esc_cid");
 }
 
@@ -169,14 +169,14 @@ function command_member_add () {
 function command_member_edit () {
     global $db_connect;
     global $esc_post;
-    
+
     $esc_cid = mysqli_real_escape_string($db_connect, $_POST['cid']);
     $esc_emergencyName = mysqli_real_escape_string($db_connect, $_POST['emergencyName']);
     $esc_emergencyPhone = mysqli_real_escape_string($db_connect, $_POST['emergencyPhone']);
     $esc_emergencyRelation = mysqli_real_escape_string($db_connect, $_POST['emergencyRelation']);
     $member_data = crm_get_data('member', array('cid'=>$esc_cid));
     $member = $member_data[0]['member'];
-    
+
     // Add member fields
     $member = array(
         'cid'=> $esc_cid
@@ -186,7 +186,7 @@ function command_member_edit () {
     );
     // Save to database
     $member = member_save($member);
-    
+
     return crm_url("contact&cid=$esc_cid");
 }
 
@@ -197,7 +197,7 @@ function command_member_edit () {
  */
 function command_member_plan_add () {
     global $esc_post;
-    
+
     $plan = array(
         'name' => $_POST['name']
         , 'price' => $_POST['price']
@@ -205,16 +205,16 @@ function command_member_plan_add () {
         , 'active' => $_POST['active'] ? '1' : '0'
         , 'pid' => $_POST['pid']
     );
-    
+
     // Verify permissions
     if (!user_access('member_plan_edit')) {
         error_register('Permission denied: member_plan_edit');
         return crm_url('plans');
     }
-    
+
     // Add plan
     member_plan_save($plan);
-    
+
     return crm_url('plans');
 }
 
@@ -225,7 +225,7 @@ function command_member_plan_add () {
  */
 function command_member_plan_update () {
     global $esc_post;
-    
+
     $plan = array(
         'name' => $_POST['name']
         , 'price' => $_POST['price']
@@ -233,16 +233,16 @@ function command_member_plan_update () {
         , 'active' => $_POST['active'] ? '1' : '0'
         , 'pid' => $_POST['pid']
     );
-    
+
     // Verify permissions
     if (!user_access('member_plan_edit')) {
         error_register('Permission denied: member_plan_edit');
         return crm_url('plans');
     }
-    
+
     // Update plan
     member_plan_save($plan);
-    
+
     return crm_url('plans');
 }
 
@@ -253,16 +253,16 @@ function command_member_plan_update () {
  */
 function command_member_plan_delete () {
     global $esc_post;
-    
+
     // Verify permissions
     if (!user_access('member_plan_edit')) {
         error_register('Permission denied: member_plan_edit');
         return crm_url('plans');
     }
-    
+
     // Delete plan
     member_plan_delete($esc_post['pid']);
-    
+
     return crm_url('plans');
 }
 
@@ -273,7 +273,7 @@ function command_member_plan_delete () {
  */
 function command_member_membership_add () {
     global $esc_post;
-    
+
     // Verify permissions
     if (!user_access('member_edit')) {
         error_register('Permission denied: member_edit');
@@ -283,7 +283,7 @@ function command_member_membership_add () {
         error_register('Permission denied: member_membership_edit');
         return crm_url('members');
     }
-    
+
     // Construct membership object and save
     $membership = array(
         'sid' => $_POST['sid']
@@ -293,7 +293,7 @@ function command_member_membership_add () {
         , 'end' => $_POST['end']
     );
     member_membership_save($membership);
-    
+
     return crm_url("contact&cid=$_POST[cid]&tab=plan");
 }
 
@@ -305,7 +305,7 @@ function command_member_membership_add () {
  */
 function command_member_membership_update () {
     global $esc_post;
-    
+
     // Verify permissions
     if (!user_access('member_edit')) {
         error_register('Permission denied: member_edit');
@@ -334,16 +334,16 @@ function command_member_membership_update () {
  */
 function command_member_membership_delete () {
     global $esc_post;
-    
+
     // Verify permissions
     if (!user_access('member_membership_edit')) {
         error_register('Permission denied: member_membership_edit');
         return crm_url('members');
     }
-    
+
     // Delete membership
     member_membership_delete($esc_post['sid']);
-    
+
     return crm_url("contact&cid=$_POST[cid]&tab=plan");
 }
 
@@ -356,7 +356,7 @@ function command_member_filter () {
 
     // Set filter in session
     $_SESSION['member_filter_option'] = $_GET['filter'];
-    
+
     // Set filter
     if ($_GET['filter'] == 'all') {
         $_SESSION['member_filter'] = array('all'=>true);
@@ -372,7 +372,7 @@ function command_member_filter () {
     }
     if ($_GET['filter'] == 'inactive') {
         $_SESSION['member_filter'] = array('inactive'=>true);
-    }    
+    }
     // Construct query string
     $params = array();
     $query = "";
@@ -385,7 +385,7 @@ function command_member_filter () {
     if (!empty($params)) {
         $query = '&' . join('&', $params);
     }
-    
+
     return crm_url('members') . $query;
 }
 
@@ -399,7 +399,7 @@ function command_member_import () {
     global $config_org_name;
     global $config_email_to;
     global $config_email_from;
-    
+
     // Verify permissions
     if (!user_access('member_add')) {
         error_register('Permission denied: member_add');
@@ -413,32 +413,32 @@ function command_member_import () {
         error_register('Permission denied: user_add');
         return crm_url('members');
     }
-    
+
     if (!array_key_exists('member-file', $_FILES)) {
         error_register('No member file uploaded');
         return crm_url('members&tab=import');
     }
-    
+
     $csv = file_get_contents($_FILES['member-file']['tmp_name']);
-    
+
     $data = csv_parse($csv);
-    
+
     foreach ($data as $row) {
-        
+
         // Convert row keys to lowercase and remove spaces
         foreach ($row as $key => $value) {
             $new_key = str_replace(' ', '', strtolower($key));
             unset($row[$key]);
             $row[$new_key] = $value;
         }
-        
+
         // Add plan if necessary
         $esc_plan_name = mysqli_real_escape_string($db_connect, $row['plan']);
         $sql = "SELECT `pid` FROM `plan` WHERE `name`='$esc_plan_name'";
         $res = mysqli_query($db_connect, $sql);
         if (!$res) crm_error(mysqli_error($db_connect));
         if (mysqli_num_rows($res) < 1) {
-            
+
             $plan = array(
                 'name' => $esc_plan_name
                 , 'price' => '0'
@@ -454,18 +454,18 @@ function command_member_import () {
             $plan_row = mysqli_fetch_assoc($res);
             $pid = $plan_row['pid'];
         }
-        
+
         // Find username or create a new one
         $username = $row['username'];
         $n = 0;
         while (empty($username) && $n < 100) {
-            
+
             // Construct test username
             $test_username = strtolower($row['firstname']{0} . $row['lastname']);
             if ($n > 0) {
                 $test_username .= $n;
             }
-            
+
             // Check whether username is taken
             $esc_test_name = mysqli_real_escape_string($db_connect, $test_username);
             $sql = "SELECT * FROM `user` WHERE `username`='$esc_test_name'";
@@ -481,10 +481,10 @@ function command_member_import () {
             error_register('Please specify a username');
             return crm_url('members&tab=import');
         }
-        
+
         // Check for duplicate usernames
         if (!empty($username)) {
-            
+
             // Check whether username is in use
             $test_username = $username;
             $esc_test_username = mysqli_real_escape_string($db_connect, $test_username);
@@ -499,11 +499,11 @@ function command_member_import () {
                 return crm_url('members&tab=import');
             }
         }
-        
+
         // Check for duplicate email addresses
         $email = $row['email'];
         if (!empty($email)) {
-            
+
             // Check whether email address is in use
             $test_email = $email;
             $esc_test_email = mysqli_real_escape_string($db_connect, $test_email);
@@ -519,7 +519,7 @@ function command_member_import () {
                 return crm_url('members&tab=import');
             }
         }
-        
+
         // Build contact object
         $contact = array(
             'firstName' => $row['firstname']
@@ -528,11 +528,11 @@ function command_member_import () {
             , 'email' => $email
             , 'phone' => $row['phone']
         );
-        
+
         // Add user fields
         $user = array('username' => $username);
         $contact['user'] = $user;
-        
+
         // Add membership fields
         $esc_start = mysqli_real_escape_string($db_connect, $row['startdate']);
         $esc_pid = mysqli_real_escape_string($db_connect, $pid);
@@ -542,7 +542,7 @@ function command_member_import () {
                 , 'start' => $esc_start
             )
         );
-        
+
         // Add member fields
         $member = array(
             'membership' => $membership
@@ -551,12 +551,12 @@ function command_member_import () {
             , 'emergencyRelation' => $row['emergencyrelation']
         );
         $contact['member'] = $member;
-        
+
         // Save to database
         $contact = contact_save($contact);
-        
+
         $esc_cid = mysqli_real_escape_string($db_connect, $cid);
-        
+
         // Notify admins
         $from = "\"$config_org_name\" <$config_email_from>";
         $headers = "From: $from\r\nContent-Type: text/html; charset=ISO-8859-1\r\n";
@@ -565,13 +565,13 @@ function command_member_import () {
             $content = theme('member_created_email', $contact['cid']);
             mail($config_email_to, "New Member: $name", $content, $headers);
         }
-        
+
         // Notify user
         $confirm_url = user_reset_password_url($user['username']);
         $content = theme('member_welcome_email', $user['cid'], $confirm_url);
         mail($email, "Welcome to $config_org_name", $content, $headers);
     }
-    
+
     return crm_url('members');
 }
 
@@ -581,30 +581,30 @@ function command_member_import () {
  * @return The url to display on completion.
  */
 function command_member_plan_import () {
-    
+
     if (!user_access('member_plan_edit')) {
         error_register('User does not have permission: member_plan_edit');
         return crm_url('plans');
     }
-    
+
     if (!array_key_exists('plan-file', $_FILES)) {
         error_register('No plan file uploaded');
         return crm_url('plans&tab=import');
     }
-    
+
     $csv = file_get_contents($_FILES['plan-file']['tmp_name']);
-    
+
     $data = csv_parse($csv);
-    
+
     foreach ($data as $row) {
-        
+
         // Convert row keys to lowercase and remove spaces
         foreach ($row as $key => $value) {
             $new_key = str_replace(' ', '', strtolower($key));
             unset($row[$key]);
             $row[$new_key] = $value;
         }
-        
+
         // Build plan object
         $plan = array(
             'name' => $row['planname']
@@ -613,10 +613,10 @@ function command_member_plan_import () {
             , 'active' => $row['active'] ? '1' : '0'
             , 'pid' => $row['pid']
         );
-        
+
         // Add plan
         member_plan_save($plan);
     }
-    
+
     return crm_url('plans');
 }

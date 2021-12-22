@@ -2,7 +2,7 @@
 
 /*
     Copyright 2009-2014 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     report_planinfo.inc.php - Membership plan reports
     Part of the Reports module
@@ -46,7 +46,7 @@ function get_storage_cids_without_plan () {
         $storage_contacts[] = $storage_contact['cid'];
     }
 // var_dump_pre($storage_contacts);
-    
+
     $cids = array();
     foreach (member_data(array('cid'=>$storage_contacts,'filter'=>array('inactive'=>true,'hiatus'=>true))) as $contact) {
         $cids[] = $contact['cid'];
@@ -101,7 +101,7 @@ function nonmemberstorage_table ($opts = NULL) {
     foreach ($noncurrent_cids as $cid) {
         // Add secrets data
         $row = array();
-        
+
         // Get info on member
         $data = member_data(array('cid'=>$cid));
         $storage_data = storage_data(array('cid'=>$cid));
@@ -115,7 +115,7 @@ function nonmemberstorage_table ($opts = NULL) {
         $plan = $recentMembership['plan']['name']; // then this is an active plan
         $planstart = $recentMembership['start'];
         $planend = $recentMembership['end'];
-        
+
         $row[] = $name;
         if ($export) {
             $row[] = $phone;
@@ -127,9 +127,9 @@ function nonmemberstorage_table ($opts = NULL) {
         $row[] = $storage_data['pid'];
         $row[] = $storage_data['desc'];
 
-        $table['rows'][] = $row;  
+        $table['rows'][] = $row;
 
-    }   
+    }
     // Return table
     return $table;
 }

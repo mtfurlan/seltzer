@@ -3,7 +3,7 @@
 /*
     Copyright 2009-2017 Edward L. Platt <ed@elplatt.com>
     Copyright 2013-2017 David "Buzz" Bussenschutt <davidbuzz@gmail.com>
-    
+
     This file is part of the Seltzer CRM Project
     user_meta.inc.php - Meta-Tag tracking module
 
@@ -69,7 +69,7 @@ function user_meta_install($old_revision = 0) {
             ';
         $res = mysqli_query($db_connect, $sql);
         if (!$res) crm_error(mysqli_error($db_connect));
-        
+
         // Set default permissions
         $roles = array(
             '1' => 'authenticated'
@@ -109,18 +109,18 @@ function user_meta_install($old_revision = 0) {
  * @return The description string.
  */
 function user_meta_description ($umid) {
-    
+
     // Get meta data
     $data = crm_get_data('user_meta', array('umid' => $umid));
     if (empty($data)) {
         return '';
     }
     $user_meta = $data[0];
-    
+
     // Construct description
     $description = 'Meta ';
     $description .= $user_meta['tagstr'];
-    
+
     return $description;
 }
 
@@ -151,7 +151,7 @@ function user_meta_data ($opts = array()) {
             }
         }
     }
-    
+
     // Create map from cids to contact names if necessary
     // TODO: Add filters for speed
     if ($join_contact) {
@@ -161,7 +161,7 @@ function user_meta_data ($opts = array()) {
             $cidToContact[$contact['cid']] = $contact;
         }
     }
-    
+
     if ($join_member) {
         $members = member_data();
         $cidToMember = array();
@@ -169,7 +169,7 @@ function user_meta_data ($opts = array()) {
             $cidToMember[$member['cid']] = $member;
         }
     }
-    
+
     // Query database
     $sql = "
         SELECT
@@ -205,7 +205,7 @@ function user_meta_data ($opts = array()) {
         ORDER BY `tagstr` ASC";
     $res = mysqli_query($db_connect, $sql);
     if (!$res) crm_error(mysqli_error($db_connect));
-    
+
     // Store data
     $user_metas = array();
     $row = mysqli_fetch_assoc($res);
@@ -230,7 +230,7 @@ function user_meta_data ($opts = array()) {
         $user_metas[] = $user_meta;
         $row = mysqli_fetch_assoc($res);
     }
-    
+
     // Return data
     return $user_metas;
 }
@@ -348,9 +348,9 @@ function user_meta_delete ($user_meta) {
  * @return The table structure.
  */
 function user_meta_cross_table ($opts) {
-    
+
     global $db_connect;
-    
+
     // Determine settings
     $export = false;
     foreach ($opts as $option => $value) {
@@ -360,13 +360,13 @@ function user_meta_cross_table ($opts) {
                 break;
         }
     }
-    
+
     // Get contact data
     $data = user_meta_data($opts);
     if (count($data) < 1) {
         return array();
     }
-    
+
     // Initialize table
     $table = array(
         "id" => '',
@@ -376,7 +376,7 @@ function user_meta_cross_table ($opts) {
     );
     $tableid = 0 ;
     $uniq = array();
-    
+
     // determine max/total number of tags, as we'll use one column for each:
     $sql = "SELECT distinct tagstr from user_meta order by tagstr asc";
     $res = mysqli_query($db_connect, $sql);
@@ -387,7 +387,7 @@ function user_meta_cross_table ($opts) {
         {
             $tags[] = $row[0];
         }
-    
+
     // Add column headers
     if (user_access('user_meta_view') || $opts['cid'] == user_id()) {
         if (array_key_exists('join', $opts) && in_array('contact', $opts['join'])) {
@@ -401,20 +401,20 @@ function user_meta_cross_table ($opts) {
     if (!$export && (user_access('user_meta_edit'))) {
         $table['columns'][] = array('title'=>'Ops','class'=>''); // last column.
     }
-    
+
     // Add row data
     foreach ($data as $user_meta) {
-        
+
         // Add meta data
         $row = array();
-        
+
         // user not already on screen, add them, and all details, and first tag.
         if ( ! array_key_exists($user_meta['contact']['lastName'].$user_meta['contact']['firstName'], $uniq) ) {
-            
+
             $uniq[$user_meta['contact']['lastName'].$user_meta['contact']['firstName']] = $tableid;
-            
+
             if (user_access('user_meta_view') || $opts['cid'] == user_id()) {
-                
+
                 // Add cells
                 if (array_key_exists('join', $opts) && in_array('contact', $opts['join'])) {
                     $row[] = theme('contact_name', $user_meta['cid'], true);
@@ -430,7 +430,7 @@ function user_meta_cross_table ($opts) {
                         }
                     }
                 }
-                
+
                 // insert new tag in new row at a fixed offset.
                 for ( $i = 1 ; $i < $count+1; $i++) {
                     if ( $table['columns'][$i]['title'] == $user_meta['tagstr'] ) {
@@ -456,10 +456,10 @@ function user_meta_cross_table ($opts) {
             else {
                 //print "burp<br>\n";
                 // user alresdy, just add additional tag for them ...
-                
+
                 $previd = $uniq[$user_meta['contact']['lastName'].$user_meta['contact']['firstName']];
                 $row = $table['rows'][$previd];
-                
+
                 // insert new tag to existing row:
                 for ( $i = 2 ; $i < $count+2; $i++) {
                     if ( $table['columns'][$i]['title'] == $user_meta['tagstr'] ) {
@@ -469,9 +469,9 @@ function user_meta_cross_table ($opts) {
                 $table['rows'][$previd] = $row;
             }
     }
-    
+
     //var_dump($uniq);
-    
+
     return $table;
 }
 
@@ -482,7 +482,7 @@ function user_meta_cross_table ($opts) {
  * @return The table structure.
  */
 function user_meta_table ($opts) {
-    
+
     // Determine settings
     $export = false;
     foreach ($opts as $option => $value) {
@@ -492,13 +492,13 @@ function user_meta_table ($opts) {
                 break;
         }
     }
-    
+
     // Get contact data
     $data = crm_get_data('user_meta', $opts);
     if (count($data) < 1) {
         return array();
     }
-    
+
     // Initialize table
     $table = array(
         "id" => '',
@@ -506,7 +506,7 @@ function user_meta_table ($opts) {
         "rows" => array(),
         "columns" => array()
     );
-    
+
     // Add columns
     if (user_access('user_meta_view') || $opts['cid'] == user_id()) {
         if (array_key_exists('join', $opts) && in_array('contact', $opts['join'])) {
@@ -520,14 +520,14 @@ function user_meta_table ($opts) {
     if (!$export && (user_access('user_meta_edit') || user_access('user_meta_delete'))) {
         $table['columns'][] = array('title'=>'Ops','class'=>'');
     }
-    
+
     // Add rows
     foreach ($data as $user_meta) {
-        
+
         // Add meta data
         $row = array();
         if (user_access('user_meta_view') || $opts['cid'] == user_id()) {
-            
+
             // Add cells
             if (array_key_exists('join', $opts) && in_array('contact', $opts['join'])) {
                 $row[] = theme('contact_name', $cid_to_contact[$user_meta['cid']], true);
@@ -599,12 +599,12 @@ function meta_tag_autocomplete ($fragment) {
  * @return The form structure.
  */
 function user_meta_add_form ($cid) {
-    
+
     // Ensure user is allowed to edit metas
     if (!user_access('user_meta_edit')) {
         return NULL;
     }
-    
+
     // Create form structure
     $form = array(
         'type' => 'form',
@@ -647,7 +647,7 @@ function user_meta_add_form ($cid) {
             )
         )
     );
-    
+
     return $form;
 }
 
@@ -658,26 +658,26 @@ function user_meta_add_form ($cid) {
  * @return The form structure.
  */
 function user_meta_edit_form ($umid) {
-    
+
     // Ensure user is allowed to edit meta
     if (!user_access('user_meta_edit')) {
         return NULL;
     }
-    
+
     // Get meta data
     $data = crm_get_data('user_meta', array('umid'=>$umid));
     $user_meta = $data[0];
     if (empty($user_meta) || count($user_meta) < 1) {
         return array();
     }
-    
+
     // Get corresponding contact data
     $data = member_contact_data(array('cid'=>$user_meta['cid']));
     $contact = $data[0];
-    
+
     // Construct member name
     $name = theme('contact_name', $contact, true);
-    
+
     // Create form structure
     $form = array(
         'type' => 'form',
@@ -734,19 +734,19 @@ function user_meta_edit_form ($umid) {
  * @return The form structure.
  */
 function user_meta_delete_form ($umid) {
-    
+
     // Ensure user is allowed to delete metas
     if (!user_access('user_meta_delete')) {
         return NULL;
     }
-    
+
     // Get meta data
     $data = crm_get_data('user_meta',array('umid'=>$umid));
     $user_meta = $data[0];
-    
+
     // Construct meta name
     $user_meta_name = "meta:$user_meta[umid] tagstr:$user_meta[tagstr] $user_meta[start] -- $user_meta[end]";
-    
+
     // Create form structure
     $form = array(
         'type' => 'form',
@@ -798,7 +798,7 @@ function user_meta_command ($command, &$url, &$params) {
  */
 function command_user_meta_add() {
     global $esc_post;
-    
+
     // Verify permissions
     if (!user_access('user_meta_edit')) {
         error_register('Permission denied: user_meta_edit');
@@ -815,7 +815,7 @@ function command_user_meta_add() {
  */
 function command_user_meta_update() {
     global $esc_post;
-    
+
     // Verify permissions
     if (!user_access('user_meta_edit')) {
         error_register('Permission denied: user_meta_edit');
@@ -862,26 +862,26 @@ function user_meta_page_list () {
  * @param $options The array of options passed to theme('page').
  */
 function user_meta_page (&$page_data, $page_name, $options) {
-    
+
     switch ($page_name) {
-        
+
         case 'contact':
-            
+
             // Capture member cid
             $cid = $options['cid'];
             if (empty($cid)) {
                 return;
             }
-            
+
             // Add metas tab
             if (user_access('user_meta_view') || user_access('user_meta_edit') || user_access('user_meta_delete') || $cid == user_id()) {
                 $user_metas = theme('table', crm_get_table('user_meta', array('cid' => $cid)));
                 $user_metas .= theme('form', crm_get_form('user_meta_add', $cid)); // this is where we put the "Add Meta-Tag Assignment" form on the page
                 page_add_content_bottom($page_data, $user_metas, 'Meta-Tags');
             }
-            
+
             break;
-        
+
         case 'user_metas':
             page_set_title($page_data, 'Meta-Tags');
             if (user_access('user_meta_view')) {
@@ -890,23 +890,23 @@ function user_meta_page (&$page_data, $page_name, $options) {
                 page_add_content_top($page_data, $user_metas, 'View');
             }
             break;
-        
+
         case 'user_meta':
-            
+
             // Capture meta id
             $umid = $options['umid'];
             if (empty($umid)) {
                 return;
             }
-            
+
             // Set page title
             page_set_title($page_data, user_meta_description($umid));
-            
+
             // Add edit tab
             if (user_access('user_meta_view') || user_access('user_meta_edit') || user_access('user_meta_delete')) {
                 page_add_content_top($page_data, theme('form', crm_get_form('user_meta_edit', $umid)), 'Edit');
             }
-            
+
             break;
     }
 }

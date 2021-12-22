@@ -2,7 +2,7 @@
 
 /*
     Copyright 2009-2017 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     page.inc.php - Core pages
 
@@ -52,17 +52,17 @@ function core_page_list () {
  * @param $options The array of options passed to theme('page').
 */
 function core_page (&$page_data, $page_name, $options) {
-    
+
     $latestNews = '<p>Welcome to ' . title() . ' version ' . crm_version() . '!</p>';
-    
+
     // Modify this variable with valid HTML between the apostrophes to display update text to users on login
-    
+
     $latestNews = $latestNews . '
         <p><p>
     ';
-    
+
     switch ($page_name) {
-        
+
         case '<front>':
             page_add_content_top($page_data, $latestNews);
             break;
@@ -102,5 +102,5 @@ function core_page (&$page_data, $page_name, $options) {
                 $content .= theme('form', crm_get_form('module_upgrade'));
                 page_add_content_top($page_data, $content);
             }
-    }   
+    }
 }

@@ -3,7 +3,7 @@
 /*
     Copyright 2009-2017 Edward L. Platt <ed@elplatt.com>
     Copyright 2013-2017 Chris Murray <chris.f.murray@hotmail.co.uk>
-    
+
     This file is part of the Seltzer CRM Project
     register.inc.php - registration module
 
@@ -50,17 +50,17 @@ function theme_register_form () {
  * @return The form structure for registering a member.
 */
 function register_form () {
-    
+
     // Start with contact form
     $form = crm_get_form('member_add');
-    
+
     // Generate default start date, first of current month
     $start = date("Y-m-d");
-    
+
     // Change form command
     $form['command'] = 'register';
     $form['submit'] = 'Register';
-    
+
     return $form;
 }
 
@@ -75,18 +75,18 @@ function command_register () {
     global $config_org_name;
     global $config_email_to;
     global $config_email_from;
-    
+
     // Find username or create a new one
     $username = $_POST['username'];
     $n = 0;
     while (empty($username) && $n < 100) {
-        
+
         // Construct test username
         $test_username = strtolower($_POST['firstName']{0} . $_POST['lastName']);
         if ($n > 0) {
             $test_username .= $n;
         }
-        
+
         // Check whether username is taken
         $esc_test_name = mysqli_real_escape_string($db_connect, $test_username);
         $sql = "SELECT * FROM `user` WHERE `username`='$esc_test_name'";
@@ -102,10 +102,10 @@ function command_register () {
         error_register('Please specify a username');
         return crm_url('register');
     }
-    
+
     // Check for duplicate usernames
     if (!empty($username)) {
-        
+
         // Check whether username is in use
         $test_username = $username;
         $esc_test_username = mysqli_real_escape_string($db_connect, $test_username);
@@ -120,11 +120,11 @@ function command_register () {
             return crm_url('register');
         }
     }
-    
+
     // Check for duplicate email addresses
     $email = $_POST['email'];
     if (!empty($email)) {
-        
+
         // Check whether email address is in use
         $test_email = $email;
         $esc_test_email = mysqli_real_escape_string($db_connect, $test_email);
@@ -140,7 +140,7 @@ function command_register () {
             return crm_url('register');
         }
     }
-    
+
     // Build contact object
     $contact = array(
         'firstName' => $_POST['firstName']
@@ -149,11 +149,11 @@ function command_register () {
         , 'email' => $email
         , 'phone' => $_POST['phone']
     );
-    
+
     // Add user fields
     $user = array('username' => $username);
     $contact['user'] = $user;
-    
+
     // Add member fields
     $membership = array(
         array(
@@ -168,12 +168,12 @@ function command_register () {
         , 'emergencyRelation' => $_POST['emergencyRelation']
     );
     $contact['member'] = $member;
-    
+
     // Save to database
     $contact = contact_save($contact);
-    
+
     $esc_cid = mysqli_real_escape_string($db_connect, $contact['cid']);
-    
+
     // Notify admins
     $from = "\"$config_org_name\" <$config_email_from>";
     $headers = "From: $from\r\nContent-Type: text/html; charset=ISO-8859-1\r\n";
@@ -182,11 +182,11 @@ function command_register () {
         $content = theme('member_created_email', $contact['cid']);
         mail($config_email_to, "New Member: $name", $content, $headers);
     }
-    
+
     // Notify user
     $confirm_url = user_reset_password_url($contact['user']['username']);
     $content = theme('member_welcome_email', $contact['user']['cid'], $confirm_url);
     mail($_POST['email'], "Welcome to $config_org_name", $content, $headers);
-    
+
     return crm_url('login');
 }

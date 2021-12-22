@@ -2,7 +2,7 @@
 
 /*
     Copyright 2009-2017 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     error.inc.php - Core error-reporting functions
 
@@ -70,14 +70,14 @@ function theme_errors () {
     if (empty($errors)) {
         return '';
     }
-    
+
     $output = '<fieldset><ul>';
-    
+
     // Loop through errors
     foreach ($errors as $error) {
         $output .= '<li>' . $error . '</li>';
     }
-    
+
     $output .= '</ul></fieldset>';
     return $output;
 }
@@ -92,14 +92,14 @@ function theme_messages () {
     if (empty($messages)) {
         return '';
     }
-    
+
     $output = '<fieldset><ul>';
-    
+
     // Loop through errors
     foreach ($messages as $message) {
         $output .= '<li>' . $message . '</li>';
     }
-    
+
     $output .= '</ul></fieldset>';
     return $output;
 }

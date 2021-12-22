@@ -2,7 +2,7 @@
 
 /*
     Copyright 2009-2017 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     theme.inc.php - Core theme system.
 
@@ -42,28 +42,28 @@ function path_to_theme() {
  * @return The themed html string for the specified element.
 */
 function theme () {
-    
+
     // Check for arguments
     if (func_num_args() < 1) {
         return "";
     }
     $args = func_get_args();
-    
+
     // Construct handler name
     $element = $args[0];
     $handler = 'theme_' . $element;
-    
+
     // Construct handler arguments
     $handler_args = array();
     for ($i = 1; $i < count($args); $i++) {
         $handler_args[] = $args[$i];
     }
-    
+
     // Check for undefined handler
     if (!function_exists($handler)) {
         return "";
     }
-    
+
     return call_user_func_array($handler, $handler_args);
 }
 

@@ -2,20 +2,20 @@
 
 /*
     Copyright 2009-2017 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     payment.inc.php - Payment tracking module
-    
+
     Seltzer is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     any later version.
-    
+
     Seltzer is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-    
+
     You should have received a copy of the GNU General Public License
     along with Seltzer.  If not, see <http://www.gnu.org/licenses/>.
 */
@@ -282,7 +282,7 @@ function payment_invert_currency ($value) {
  *   'join' A list of tables to join to the payment table;
  *   'order' An array of associative arrays of the form 'field'=>'order'.
  * @return An array with each element representing a single payment.
-*/ 
+*/
 function payment_data ($opts = array()) {
     global $db_connect;
     $sql = "
@@ -389,7 +389,7 @@ function payment_data ($opts = array()) {
  * will be added to the database.  If a new payment is added to the database,
  * the returned array will have a "pmtid" field corresponding to the database id
  * of the new payment.
- * 
+ *
  * @param $payment An associative array representing a payment.
  * @return A new associative array representing the payment.
  */
@@ -684,13 +684,13 @@ function payment_table ($opts) {
         $row = array();
         if (user_access('payment_view')) {
             $row[] = $payment['date'];
-            
+
             if(isset($opts['export']) && $opts['export']) {
                 $row[] = strip_tags($payment['description']);
             } else {
                 $row[] = $payment['description'];
             }
-            
+
             if (array_key_exists('credit_cid', $payment) && $payment['credit_cid']) {
                 $contact = $cid_to_contact[$payment['credit_cid']];
                 if(isset($opts['export']) && $opts['export']) {
@@ -739,7 +739,7 @@ function payment_table ($opts) {
         }
         $table['rows'][] = $row;
     }
-    
+
     return $table;
 }
 
@@ -775,9 +775,9 @@ function payment_history_table ($opts) {
     if (user_access('payment_edit') && ! isset($opts['output'])) {
         $table['columns'][] = array('title' => 'Ops');
     }
-    
+
     foreach ($payments as $payment) {
-        
+
         $contact = '';
         if ($payment['credit_cid'] === $cid) {
             $payment = payment_invert_currency($payment);
@@ -789,18 +789,18 @@ function payment_history_table ($opts) {
                 $contact = $payment['credit'];
             }
         }
-        
+
         $contactName = '';
         if (!empty($contact)) {
             $contactName = theme_contact_name($contact['cid']);
         }
-        
+
         if (isset($balance)) {
             $balance = payment_add_currency($balance, $payment);
         } else {
             $balance = $payment;
         }
-        
+
         $row = array();
         $row[] = $payment['date'];
         $row[] = $payment['description'];
@@ -820,7 +820,7 @@ function payment_history_table ($opts) {
         }
         $table['rows'][] = $row;
     }
-    
+
     return $table;
 }
 
@@ -872,12 +872,12 @@ function payment_method_options () {
  * @return The form structure for adding a payment.
 */
 function payment_add_form () {
-    
+
     // Ensure user is allowed to edit payments
     if (!user_access('payment_edit')) {
         return NULL;
     }
-    
+
     // Create form structure
     $form = array(
         'type' => 'form'
@@ -942,7 +942,7 @@ function payment_add_form () {
             )
         )
     );
-    
+
     return $form;
 }
 
@@ -1290,7 +1290,7 @@ function command_payment_filter () {
     }
     if ($_GET['filter'] == 'orphaned') {
         $_SESSION['payment_filter'] = array('credit_cid'=>'0', 'debit_cid'=>'0');
-    }    
+    }
     if ($_GET['filter'] == 'recent') {
         $_SESSION['payment_filter'] = array('recent'=>'yes');
     }

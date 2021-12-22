@@ -2,7 +2,7 @@
 
 /*
     Copyright 2009-2014 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     reports.inc.php - Independent reports module
 
@@ -126,7 +126,7 @@ function reports_table ($reportList) {
             $row[] = $report[2];
             $row[] = '<a href=' . crm_url('reports&name=' . $report[0]) . '>Run</a> ';
         }
-        $table['rows'][] = $row;  
+        $table['rows'][] = $row;
     }
     return $table;
 }
@@ -159,7 +159,7 @@ function reports_page (&$page_data, $page_name, $options) {
         case 'reports':
         // Set page title
         page_set_title($page_data, 'Reports');
-        
+
         // Include all report_*.inc.php files as those are the individual reports
         $report_files = glob('modules/reports/report_*.inc.php');
         $reportList = array();

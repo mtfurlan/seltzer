@@ -2,7 +2,7 @@
 
 /*
     Copyright 2009-2017 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     data.inc.php - Member module - database to object mapping
 
@@ -27,7 +27,7 @@
  *   'cid' If specified, return a member (or members if array) with the given id,
  *   'filter' An array mapping filter names to filter values
  * @return An array with each element representing a member.
-*/ 
+*/
 function member_data ($opts = array()) {
     global $db_connect;
     // Query database
@@ -78,7 +78,7 @@ function member_data ($opts = array()) {
             $v_filter++;
             if ($v_filter > 1) $f_sql .= " OR";
             $f_sql .= " (`plan`.`pid` = '6' AND (`membership`.`start` IS NOT NULL AND `membership`.`start` < NOW()) AND (`membership`.`end` IS NULL OR `membership`.`end` > NOW()))\n";
-        }                
+        }
         if (isset($filter['onboarding']) && $filter['onboarding']) {
             $v_filter++;
             if ($v_filter > 1) $f_sql .= " OR";
@@ -104,7 +104,7 @@ function member_data ($opts = array()) {
             // I don't know why but seems to ignore the NOT IN clause
             $esc_list = "(" . implode(',', $l_cids) . ")";
             $f_sql .= " ( (`membership`.`start` IS NULL OR `membership`.`start` > NOW()) OR (`membership`.`end` IS NOT NULL AND `membership`.`end` < NOW()) AND `member`.`cid` NOT IN $esc_list)";
-            
+
         }
         if (!empty($f_sql)) { $sql .= " AND ( \n$f_sql\n )"; }
     }
@@ -115,12 +115,12 @@ function member_data ($opts = array()) {
     $sql .= " GROUP BY `member`.`cid` ";
     $sql .= " ORDER BY `lastName`, `firstName`, `middleName` ASC ";
 
-    // var_dump_pre($sql);    
+    // var_dump_pre($sql);
     $res = mysqli_query($db_connect, $sql);
     // var_dump_pre($res);
     // var_dump_pre("[EOF]");
     if (!$res) crm_error(mysqli_error($db_connect));
-    
+
     // Store data
     $members = array();
     $row = mysqli_fetch_assoc($res);
@@ -147,15 +147,15 @@ function member_data ($opts = array()) {
             ),
             'membership' => array()
         );
-        
+
         $members[] = $member;
         $row = mysqli_fetch_assoc($res);
     }
-    
+
     // Get list of memberships associated with each member
     // This is slow, should be combined into a single query
     foreach ($members as $index => $member) {
-        
+
         // Query all memberships for current member
         $esc_cid = mysqli_real_escape_string($db_connect, $member['cid']);
         $sql = "
@@ -169,7 +169,7 @@ function member_data ($opts = array()) {
         ";
         $res = mysqli_query($db_connect, $sql);
         if (!$res) crm_error(mysqli_error($db_connect));
-        
+
         // Add each membership
         $row = mysqli_fetch_assoc($res);
         while (!empty($row)) {
@@ -191,7 +191,7 @@ function member_data ($opts = array()) {
             $row = mysqli_fetch_assoc($res);
         }
     }
-    
+
     // Return data
     return $members;
 }
@@ -248,7 +248,7 @@ function member_contact_api ($contact, $op) {
     $esc_emergencyName = mysqli_real_escape_string($db_connect, $contact['member']['emergencyName']);
     $esc_emergencyPhone = mysqli_real_escape_string($db_connect, $contact['member']['emergencyPhone']);
     $esc_emergencyRelation = mysqli_real_escape_string($db_connect, $contact['member']['emergencyRelation']);
-    
+
     switch ($op) {
         case 'create':
             // Add member
@@ -276,7 +276,7 @@ function member_contact_api ($contact, $op) {
             if (!$res) crm_error(mysqli_error($db_connect));
             $row = mysqli_fetch_assoc($res);
             $esc_rid = mysqli_real_escape_string($db_connect, $row['rid']);
-            
+
             if ($row) {
                 $sql = "
                     INSERT INTO `user_role`
@@ -343,7 +343,7 @@ function member_delete ($cid) {
 
 /**
  * Return data for one or more membership plans.
- * 
+ *
  * @param $opts An associative array of options, possible keys are:
  *   'pid' If specified, returns a single plan with the matching id,
  *   'filter' An array mapping filter names to filter values
@@ -370,11 +370,11 @@ function member_plan_data ($opts = array()) {
         $pid = mysqli_real_escape_string($db_connect, $opts['pid']);
         $sql .= " AND `plan`.`pid`='$pid' ";
     }
-    
+
     // Query database for plans
     $res = mysqli_query($db_connect, $sql);
     if (!$res) { crm_error(mysqli_error($db_connect)); }
-    
+
     // Store plans
     $plans = array();
     $row = mysqli_fetch_assoc($res);
@@ -382,28 +382,28 @@ function member_plan_data ($opts = array()) {
         $plans[] = $row;
         $row = mysqli_fetch_assoc($res);
     }
-    
+
     return $plans;
 }
 
 /**
  * Generates an associative array mapping membership plan pids to
  * strings describing those membership plans.
- * 
+ *
  * @param $opts Options to be passed to member_plan_data().
  * @return The associative array of membership plan descriptions.
  */
 function member_plan_options ($opts = NULL) {
-    
+
     // Get plan data
     $plans = member_plan_data($opts);
-    
+
     // Add option for each member plan
     $options = array();
     foreach ($plans as $plan) {
         $options[$plan['pid']] = "$plan[name] - $plan[price]";
     }
-    
+
     return $options;
 }
 
@@ -469,7 +469,7 @@ function member_plan_delete ($pid) {
  *   'cid' If specified, returns memberships for the member with the cid,
  *   'filter' An array mapping filter names to filter values
  * @return An array with each element representing a membership.
-*/ 
+*/
 function member_membership_data ($opts) {
     global $db_connect;
     // Query database
@@ -605,13 +605,13 @@ function member_membership_delete ($sid) {
 
 /**
  * Return data for one or more contacts.  Use contact_data() instead.
- * 
+ *
  * @param $opts An associative array of options, possible keys are:
  *   'cid' If specified returns the corresponding member (or members for an array);
  *   'filter' An array mapping filter names to filter values
  * @return An array with each element representing a contact.
  * @deprecated
-*/ 
+*/
 function member_contact_data ($opts = array()) {
     return contact_data($opts);
 }

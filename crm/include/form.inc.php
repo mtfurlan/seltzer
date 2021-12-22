@@ -2,7 +2,7 @@
 
 /*
     Copyright 2009-2017 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     form.inc.php - Core form system and core forms
 
@@ -45,7 +45,7 @@ function delete_form ($type, $id) {
  * @return The form structure.
 */
 function filter_form ($filters, $selected, $action, $get) {
-    
+
     // Construct hidden fields to pass GET params
     $hidden = array();
     foreach ($get as $key => $val) {
@@ -53,7 +53,7 @@ function filter_form ($filters, $selected, $action, $get) {
             $hidden[$key] = $val;
         }
     }
-    
+
     $form = array(
         'type' => 'form',
         'method' => 'get',
@@ -78,7 +78,7 @@ function filter_form ($filters, $selected, $action, $get) {
             )
         )
     );
-    
+
     return $form;
 }
 

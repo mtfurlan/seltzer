@@ -385,7 +385,7 @@ if (isset($opts['pid'])) {
         $esc_name = mysqli_real_escape_string($db_connect, $opts['pid']);
         $sql = "UPDATE storage_plot SET cid = NULL WHERE pid = '" . $esc_name . "'";
         $res = mysqli_query($db_connect, $sql);
-        if (!$res) { die(mysqli_error($db_connect));} 
+        if (!$res) { die(mysqli_error($db_connect));}
         else {
             $opts['action'] = 'Vacate';
             storage_log($opts);
