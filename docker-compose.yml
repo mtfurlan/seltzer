@@ -34,13 +34,16 @@ services:
     image: mariadb:10.1.45
     ports:
       - 3306:3306
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     volumes_from:
       - mysql-data
     environment:
       MYSQL_ROOT_PASSWORD: secret
-      MYSQL_DATABASE: mydb
+      MYSQL_DATABASE: i3crm
       MYSQL_USER: myuser
       MYSQL_PASSWORD: password
+# docker exec -it seltzer_mysql_1 mysql -psecret -e "DROP DATABASE mydb; CREATE DATABASE mydb"
 
   mysql-data:
     image: mariadb:10.1.45
