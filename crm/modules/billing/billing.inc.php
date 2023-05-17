@@ -244,9 +244,9 @@ function billing_page (&$page_data, $page_name, $options) {
             if (user_access('payment_view') || $_GET['cid'] == user_id()) {
                 page_add_content_bottom($page_data, theme('billing_account_info', $_GET['cid']), 'Account');
             }
-            if (user_access('payment_view') || $_GET['cid'] == user_id()) {
-                page_add_content_bottom($page_data, theme('billing_first_month', $_GET['cid']), 'Plan');
-            }
+//            if (user_access('payment_view') || $_GET['cid'] == user_id()) {
+//                page_add_content_bottom($page_data, theme('billing_first_month', $_GET['cid']), 'Plan');
+//            }
             if ($_GET['cid'] == user_id()) {
                 $makepiIframeUrl = variable_get('makepiiframeurl');
                 $plan .= '<h3>New Payment Authorization</h3>';
