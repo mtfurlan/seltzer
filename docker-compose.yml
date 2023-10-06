@@ -12,7 +12,7 @@ services:
     links:
       - php
     volumes_from:
-      - app-data
+      - php
 
   php:
     build: ./docker/php/
@@ -20,15 +20,15 @@ services:
       - 9000
     links:
       - mysql
-    volumes_from:
-      - app-data
-
-  app-data:
-    image: php:7.4-fpm
     volumes:
       - ./crm/:/var/www/html/crm
       - ./docker/index.html/:/var/www/html/index.html
-    command: "true"
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PASSWORD: secret
+      MYSQL_DATABASE: i3crm
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: password
 
   mysql:
     image: mariadb:10.1.45
@@ -36,17 +36,12 @@ services:
       - 3306:3306
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-    volumes_from:
-      - mysql-data
+    volumes:
+      - /var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: i3crm
       MYSQL_USER: myuser
       MYSQL_PASSWORD: password
-# docker exec -it seltzer_mysql_1 mysql -psecret -e "DROP DATABASE mydb; CREATE DATABASE mydb"
-
-  mysql-data:
-    image: mariadb:10.1.45
-    volumes:
-      - /var/lib/mysql
-    command: "true"
+# docker exec -i seltzer_mysql_1 mysql -umyuser -ppassword -e "DROP DATABASE mydb; CREATE DATABASE mydb"
+# mysql -umyuser -ppassword i3crm -h 127.0.0.1

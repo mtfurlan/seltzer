@@ -1,5 +1,4 @@
 error_log
-config_db.inc.php
 php.ini
 .htaccess
 crm/phpinfo.php
