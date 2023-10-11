@@ -36,12 +36,13 @@ services:
       - 3306:3306
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-    volumes:
-      - /var/lib/mysql
+      - seltzer_db:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: i3crm
       MYSQL_USER: myuser
       MYSQL_PASSWORD: password
+volumes:
+  seltzer_db:
 # docker exec -i seltzer_mysql_1 mysql -umyuser -ppassword -e "DROP DATABASE mydb; CREATE DATABASE mydb"
 # mysql -umyuser -ppassword i3crm -h 127.0.0.1

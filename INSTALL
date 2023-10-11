@@ -11,7 +11,6 @@ wget https://github.com/elplatt/seltzer/archive/branch.zip where "branch" is the
 and modify it to reflect the settings for your database and organization.
 5. Upload the seltzer/crm directory to the document root of your webserver. Example: /var/www/html/crm. If you want to use a directory other than /crm, you will need to update $config_base_path in config.inc.php.
 6. Make sure PHP "magic quotes" are disabled (http://php.net/manual/en/security.magicquotes.disabling.php).
-7. get init.sql into the DB, like 'docker exec -i seltzer_mysql_1 mysql -umyuser -ppassword < ./init.sql'
 9. You can now log in using "admin" as the username and the password 'pass'. Please change the password.
 10. Optionally go to Plans > Import to upload a CSV file of existing members. See https://github.com/elplatt/seltzer/wiki/HOWTO-Import-Plans for more info.
 11. Optionally go to Members > Import to upload a CSV file of existing members. See https://github.com/elplatt/seltzer/wiki/HOWTO-Import-Members for more info.
