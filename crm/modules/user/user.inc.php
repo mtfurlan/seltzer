@@ -819,7 +819,8 @@ function command_reset_password () {
     if (!empty($url)) {
         $to = $contact['email'];
         $subject = "[$config_site_title] Reset Password";
-        $from = $config_email_from;
+        // $from = $config_email_from;
+        $from = 'admin@rumplestilzken.com';
         $headers = "From: $from\r\n";
         $message = "To reset your password, visit the following url: $url";
         $res = mail($to, $subject, $message, $headers);

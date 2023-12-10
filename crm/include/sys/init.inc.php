@@ -20,6 +20,23 @@
     along with Seltzer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// $config_db_host = 'mysql';
+// $config_db_user = 'myuser';
+// $config_db_password = 'password';
+// $config_db_db = 'i3crm';
+// $config_db_socket = '3306';
+
+$config_db_host = getenv('MYSQL_HOST');
+print $config_db_host;
+print "\n";
+print gethostname();
+// $config_db_socket = getenv('MYSQL_PORT');
+$config_db_user = getenv('MYSQL_USER');
+$config_db_password = getenv('MYSQL_PASSWORD');
+$config_db_db = getenv('MYSQL_DATABASE');
+
+
+
 // Connect to database server and select database
 $db_connect = mysqli_connect($config_db_host, $config_db_user, $config_db_password, $config_db_db, null, $config_db_socket);
 $res = $db_connect;

@@ -20,39 +20,6 @@
     along with Seltzer.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-require_once($crm_root . '/config_db.inc.php');
-
-// Site info
-
-// The title to display in the title bar
-$config_site_title = 'i3 Detroit';
-
-// The name of the organization to insert into templates
-$config_org_name = 'i3 Detroit';
-
-// The currency code for dealing with payments, can be GBP, USD, or EUR
-$config_currency_code = 'USD';
-
-// The From: address to use when sending email to members
-$config_email_from = 'treasurer@i3detroit.org';
-
-// The email address to notify when a user is created
-$config_email_to = 'contact@i3detroit.com';
-
-// The hostname of the server
-$config_host = $_SERVER['SERVER_NAME'];
-
-// The url path of the crm directory
-$config_base_path = '/crm/';
-
-// The name of the theme you want to use
-// (currently there is only one, "inspire".)
-$config_theme = "inspire";
-
-// Amazon signatures version 2 keys
-$config_amazon_payment_secret = '';
-$config_amazon_payment_access_key_id = '';
-
 // Base modules
 $config_modules = array(
     "contact",
@@ -106,6 +73,51 @@ $config_modules[] = "storage";
 
 // Debugging functions
 $config_modules[] = "debug";
+
+require_once($crm_root . '/config_db.inc.php');
+require_once($crm_root . '/include/sys/util.inc.php');
+require_once($crm_root . '/include/sys/module.inc.php');
+require_once($crm_root . '/include/sys/init.inc.php');
+
+// Site info
+
+// The title to display in the title bar
+$config_site_title = 'i3 Detroit';
+
+// The name of the organization to insert into templates
+$config_org_name = 'i3 Detroit';
+
+// The currency code for dealing with payments, can be GBP, USD, or EUR
+$config_currency_code = 'USD';
+
+// The From: address to use when sending email to members
+$config_email_from = 'treasurer@i3detroit.org';
+
+// The email address to notify when a user is created
+$config_email_to = 'contact@i3detroit.com';
+
+$sql = "SELECT `value` from `variable` where `name` = 'environment' LIMIT 1";
+global $db_connect;
+$res = mysqli_query($db_connect, $sql);
+if (!$res) crm_error(mysqli_error($db_connect));
+$row = mysqli_fetch_assoc($res);
+$email = $row['value'];
+
+print $email;
+
+// The hostname of the server
+$config_host = $_SERVER['SERVER_NAME'];
+
+// The url path of the crm directory
+$config_base_path = '/crm/';
+
+// The name of the theme you want to use
+// (currently there is only one, "inspire".)
+$config_theme = "inspire";
+
+// Amazon signatures version 2 keys
+$config_amazon_payment_secret = '';
+$config_amazon_payment_access_key_id = '';
 
 // Links to show in the main menu
 $config_links = array(

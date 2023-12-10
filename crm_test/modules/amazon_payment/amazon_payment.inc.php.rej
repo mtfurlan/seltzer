@@ -1,0 +1,52 @@
+--- crm/modules/amazon_payment/amazon_payment.inc.php
++++ crm/modules/amazon_payment/amazon_payment.inc.php
+@@ -304,7 +304,7 @@
+             // TODO
+             // Add delete op
+             if (user_access('payment_delete')) {
+-                $ops[] = '<a href="' . crm_url('delete&type=amazon_payment_contact&id=' . htmlspecialchars($union['amazon_name'])) . '">delete</a>';
++                $ops[] = '<a href=' . crm_url('delete&type=amazon_payment_contact&id=' . $contact['cid']) . '>delete</a>';
+             }
+             // Add ops row
+             $row[] = join(' ', $ops);
+@@ -426,29 +426,36 @@
+  * @param $cid The cid of the amazon contact to delete.
+  * @return The form structure.
+ */
+-function amazon_payment_contact_delete_form ($amazon_name) {
++function amazon_payment_contact_delete_form ($cid) {
+     
+     // Ensure user is allowed to delete amazon contacts
+     if (!user_access('payment_edit')) {
+         return crm_url('amazon-admin');
+     }
+     
++    // Get amazon contact data
++    $data = crm_get_data('amazon_payment_contact', array('cid'=>$cid));
++    $amazon_payment_contact = $data[0];
++    
++    // Construct amazon contact name
++    $amazon_payment_contact_name = "amazon contact:$amazon_payment_contact[cid] name:$amazon_payment_contact[amazon_name]";
++    
+     // Create form structure
+     $form = array(
+         'type' => 'form',
+         'method' => 'post',
+         'command' => 'amazon_payment_contact_delete',
+         'hidden' => array(
+-              'amazon_name' => $amazon_name
++            'cid' => $amazon_payment_contact['cid']
+         ),
+         'fields' => array(
+             array(
+                 'type' => 'fieldset',
+-                'label' => 'Delete Amazon Contact',
++                'label' => 'Delete Paypal Contact',
+                 'fields' => array(
+                     array(
+                         'type' => 'message',
+-                        'value' => '<p>Are you sure you want to delete the amazon contact "' . $amazon_name . '"? This cannot be undone.',
++                        'value' => '<p>Are you sure you want to delete the amazon contact "' . $amazon_payment_contact_name . '"? This cannot be undone.',
+                     ),
+                     array(
+                         'type' => 'submit',
