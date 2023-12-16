@@ -32,23 +32,6 @@ $report_emailactive_theme = 'report_emailactive';
 $report_emailactive_theme_opts = array('filter'=>array('active'=>true));
 $report_emailactive_name = "Active Emails";
 $report_emailactive_desc = "List of active member email addresses";
-/**
- * @return A comma-separated list of user emails.
- * @param $opts - Options to pass to member_data().
- */
-if (! function_exists('member_email_report')) {
-    function member_email_report ($opts) {
-        $result = array();
-        $data = member_data($opts);
-        foreach ($data as $row) {
-            $email = trim($row['contact']['email']);
-            if (!empty($email)) {
-                $result[] = $email;
-            }
-        }
-    return join($result, ', ');
-    }
-}
 
 // Forms ///////////////////////////////////////////////////////////////////////
 // Put form generators here
