@@ -452,14 +452,16 @@ function theme_form_select ($field) {
     }
     $output .= '<select name="' . $field['name'] . '">';
 
-    foreach ($field['options'] as $key => $value) {
-        $output .= '<option value="' . $key . '"';
-        if (array_key_exists('selected', $field) && $field['selected'] == $key) {
-            $output .= ' selected="selected"';
+    if (array_key_exists('options', $field) && !empty($field['options'])) {
+        foreach ($field['options'] as $key => $value) {
+            $output .= '<option value="' . $key . '"';
+            if (array_key_exists('selected', $field) && $field['selected'] == $key) {
+                $output .= ' selected="selected"';
+            }
+            $output .= '>';
+            $output .= $value;
+            $output .= '</option>';
         }
-        $output .= '>';
-        $output .= $value;
-        $output .= '</option>';
     }
 
     $output .= '</select>';
