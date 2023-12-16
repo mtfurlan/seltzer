@@ -30,7 +30,7 @@ CREATE TABLE `contact` (
   `email` varchar(255) NOT NULL,
   `phone` varchar(32) NOT NULL,
   PRIMARY KEY (`cid`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,7 +41,12 @@ LOCK TABLES `contact` WRITE;
 /*!40000 ALTER TABLE `contact` DISABLE KEYS */;
 INSERT INTO `contact` VALUES
 (1,'admin','foo','last','admin@admin.tld','555-555-5555'),
-(2,'test','test','test','test@rumplestilzken.com','test');
+(2,'test','test','test','test2@rumplestilzken.com','test'),
+(3,'test2','test2','test2','test3@rumplestilzken.com','test2'),
+(4,'test3','test3','test3','test4@rumplestilzken.com','test3'),
+(5,'test4','test4','test4','test@rumplestilzken.com','test4'),
+(6,'test5','test5','test5','test5@rumplestilzken.com','test5'),
+(7,'test6','test6','test6','test6@rumplestilzken.com','test6');
 /*!40000 ALTER TABLE `contact` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -107,7 +112,7 @@ CREATE TABLE `key` (
   `serial` varchar(255) NOT NULL,
   `slot` mediumint(8) unsigned NOT NULL,
   PRIMARY KEY (`kid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -116,6 +121,10 @@ CREATE TABLE `key` (
 
 LOCK TABLES `key` WRITE;
 /*!40000 ALTER TABLE `key` DISABLE KEYS */;
+INSERT INTO `key` VALUES
+(1,2,'2023-12-16',NULL,'1',1),
+(2,3,'2023-12-16',NULL,'1',1),
+(3,7,'2023-12-16',NULL,'1',1);
 /*!40000 ALTER TABLE `key` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -142,7 +151,12 @@ CREATE TABLE `member` (
 LOCK TABLES `member` WRITE;
 /*!40000 ALTER TABLE `member` DISABLE KEYS */;
 INSERT INTO `member` VALUES
-(2,'','','');
+(2,'sdfa','asfda','asdfas'),
+(3,'test2','test2','test2'),
+(4,'test3','test3','test3'),
+(5,'test4','test4','test4'),
+(6,'test5','test5','test5'),
+(7,'test6','test6','test6');
 /*!40000 ALTER TABLE `member` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -160,7 +174,7 @@ CREATE TABLE `membership` (
   `start` date NOT NULL,
   `end` date DEFAULT NULL,
   PRIMARY KEY (`sid`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -171,7 +185,12 @@ LOCK TABLES `membership` WRITE;
 /*!40000 ALTER TABLE `membership` DISABLE KEYS */;
 INSERT INTO `membership` VALUES
 (1,1,17,'2021-12-23',NULL),
-(2,2,6,'2023-12-10',NULL);
+(2,2,6,'2023-12-10',NULL),
+(3,3,6,'2023-12-10',NULL),
+(4,4,6,'2023-12-10','2023-12-10'),
+(5,5,6,'2023-12-10',NULL),
+(6,6,6,'2023-12-17',NULL),
+(7,7,6,'2023-12-16','2023-12-19');
 /*!40000 ALTER TABLE `membership` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -359,7 +378,12 @@ CREATE TABLE `resetPassword` (
 LOCK TABLES `resetPassword` WRITE;
 /*!40000 ALTER TABLE `resetPassword` DISABLE KEYS */;
 INSERT INTO `resetPassword` VALUES
-(2,'2bea4f4c541ce29b18e427d6731559b920bda9c3');
+(2,'2bea4f4c541ce29b18e427d6731559b920bda9c3'),
+(3,'56644c267354a2f5954369c8ee094fb744b275f6'),
+(4,'684404c484c8a62c4a30e05918798008b0e690c7'),
+(5,'91923ae305c27fdd1cff570ac03ddb10f41ca95d'),
+(6,'06d37c3b56e731d06fa79d2b8104185f3ab5d7cb'),
+(7,'6bae1036a400d162a60d7eefcce4006bb52660ad');
 /*!40000 ALTER TABLE `resetPassword` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -514,6 +538,13 @@ CREATE TABLE `storage_log` (
 
 LOCK TABLES `storage_log` WRITE;
 /*!40000 ALTER TABLE `storage_log` DISABLE KEYS */;
+INSERT INTO `storage_log` VALUES
+('2023-12-16 05:44:38','1','Add',1,'','','',1,'2023-12-16'),
+('2023-12-16 05:45:07','1','Assign',1,'','2','',1,'2023-12-16'),
+('2023-12-16 05:49:51','1','Add',2,'','','',1,'2023-12-16'),
+('2023-12-16 05:50:16','1','Assign',2,'','3','',1,'2023-12-16'),
+('2023-12-16 05:50:22','1','Vacate',2,'','3','',1,'2023-12-16'),
+('2023-12-16 05:50:26','1','Assign',2,'','3','',1,'2023-12-16');
 /*!40000 ALTER TABLE `storage_log` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -527,7 +558,7 @@ DROP TABLE IF EXISTS `storage_plot`;
 CREATE TABLE `storage_plot` (
   `pid` mediumint(8) unsigned NOT NULL,
   `desc` varchar(255) NOT NULL,
-  `cid` varchar(255) NOT NULL,
+  `cid` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
   `reapmonth` mediumint(8) unsigned NOT NULL DEFAULT 1,
   `reapdate` date NOT NULL,
@@ -542,6 +573,9 @@ CREATE TABLE `storage_plot` (
 
 LOCK TABLES `storage_plot` WRITE;
 /*!40000 ALTER TABLE `storage_plot` DISABLE KEYS */;
+INSERT INTO `storage_plot` VALUES
+(1,'','2','',1,'2023-12-16'),
+(2,'','3','',1,'2023-12-16');
 /*!40000 ALTER TABLE `storage_plot` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -570,7 +604,12 @@ LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 INSERT INTO `user` VALUES
 (1,'admin','c21bff3e485bdc98e5de614a76e0926932ae981a','?)#)^|@5~yy+]2`u',NULL),
-(2,'ttest','2c716dbf66532329889a2d5a720782d478f8c79a','&]-!8u!f9nc\'}0y7',NULL);
+(2,'ttest','1cff1734446d5020955b4dc8147096786f97da0c','[&~\\]x8r7.hfu[%r',NULL),
+(3,'test',NULL,NULL,NULL),
+(4,'test3',NULL,NULL,NULL),
+(5,'test4',NULL,NULL,NULL),
+(6,'test5',NULL,NULL,NULL),
+(7,'test6',NULL,NULL,NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -596,7 +635,12 @@ LOCK TABLES `user_role` WRITE;
 /*!40000 ALTER TABLE `user_role` DISABLE KEYS */;
 INSERT INTO `user_role` VALUES
 (1,8),
-(2,2);
+(2,2),
+(3,2),
+(4,2),
+(5,2),
+(6,2),
+(7,2);
 /*!40000 ALTER TABLE `user_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -690,4 +734,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-12-10 19:00:18
+-- Dump completed on 2023-12-16  7:02:57
