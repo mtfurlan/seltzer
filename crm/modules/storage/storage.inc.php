@@ -26,7 +26,7 @@
  * this number.
  */
 function storage_revision () {
-    return 1;
+    return 2;
 }
 
 /**
@@ -54,7 +54,7 @@ function storage_install($old_revision = 0) {
         $sql = 'CREATE TABLE IF NOT EXISTS `storage_plot` (
             `pid` mediumint(8) unsigned NOT NULL,
             `desc` varchar(255) NOT NULL,
-            `cid` varchar(255) NOT NULL,
+            `cid` varchar(255),
             `email` varchar(255),
             `reapmonth` mediumint(8) unsigned NOT NULL default 1,
             `reapdate` date NOT NULL,
@@ -78,7 +78,7 @@ function storage_install($old_revision = 0) {
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
         ';
         $res = mysqli_query($db_connect, $sql);
-        if (!$res) crm_error(mysqli_error($db_connect));
+        if (!$res) die(mysqli_error($res));
                 // Set default permissions
         $roles = array(
             '1' => 'authenticated'
@@ -102,10 +102,17 @@ function storage_install($old_revision = 0) {
                     $sql = "INSERT INTO `role_permission` (`rid`, `permission`) VALUES ('$esc_rid', '$esc_perm')";
                     $sql .= " ON DUPLICATE KEY UPDATE rid=rid";
                     $res = mysqli_query($db_connect, $sql);
-                    if (!$res) crm_error(mysqli_error($db_connect));
+                    if (!$res) die(mysqli_error($res));
                 }
             }
         }
+    }
+    if ($old_revision < 2) {
+        $sql = 'ALTER TABLE `storage_plot`
+        MODIFY `cid` varchar(255) NULL;
+        ';
+        $res = mysqli_query($db_connect, $sql);
+        if (!$res) die(mysqli_error($res ));
     }
 }
 
@@ -225,7 +232,7 @@ function storage_data ($opts = array()) {
 
     $sql .= "ORDER BY pid ASC";
     $res = mysqli_query($db_connect, $sql);
-    if (!$res) crm_error(mysqli_error($db_connect));
+    if (!$res) die(mysqli_error($res));
     // Store data
     $storage = array();
     $row = mysqli_fetch_assoc($res);
@@ -256,7 +263,7 @@ function storage_log_data ($opts = array()) {
         $sql .= " LIMIT ".$esc_count;
     }
     $res = mysqli_query($db_connect, $sql);
-    if (!$res) crm_error(mysqli_error($db_connect));
+    if (!$res) die(mysqli_error($res));
     // Store data
     $log = array();
     $row = mysqli_fetch_assoc($res);
@@ -289,7 +296,7 @@ function storage_add ($plot) {
         $sql .="VALUES ('" . $esc_pid . "', '" . $esc_desc . "', '" . $esc_reapdate . "', '" . $esc_reapmonth . "') ";
         $res = mysqli_query($db_connect, $sql);
         if (!$res) {
-            message_register('ERROR: ' . mysqli_error($db_connect));
+            message_register('ERROR: ' . mysqli_error($res));
         } else {
             $plot['action'] = 'Add';
             storage_log($plot);
@@ -346,7 +353,7 @@ function storage_edit ($opts) {
         $sql .= "WHERE pid = '" . $esc_pid . "' ";
         $res = mysqli_query($db_connect, $sql);
         if (!$res) {
-           message_register('SQL: ' . $sql . '<br>ERROR: ' . mysqli_error($db_connect));
+           message_register('SQL: ' . $sql . '<br>ERROR: ' . mysqli_error($res));
         } else {
             if (!array_key_exists('action',$opts)) { $opts['action'] = 'Edit'; }
             storage_log($opts);
@@ -368,7 +375,7 @@ function storage_delete ($opts) {
         $esc_name = mysqli_real_escape_string($db_connect, $opts['pid']);
         $sql = "DELETE FROM storage_plot WHERE pid = '" . $esc_name . "'";
         $res = mysqli_query($db_connect, $sql);
-        if (!$res) crm_error(mysqli_error($db_connect));
+        if (!$res) die(mysqli_error($res));
         if (mysqli_affected_rows() > 0) {
             storage_log($plot);
             message_register('Storage Plot '.$esc_name.' deleted.');
@@ -385,7 +392,7 @@ if (isset($opts['pid'])) {
         $esc_name = mysqli_real_escape_string($db_connect, $opts['pid']);
         $sql = "UPDATE storage_plot SET cid = NULL WHERE pid = '" . $esc_name . "'";
         $res = mysqli_query($db_connect, $sql);
-        if (!$res) { crm_error(mysqli_error($db_connect));} 
+        if (!$res) { die(mysqli_error($res));} 
         else {
             $opts['action'] = 'Vacate';
             storage_log($opts);
@@ -435,10 +442,10 @@ function storage_log ($opts) {
         $sql = "INSERT INTO storage_log (user, action, pid, `desc`, cid, email, reapdate, reapmonth) ";
         $sql .= "VALUES (".$esc_myid.",'".$esc_action."',".$esc_pid.",'".$esc_desc."','".$esc_cid."','".$esc_email."','".$esc_reapdate."','".$esc_reapmonth."');";
         $res = mysqli_query($db_connect, $sql);
-        // if (!$res) crm_error(mysqli_error($db_connect));
+        // if (!$res) die(mysqli_error($res));
         // message_register('Secret updated');
         if (!$res) {
-            message_register('SQL: ' . $sql . '<br>ERROR: ' . mysqli_error($db_connect));
+            message_register('SQL: ' . $sql . '<br>ERROR: ' . mysqli_error($res));
         // } else {
         //     message_register('Storage Log updated');
         }
@@ -1344,7 +1351,7 @@ function user_plot_assign_form ($opts) {
     $sql .= "WHERE ( cid is NULL or cid = '' ) ";
     $sql .= "ORDER by pid;";
     $res = mysqli_query($db_connect, $sql);
-    if (!$res) crm_error(mysqli_error($db_connect));
+    if (!$res) die(mysqli_error($res));
     while($rs=mysqli_fetch_array($res)){
         $openplots[$rs['pid']] = $rs['pid'] ." - ". $rs['desc'];
     }
