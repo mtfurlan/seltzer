@@ -299,6 +299,7 @@ function billing_bill_membership ($membership, $until, $after = '') {
             , 'code' => $prorated['code']
             , 'value' => $prorated['value']
             , 'credit_cid' => $membership['cid']
+            , 'debit_cid' => $membership['cid']
             , 'method' => ''
         );
         //payment_save($payment);
@@ -314,6 +315,7 @@ function billing_bill_membership ($membership, $until, $after = '') {
             , 'code' => $price['code']
             , 'value' => $price['value']
             , 'credit_cid' => $membership['cid']
+            , 'debit_cid' => $membership['cid']
             , 'method' => ''
         );
         payment_save($payment);

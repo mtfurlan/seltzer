@@ -468,7 +468,7 @@ function payment_save ($payment) {
             )
         ";
         $res = mysqli_query($db_connect, $sql);
-        if (!$res) crm_error(mysqli_error($res));
+        if (!$res) crm_error(mysqli_error($db_connect));
         $payment['pmtid'] = mysqli_insert_id($db_connect);
         $payment = module_invoke_api('payment', $payment, 'insert');
     }
