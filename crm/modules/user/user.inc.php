@@ -163,7 +163,7 @@ function user_install ($old_revision = 0) {
 function user_data ($opts) {
     global $db_connect;
     // Create a map of user permissions if join was specified
-    $join_perm = !array_key_exists('join', $opts) || in_array('permission', $opts['join']);
+    $join_perm = (is_array($opts) && !array_key_exists('join', $opts)) || (is_array($opts) && in_array('permission', $opts['join']));
     if ($join_perm) {
         $sql = "
             SELECT `user`.`cid`, `role_permission`.`permission`
