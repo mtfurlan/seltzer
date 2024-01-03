@@ -1377,7 +1377,7 @@ function user_page (&$page_data, $page_name, $options) {
 
 function json_web_token($uuid) {
     // Fetch JWT Secret
-    $jwtsecret = variable_get('jwtsecret');
+    $jwtsecret = variable_get('jwtsecret', $uuid);
     // Generate JWT Header and Payload
     $header = json_encode(['typ' => 'JWT', 'alg' => 'HS256']);
     $payload = json_encode(['sub' => $uuid, 'iat' => time(), 'exp' => time() + (1 * 24 * 60 * 60)]);

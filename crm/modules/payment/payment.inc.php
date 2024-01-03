@@ -133,6 +133,10 @@ function payment_parse_currency ($value, $code = null) {
         case 'USD':
             $parts = explode('\.', $clean_value);
             $dollars = $parts[0];
+            if(!isset($dollars))
+            {
+                $dollars = 0.00;
+            }
             $count = 100 * $dollars;
             if (count($parts) > 1 && !empty($parts[1])) {
                 if (strlen($parts[1]) < 2) {
