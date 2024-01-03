@@ -5,4 +5,11 @@ php.ini
 crm/phpinfo.php
 crm/test.php
 test/*
+conf/
+docker/
+scripts/
+.env
+docker-compose.yml
+docker-install
+
 
