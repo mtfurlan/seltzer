@@ -1,7 +1,7 @@
 <?php
 /*
     Copyright 2014 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     secrets.inc.php - access variables table for secrets
 
@@ -89,7 +89,7 @@ function secrets_install($old_revision = 0) {
  *   'filter' An array mapping filter names to filter values;
  *   'join' A list of tables to join to the key table.
  * @return An array with each element representing a single key card assignment.
-*/ 
+*/
 function secrets_data ($opts = array()) {
   global $db_connect;
     // Query database
@@ -119,7 +119,7 @@ function secrets_data ($opts = array()) {
 }
 
 /**
- * Create a new secret 
+ * Create a new secret
  * @param $secret The secret name,value
  * @return The secret structure with as it now exists in the database.
  */
@@ -149,7 +149,7 @@ function secrets_add ($secret) {
 }
 
 /**
- * Update an existing secret 
+ * Update an existing secret
  * @param $secret The secret name,value
  * @return The secret structure with as it now exists in the database.
  */
@@ -178,7 +178,7 @@ function secrets_edit ($secret) {
 }
 
 /**
- * Delete an existing secret 
+ * Delete an existing secret
  * @param $secret The secret name
  */
 function secrets_delete ($secret) {
@@ -200,7 +200,7 @@ function secrets_delete ($secret) {
 // Tables //////////////////////////////////////////////////////////////////////
 // Put table generators here
 function secrets_table () {
-  
+
     // Determine settings
     $export = false;
     // foreach ($opts as $option => $value) {
@@ -256,7 +256,7 @@ function secrets_table () {
         }
         // Add ops row
         $row[] = join(' ', $ops);
-        $table['rows'][] = $row;  
+        $table['rows'][] = $row;
     }
   return $table;
 }
@@ -271,7 +271,7 @@ function secrets_table () {
 //     if (count($secrets) < 1) {
 //         return array();
 //     }
-    
+
 //     // Initialize table
 //     $table = array(
 //         'columns' => array(
@@ -309,7 +309,7 @@ function secrets_table () {
 //     // }
 //     // Add ops row
 //     $row[] = join(' ', $ops);
-//     $table['rows'][] = $row;  
+//     $table['rows'][] = $row;
 //     return $table;
 // }
 
@@ -317,12 +317,12 @@ function secrets_table () {
 // Put form generators here
 
 function secrets_add_form () {
-    
+
     // Ensure user is allowed to edit keys
     if (!user_access('secrets_edit')) {
         return NULL;
     }
-    
+
     // Create form structure
     $form = array(
         'type' => 'form',
@@ -354,7 +354,7 @@ function secrets_add_form () {
             )
         )
     );
-    
+
     return $form;
 }
 
@@ -365,7 +365,7 @@ function secrets_add_form () {
  * @return The form structure.
 */
 function secrets_edit_form ($name) {
-    
+
     // Ensure user is allowed to edit keys
     if (!user_access('secrets_edit')) {
         return NULL;
@@ -377,7 +377,7 @@ function secrets_edit_form ($name) {
         return array();
     }
 
-    
+
     // Create form structure
     $form = array(
         'type' => 'form',
@@ -411,7 +411,7 @@ function secrets_edit_form ($name) {
             )
         )
     );
-    
+
     return $form;
 }
 
@@ -422,12 +422,12 @@ function secrets_edit_form ($name) {
  * @return The form structure.
 */
 function secrets_delete_form ($name) {
-    
+
     // Ensure user is allowed to delete keys
     if (!user_access('secrets_delete')) {
         return NULL;
     }
-    
+
     // Get secret data
     $secrets = crm_get_one('secrets', array('name'=>$name));
 
@@ -459,7 +459,7 @@ function secrets_delete_form ($name) {
             )
         )
     );
-    
+
     return $form;
 }
 
@@ -523,7 +523,7 @@ function secrets_page (&$page_data, $page_name, $options) {
             $name = $options['name'];
             if (empty($name)) {
                 return;
-            }           
+            }
             page_set_title($page_data, 'Edit a Secret');
             if (user_access('secrets_edit')) {
                 page_add_content_top($page_data, theme('secrets_edit_form', $name));

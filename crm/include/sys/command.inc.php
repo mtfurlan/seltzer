@@ -2,7 +2,7 @@
 
 /*
     Copyright 2009-2017 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     commmand.inc.php - Core command processing functions
 
@@ -26,16 +26,16 @@
  * @return The url to redirect to.
  */
 function command ($command) {
-    
+
     // Initialize url and parameters
     $url = '';
     $params = array();
-    
+
     // Call legacy handler if it exists
     $handler = "command_$command";
     if (function_exists($handler)) {
         $res = call_user_func($handler);
-        
+
         // Split result into file and params
         $parts = explode('?', $res);
         $url = $parts[0];
@@ -49,7 +49,7 @@ function command ($command) {
             }
         }
     }
-    
+
     // Call the handler for each module if it exists
     foreach (module_list() as $module) {
         $handler = "{$module}_command";
@@ -57,13 +57,13 @@ function command ($command) {
             $handler($command, $url, $params);
         }
     }
-    
+
     // Error if the url is still empty
     if (empty($url)) {
         error_register('No such command: ' . $command);
         $url = crm_url();
     }
-    
+
     $url .= '?';
     $parts = array();
     foreach ($params as $key => $value) {

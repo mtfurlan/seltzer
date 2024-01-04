@@ -2,7 +2,7 @@
 
 /*
     Copyright 2009-2014 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     report_onboarding.inc.php - Show members in the "onboarding" plan
     Part of the Reports module
@@ -42,21 +42,21 @@ function get_cids_onboarding () {
     // Query contacts who are on the Onboarding plan
     // $sql = "
     //     SELECT cid FROM contact
-    //     WHERE EXISTS (SELECT * FROM membership 
-    //         WHERE membership.pid = '13' 
-    //         AND membership.end IS NULL 
+    //     WHERE EXISTS (SELECT * FROM membership
+    //         WHERE membership.pid = '13'
+    //         AND membership.end IS NULL
     //         AND contact.cid=membership.cid
     //     );";
     $sql = "
         SELECT c.cid, m.start
         FROM contact c JOIN membership m ON c.cid = m.cid
-        WHERE m.pid = '13' 
+        WHERE m.pid = '13'
         AND m.end IS NULL
     ;";
     global $db_connect;
     $res = mysqli_query($db_connect, $sql);
     if (!$res) crm_error(mysqli_error($db_connect));
-   
+
     $cids=array();
     while ($row = mysqli_fetch_row($res)) $cids[]=$row;
 
@@ -74,7 +74,7 @@ function onboarding_table ($opts = NULL) {
                 break;
         }
     }
-    
+
     $onboarding_cids = get_cids_onboarding();
 
      // Initialize table
@@ -99,9 +99,9 @@ function onboarding_table ($opts = NULL) {
         $row[1] = $name;
         $row[2] = $sdate;
 
-        $table['rows'][] = $row;  
+        $table['rows'][] = $row;
 
-    }   
+    }
     // Return table
     return $table;
 }

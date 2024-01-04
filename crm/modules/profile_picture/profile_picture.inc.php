@@ -3,7 +3,7 @@
 /*
     Copyright 2009-2017 Edward L. Platt <ed@elplatt.com>
     Copyright 2013-2017 Matt J. Oehrlein <matt.oehrlein@gmail.com>
-    
+
     This file is part of the Seltzer CRM Project
     profile_picture.inc.php - Defines contact entity
 
@@ -151,7 +151,7 @@ function profile_picture_upload_form ($cid) {
 function command_profile_picture_upload () {
     global $db_connect;
     $cid = $_POST['cid'];
-    
+
     if (!array_key_exists('profile-picture-file', $_FILES)) {
         error_register('No profile picture uploaded');
         return crm_url('contact&cid=' . $_POST['cid']);
@@ -180,7 +180,7 @@ function command_profile_picture_upload () {
             } else {
                 define('THUMBNAIL_IMAGE_MAX_WIDTH', 120);
                 define('THUMBNAIL_IMAGE_MAX_HEIGHT', 120);
-                
+
                 $source_image_path = $_FILES['profile-picture-file']['tmp_name'];
                 list($source_image_width, $source_image_height, $source_image_type) = getimagesize($source_image_path);
                 switch ($source_image_type) {
@@ -216,7 +216,7 @@ function command_profile_picture_upload () {
                 imagedestroy($thumbnail_gd_image);
             }
             // ------- End Image Resizing -------
-            
+
             //generate md5 hash from the contents of the uploaded resized image file
             $hash = hash_file('md5', $_FILES['profile-picture-file']['tmp_name']);
             //generate filepath to save file
@@ -231,20 +231,20 @@ function command_profile_picture_upload () {
             $sql = "INSERT INTO `profile_picture` (`cid`, `filename`) VALUES ('$esc_cid', '$destFileName')";
                     $res = mysqli_query($db_connect, $sql);
                     if (!$res) crm_error(mysqli_error($db_connect));
-                    
+
             //save the file. Literally just moving from /tmp/ to the right directory
             if(!move_uploaded_file($_FILES['profile-picture-file']['tmp_name'], $destFilePath)){
                 error_register('Error Saving Image to Server');
                 error_register('Tried moving: ' .  $_FILES['profile-picture-file']['tmp_name'] . 'to: ' . $destFilePath);
             } else {
-              message_register("Successfully uploaded new user profile picture");  
+              message_register("Successfully uploaded new user profile picture");
             }
         }
     } else {
         error_register('Invalid file. Did you upload an image (gif, jpeg, jpg, png) that is less than 20mb and no bigger than 1000x1024?');
         error_register('File Type is: ' . $_FILES['profile-picture-file']['type']);
         error_register('File Size is: ' . $_FILES['profile-picture-file']['size'] / 1024 . "kB");
-    } 
+    }
     return crm_url('contact&cid=' . $_POST['cid']);
 }
 
@@ -285,7 +285,7 @@ function profile_picture_delete ($cid) {
 // Themeing ////////////////////////////////////////////////////////////////////
 /**
  * Theme a contact's profile picture.
- * 
+ *
  * @param $contact The contact data structure or cid.
  *
  * @return The html of the user's profile picture.

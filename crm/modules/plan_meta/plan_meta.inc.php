@@ -3,7 +3,7 @@
 /*
     Copyright 2009-2017 Edward L. Platt <ed@elplatt.com>
     Copyright 2013-2017 David "Buzz" Bussenschutt <davidbuzz@gmail.com>
-    
+
     This file is part of the Seltzer CRM Project
     plan_meta.inc.php - Meta-Tag tracking module
 
@@ -69,7 +69,7 @@ function plan_meta_install($old_revision = 0) {
             ';
         $res = mysqli_query($db_connect, $sql);
         if (!$res) crm_error(mysqli_error($db_connect));
-        
+
         // Set default permissions
         $roles = array(
             '1' => 'authenticated'
@@ -109,18 +109,18 @@ function plan_meta_install($old_revision = 0) {
  * @return The description string.
  */
 function plan_meta_description ($pmid) {
-    
+
     // Get meta data
     $data = crm_get_data('plan_meta', array('pmid' => $pmid));
     if (empty($data)) {
         return '';
     }
     $plan_meta = $data[0];
-    
+
     // Construct description
     $description = 'Meta ';
     $description .= $plan_meta['tagstr'];
-    
+
     return $description;
 }
 
@@ -147,7 +147,7 @@ function plan_meta_data ($opts = array()) {
             }
         }
     }
-    
+
     // Create map from pids to plan names if necessary
     // TODO: Add filters for speed
     if ($join_plan) {
@@ -157,7 +157,7 @@ function plan_meta_data ($opts = array()) {
             $pidToPlan[$plan['pid']] = $plan;
         }
     }
-    
+
     // Query database
     $sql = "
         SELECT
@@ -193,7 +193,7 @@ function plan_meta_data ($opts = array()) {
         ORDER BY `tagstr` ASC";
     $res = mysqli_query($db_connect, $sql);
     if (!$res) crm_error(mysqli_error($db_connect));
-    
+
     // Store data
     $plan_metas = array();
     $row = mysqli_fetch_assoc($res);
@@ -213,7 +213,7 @@ function plan_meta_data ($opts = array()) {
         $plan_metas[] = $plan_meta;
         $row = mysqli_fetch_assoc($res);
     }
-    
+
     // Return data
     return $plan_metas;
 }
@@ -333,7 +333,7 @@ function plan_meta_delete ($plan_meta) {
 function plan_meta_cross_table ($opts) {
 
     global $db_connect;
-    
+
     // Determine settings
     $export = false;
     foreach ($opts as $option => $value) {
@@ -343,13 +343,13 @@ function plan_meta_cross_table ($opts) {
                 break;
         }
     }
-    
+
     // Get plan data
     $data = plan_meta_data($opts);
     if (count($data) < 1) {
         return array();
     }
-    
+
     // Initialize table
     $table = array(
         "id" => '',
@@ -359,7 +359,7 @@ function plan_meta_cross_table ($opts) {
     );
     $tableid = 0 ;
     $uniq = array();
-    
+
     // determine max/total number of tags, as we'll use one column for each:
     $sql = "SELECT distinct tagstr from plan_meta order by tagstr asc";
     $res = mysqli_query($db_connect, $sql);
@@ -370,7 +370,7 @@ function plan_meta_cross_table ($opts) {
         {
             $tags[] = $row[0];
         }
-    
+
     // Add column headers
     if (user_access('plan_meta_view')) {
         $table['columns'][] = array("title"=>'Name', 'class'=>'', 'id'=>''); // column 1
@@ -382,23 +382,23 @@ function plan_meta_cross_table ($opts) {
     if (!$export && (user_access('plan_meta_edit'))) {
         $table['columns'][] = array('title'=>'Ops','class'=>''); // last column.
     }
-    
+
     // Add row data
     foreach ($data as $plan_meta) {
-        
+
         // Add meta data
         $row = array();
-        
+
         // plan not already on screen, add them, and all details, and first tag.
         if ( ! array_key_exists($plan_meta['pid'], $uniq) ) {
-            
+
             $uniq[$plan_meta['pid']] = $tableid;
-            
+
             if (user_access('plan_meta_view')) {
-                
+
                 // Add cells
                 $row[] = theme('member_plan_name', $plan_meta['pid'], true);
-                
+
                 // insert new tag in new row at a fixed offset.
                 for ( $i = 0 ; $i < $count+1; $i++) {
                     if ( $table['columns'][$i]['title'] == $plan_meta['tagstr'] ) {
@@ -424,10 +424,10 @@ function plan_meta_cross_table ($opts) {
             else {
                 //print "burp<br>\n";
                 // user alresdy, just add additional tag for them ...
-                
+
                 $previd = $uniq[$plan_meta['pid']];
                 $row = $table['rows'][$previd];
-                
+
                 // insert new tag to existing row:
                 for ( $i = 1 ; $i < $count+1; $i++) {
                     if ( $table['columns'][$i]['title'] == $plan_meta['tagstr'] ) {
@@ -437,9 +437,9 @@ function plan_meta_cross_table ($opts) {
                 $table['rows'][$previd] = $row;
             }
     }
-    
+
     //var_dump($uniq);
-    
+
     return $table;
 }
 
@@ -450,7 +450,7 @@ function plan_meta_cross_table ($opts) {
  * @return The table structure.
  */
 function plan_meta_table ($opts) {
-    
+
     // Determine settings
     $export = false;
     foreach ($opts as $option => $value) {
@@ -460,13 +460,13 @@ function plan_meta_table ($opts) {
                 break;
         }
     }
-    
+
     // Get plan data
     $data = crm_get_data('plan_meta', $opts);
     if (count($data) < 1) {
         return array();
     }
-    
+
     // Initialize table
     $table = array(
         "id" => '',
@@ -474,7 +474,7 @@ function plan_meta_table ($opts) {
         "rows" => array(),
         "columns" => array()
     );
-    
+
     // Add columns
     if (user_access('plan_meta_view')) {
         if (array_key_exists('join', $opts) && in_array('plan', $opts['join'])) {
@@ -488,19 +488,19 @@ function plan_meta_table ($opts) {
     if (!$export && (user_access('plan_meta_edit') || user_access('plan_meta_delete'))) {
         $table['columns'][] = array('title'=>'Ops','class'=>'');
     }
-    
+
     // Add rows
     foreach ($data as $plan_meta) {
-        
+
         // Add meta data
         $row = array();
         if (user_access('plan_meta_view')) {
-            
+
             // Add cells
             if (array_key_exists('join', $opts) && in_array('plan', $opts['join'])) {
                 $row[] = theme('member_plan_name', $pid_to_plan[$plan_meta['pid']], true);
             }
-            
+
             $row[] = $plan_meta['tagstr'];
             $row[] = $plan_meta['start'];
             $row[] = $plan_meta['end'];
@@ -533,12 +533,12 @@ function plan_meta_table ($opts) {
  * @return The form structure.
  */
 function plan_meta_add_form ($pid) {
-    
+
     // Ensure user is allowed to edit metas
     if (!user_access('plan_meta_edit')) {
         return NULL;
     }
-    
+
     // Create form structure
     $form = array(
         'type' => 'form',
@@ -579,7 +579,7 @@ function plan_meta_add_form ($pid) {
             )
         )
     );
-    
+
     return $form;
 }
 
@@ -590,26 +590,26 @@ function plan_meta_add_form ($pid) {
  * @return The form structure.
  */
 function plan_meta_edit_form ($pmid) {
-    
+
     // Ensure user is allowed to edit meta
     if (!user_access('plan_meta_edit')) {
         return NULL;
     }
-    
+
     // Get meta data
     $data = crm_get_data('plan_meta', array('pmid'=>$pmid));
     $plan_meta = $data[0];
     if (empty($plan_meta) || count($plan_meta) < 1) {
         return array();
     }
-    
+
     // Get corresponding plan data
     $data = member_plan_data(array('pid'=>$plan_meta['pid']));
     $plan = $data[0];
-    
+
     // Construct plan name
     $name = theme('member_plan_name', $plan, true);
-    
+
     // Create form structure
     $form = array(
         'type' => 'form',
@@ -666,19 +666,19 @@ function plan_meta_edit_form ($pmid) {
  * @return The form structure.
  */
 function plan_meta_delete_form ($pmid) {
-    
+
     // Ensure user is allowed to delete metas
     if (!user_access('plan_meta_delete')) {
         return NULL;
     }
-    
+
     // Get meta data
     $data = crm_get_data('plan_meta',array('pmid'=>$pmid));
     $plan_meta = $data[0];
-    
+
     // Construct meta name
     $plan_meta_name = "meta:$plan_meta[pmid] tagstr:$plan_meta[tagstr] $plan_meta[start] -- $plan_meta[end]";
-    
+
     // Create form structure
     $form = array(
         'type' => 'form',
@@ -730,7 +730,7 @@ function plan_meta_command ($command, &$url, &$params) {
  */
 function command_plan_meta_add() {
     global $esc_post;
-    
+
     // Verify permissions
     if (!user_access('plan_meta_edit')) {
         error_register('Permission denied: plan_meta_edit');
@@ -747,7 +747,7 @@ function command_plan_meta_add() {
  */
 function command_plan_meta_update() {
     global $esc_post;
-    
+
     // Verify permissions
     if (!user_access('plan_meta_edit')) {
         error_register('Permission denied: plan_meta_edit');
@@ -794,26 +794,26 @@ function plan_meta_page_list () {
  * @param $options The array of options passed to theme('page').
  */
 function plan_meta_page (&$page_data, $page_name, $options) {
-    
+
     switch ($page_name) {
-        
+
         case 'plan':
-            
+
             // Capture plan id
             $pid = $options['pid'];
             if (empty($pid)) {
                 return;
             }
-            
+
             // Add metas tab
             if (user_access('plan_meta_view') || user_access('plan_meta_edit') || user_access('plan_meta_delete')) {
                 $plan_metas = theme('table', 'plan_meta', array('pid' => $pid));
                 $plan_metas .= theme('form', crm_get_form('plan_meta_add', $pid)); // this is where we put the "Add Meta-Tag Assignment" form on the page
                 page_add_content_bottom($page_data, $plan_metas, 'Meta-Tags');
             }
-            
+
             break;
-        
+
         case 'plan_metas':
             page_set_title($page_data, 'Meta-Tags');
             if (user_access('plan_meta_view')) {
@@ -822,23 +822,23 @@ function plan_meta_page (&$page_data, $page_name, $options) {
                 page_add_content_top($page_data, $plan_metas, 'View');
             }
             break;
-        
+
         case 'plan_meta':
-            
+
             // Capture meta id
             $pmid = $options['pmid'];
             if (empty($pmid)) {
                 return;
             }
-            
+
             // Set page title
             page_set_title($page_data, plan_meta_description($pmid));
-            
+
             // Add edit tab
             if (user_access('plan_meta_view') || user_access('plan_meta_edit') || user_access('plan_meta_delete')) {
                 page_add_content_top($page_data, theme('form', crm_get_form('plan_meta_edit_form', $pmid)), 'Edit');
             }
-            
+
             break;
     }
 }
