@@ -2,7 +2,7 @@
 
 /*
     Copyright 2009-2017 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     report_membership.inc.php - Membership graph report
     Part of the Reports module
@@ -154,7 +154,7 @@ function theme_report_membership () {
             .duration(300);
         chart.xAxis.tickFormat(function(d) { return d3.time.format('%x')(new Date(d)) });
         chart.yAxis.tickFormat(d3.format(',.0f'));
-        
+
         d3.select('#chart1')
             .datum(data)
             .transition().duration(1000)

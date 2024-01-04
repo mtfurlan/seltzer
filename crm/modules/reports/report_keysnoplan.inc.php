@@ -2,7 +2,7 @@
 
 /*
     Copyright 2009-2014 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     report_planinfo.inc.php - Membership plan reports
     Part of the Reports module
@@ -41,7 +41,7 @@ function get_keys_for_cids ($list = array()) {
     $cidlist = join (",",$list);
     // Query contacts who have no plans associated
     $sql = "
-        SELECT * FROM `key` 
+        SELECT * FROM `key`
         WHERE cid in ($cidlist) AND end is NULL;
     ";
     global $db_connect;
@@ -69,7 +69,7 @@ function keysnoplan_table ($opts = NULL) {
                 break;
         }
     }
-    
+
     $inactive_members = member_data(array('filter'=>array('inactive'=>true,'hiatus'=>true,'onboarding'=>true))); // Get inactive members
 // var_dump_pre($inactive_members);
     // build cid index
@@ -91,7 +91,7 @@ function keysnoplan_table ($opts = NULL) {
             , array ('title' => 'Slot')
             , array ('title' => 'Key Start')
             , array ('title' => 'Key End')
-            
+
         )
         , 'rows' => array()
     );
@@ -100,7 +100,7 @@ function keysnoplan_table ($opts = NULL) {
     foreach ($keysnoplan as $key) {
         // Add secrets data
         $row = array();
-        
+
         // Get info on member
         $data = member_data(array('cid'=>$key['cid']));
         $member = $data[0];
@@ -119,10 +119,10 @@ function keysnoplan_table ($opts = NULL) {
         $row[] = $key['slot'];
         $row[] = $key['start'];
         $row[] = $key['end'];
-        
-        $table['rows'][] = $row;  
 
-    }   
+        $table['rows'][] = $row;
+
+    }
     // Return table
     return $table;
 }

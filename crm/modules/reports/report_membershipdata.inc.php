@@ -2,7 +2,7 @@
 
 /*
     Copyright 2009-2014 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     report_membershipdata.inc.php - Show members in the "membershipdata" plan
     Part of the Reports module
@@ -121,7 +121,7 @@ function get_membershipdata () {
     $fullindex[] = $keys;
     $fullindex[] = $indexed;
     return ($fullindex);
-    
+
 }
 
 // Tables ///////////////////////////////////////////////////////////////////////
@@ -158,8 +158,8 @@ function membershipdata_table ($opts) {
         foreach ($data as $plandata) {
             $table['rows'][] = $plandata;
         }
-        // $table['rows'][] = $row;  
-    }   
+        // $table['rows'][] = $row;
+    }
     // Return table
     return $table;
 }

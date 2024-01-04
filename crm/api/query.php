@@ -34,7 +34,7 @@ function testPin($cid,$pin=0000) {
     } else {
         $result = false;
     }
-    
+
     return $result;
 }
 
@@ -49,38 +49,38 @@ function testMemberActive($cid) {
 }
 
 
-//This function takes in an RFID alpha numeric string 
+//This function takes in an RFID alpha numeric string
 //and a comma separated list of field names to return.
-//The RFID belongs to the member and the fields are the 
+//The RFID belongs to the member and the fields are the
 //ones you want to have back.
 // function getMemberInfoByRFID($rfid,$fieldNames)
-// {    
+// {
 //     require('db.inc.php');
-    
+
 //     $rfid = testInput($rfid);
 //     $fieldNames = testInput($fieldNames);
-    
+
 //     $memberInfo = array();
 
 //     if($fieldNames == "")
 //     {
-//     	$fieldNames = "*";
+//         $fieldNames = "*";
 //     }
 
 //     //first build the query
-//     $query = "SELECT " . $fieldNames . " FROM 
-// 			(
-// 			`key` k
-// 			LEFT JOIN    `contact` c ON k.cid = c.cid
-// 			)
-// 			WHERE k.serial = '" . $rfid . "'";
-    
+//     $query = "SELECT " . $fieldNames . " FROM
+//             (
+//             `key` k
+//             LEFT JOIN    `contact` c ON k.cid = c.cid
+//             )
+//             WHERE k.serial = '" . $rfid . "'";
+
 //     //then get the matching member
-//     $result = mysqli_query($con, $query) 
-// 		    or die(json_encode(array("getMemberInfoByRFIDQueryERROR" => mysql_error())));
- 
+//     $result = mysqli_query($con, $query)
+//             or die(json_encode(array("getMemberInfoByRFIDQueryERROR" => mysql_error())));
+
 //     //then stick the member info into an assoc array
-//     $memberInfo = mysqli_fetch_assoc($result);        
+//     $memberInfo = mysqli_fetch_assoc($result);
 
 //     return $memberInfo;
 // }
@@ -88,46 +88,46 @@ function testMemberActive($cid) {
 // //This function returns the unix timestamp of the last payment made
 // // for the member with the given RFID.
 // function getMemberLastPaymentTimestamp($rfid)
-// { 
+// {
 //     require('db.inc.php');
-    
+
 //     $rfid = testInput($rfid);
-    
+
 //     $memberInfo = array();
 
 //     //first see if the key is even in the system.
 //     //We could just do a big join all at once but we wouldn't know
 //     // if the key or the member was not found, etc.
 //     $query = "SELECT cid FROM `key` WHERE serial = '" . $rfid . "'";
-    
+
 //     //then get the matching member
-//     $result = mysqli_query($con, $query) 
-// 		    or die(json_encode(array("getKeyQueryERROR"=>mysql_error())));
-		    
-//     $keyRow = mysqli_fetch_assoc($result);        
+//     $result = mysqli_query($con, $query)
+//             or die(json_encode(array("getKeyQueryERROR"=>mysql_error())));
+
+//     $keyRow = mysqli_fetch_assoc($result);
 
 //     if($keyRow == 0)
 //     {
-//     	return array("ERROR"=>"No key found for RFID: " . $rfid);
+//         return array("ERROR"=>"No key found for RFID: " . $rfid);
 //     }
 
 //     //then get the last payment entered for this member
 //     $query = "SELECT UNIX_TIMESTAMP(MAX(date)) FROM payment WHERE value > 0 and credit = " . $keyRow['cid'];
-    
-//     $result = mysqli_query($con, $query) 
-// 		    or die(json_encode(array("getPaymentQueryERROR"=>mysql_error())));
- 
+
+//     $result = mysqli_query($con, $query)
+//             or die(json_encode(array("getPaymentQueryERROR"=>mysql_error())));
+
 //     $paymentInfo = mysqli_fetch_array($result);
-    
+
 //     $timestamp = $paymentInfo[0];
-    
+
 //     if($timestamp == NULL)
 //     {
-//     	return array("ERROR"=>"No payments found for key owner.");
+//         return array("ERROR"=>"No payments found for key owner.");
 //     }
-    
+
 //     $iso8601 = date('c', $timestamp);
-    
+
 //     $jsonResponse = array("timestamp"=>$timestamp,"iso8601"=>$iso8601);
 //     return $jsonResponse;
 // }
@@ -136,29 +136,29 @@ function testMemberActive($cid) {
 //returns JSON array of all key serial values for all active members
 function getRFIDWhitelist()
 {
-	require('db.inc.php');
-	
-	$whiteList = array();
-	
-	//Get all active members
-	$activeMembers = member_data(array('filter'=>array('active'=>true)));
+    require('db.inc.php');
 
-	// for each active member, find their active keys
-	foreach ($activeMembers as $member) {
-		$cid = $member['cid'];
-		$firstName = $member['contact']['firstName'];
-		$lastName = $member['contact']['lastName'];
+    $whiteList = array();
+
+    //Get all active members
+    $activeMembers = member_data(array('filter'=>array('active'=>true)));
+
+    // for each active member, find their active keys
+    foreach ($activeMembers as $member) {
+        $cid = $member['cid'];
+        $firstName = $member['contact']['firstName'];
+        $lastName = $member['contact']['lastName'];
         // get active keys for this user
         $query = "SELECT serial FROM `key` WHERE cid = " . $cid . " AND end IS NULL";
-        $result = mysqli_query($con, $query) 
-		    		or die(json_encode(array("getRFIDWhitelistQueryERROR"=>mysqli_error($con))));
+        $result = mysqli_query($con, $query)
+                    or die(json_encode(array("getRFIDWhitelistQueryERROR"=>mysqli_error($con))));
         $r = mysqli_fetch_assoc($result);
         foreach ($r as $serial) {
-				$whiteList[] = array("firstName"=>$firstName,"lastName"=>$lastName,"serial"=>$serial);	
-			}
+                $whiteList[] = array("firstName"=>$firstName,"lastName"=>$lastName,"serial"=>$serial);
+            }
         }
-	
-	return $whiteList;
+
+    return $whiteList;
 }
 
 //action=authcheck&rfid=<scanned RFID>
@@ -171,63 +171,63 @@ function authCheck($opts = array())
 {
   require('db.inc.php');
 
-	// sanitize input
-	foreach ($opts as $option) {
-	    $opts[$option] = testInput($option);
-	}
+    // sanitize input
+    foreach ($opts as $option) {
+        $opts[$option] = testInput($option);
+    }
 
     // verify we have the minimum required options
     if (!array_key_exists('rfid',$opts)) {
         return array('auth'=>false,'message'=>'no rfid submitted');
     }
 
-	//get the key owner
+    //get the key owner
     $query = "SELECT cid
         FROM `key`
         where serial = '" . $opts['rfid'] . "'
         AND ( end IS NULL or end > DATE(NOW()))";
-				
-	$result = mysqli_query($con, $query) 
-		    or die(json_encode(array('auth'=>false,'message'=>mysqli_error($con))));
 
- 	//if no rows returned then that key wasn't even found in the DB
- 	if(mysqli_num_rows($result) == 0) { return array('auth'=>false,'name'=>'','message'=>'rfid not found'); }
+    $result = mysqli_query($con, $query)
+            or die(json_encode(array('auth'=>false,'message'=>mysqli_error($con))));
+
+    //if no rows returned then that key wasn't even found in the DB
+    if(mysqli_num_rows($result) == 0) { return array('auth'=>false,'name'=>'','message'=>'rfid not found'); }
 
     // Get member info from returned CID
-	$row = mysqli_fetch_assoc($result); 	
- 	$memberID = $row["cid"];
+    $row = mysqli_fetch_assoc($result);
+    $memberID = $row["cid"];
     $memberName = theme_contact_name($memberID);
-    
+
     // check if member is Active
     if (!testMemberActive($memberID)) { return array('auth'=>false,'user'=>$memberName,'message'=>'inactive account'); }
-    
+
     // If pin submitted, check if it's valid
     if (isset($opts['pin']) && !testPin($memberID,$opts['pin'])) { return array('auth'=>false,'user'=>$memberName,'message'=>'invalid pin'); }
- 
+
     // All checks passed, return 'true' and user name
     return array('auth'=>true,'user'=>$memberName,'message'=>'authorized');
 }
 
-function hash_compare($a, $b) { 
-    if (!is_string($a) || !is_string($b)) { 
-        return false; 
-    } 
-    
-    $len = strlen($a); 
-    if ($len !== strlen($b)) { 
-        return false; 
-    } 
+function hash_compare($a, $b) {
+    if (!is_string($a) || !is_string($b)) {
+        return false;
+    }
 
-    $status = 0; 
-    for ($i = 0; $i < $len; $i++) { 
-        $status |= ord($a[$i]) ^ ord($b[$i]); 
-    } 
-    return $status === 0; 
-} 
+    $len = strlen($a);
+    if ($len !== strlen($b)) {
+        return false;
+    }
+
+    $status = 0;
+    for ($i = 0; $i < $len; $i++) {
+        $status |= ord($a[$i]) ^ ord($b[$i]);
+    }
+    return $status === 0;
+}
 
 //////////////////////////////////////
-//other functions for service go here. 
-// don't forget to add the action to the 
+//other functions for service go here.
+// don't forget to add the action to the
 // $possible_url array below!!!!!
 //You will then have to add the entry for
 // the switch case below as well.
@@ -236,7 +236,7 @@ function hash_compare($a, $b) {
 // url format:
 // query.php?action=<function_name>&id=<device_id>&auth=<cryptostring>
 // cryptostring is concat of date (YYYYMMDDHHmm) and passkey
-// 
+//
 // currently, ID and passkey are in secrets table, but this could be extracted to it's own table
 
 require_once('db.inc.php');
@@ -263,7 +263,7 @@ if (isset($_GET["id"]) && isset($_GET["auth"]) && isset($_GET["action"]))
     var_dump_pre("userhash:          ".$userHash);
     $userHashMinusOne = hash_hmac('sha256',$messageMinusOne,$apiSharedSecret);
     var_dump_pre("userhashMinusOne:  ".$userHashMinusOne);
-    
+
     if ( hash_compare($userHash, $_GET['auth']) || hash_compare($userHashMinusOne, $_GET['auth']) )
     {
         switch ($_GET["action"])
@@ -290,7 +290,7 @@ else { $returnValue = array('ok'=>false, 'message'=>'mangled input'); }
             "key": "value",    // action-based responses
             "key2: "value",    // will vary per action
             ...
-        }, 
+        },
         ...
     ]
     }

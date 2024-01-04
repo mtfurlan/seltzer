@@ -1,7 +1,7 @@
 <?php
 /*
     Copyright 2014 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     template.inc.php - Template for contributed modules
 
@@ -32,7 +32,7 @@ function service_slack_revision () {
 
 function service_slack_getSlackID ($email, $username) {
    // users.list to get a full dump of users since we cannot search by email
-    
+
     // var_dump_pre('crm username',$username);
     $slackUsersList = 'https://i3detroit.slack.com/api/users.list';
     $data = array('token' => variable_get('slack_token',''));

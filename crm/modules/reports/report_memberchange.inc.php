@@ -2,7 +2,7 @@
 
 /*
     Copyright 2009-2014 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     report_planinfo.inc.php - Membership plan reports
     Part of the Reports module
@@ -55,7 +55,7 @@ function memberchange_query ($type, $from, $to) {
         $result[] = $row;
         $row = mysqli_fetch_assoc($res);
     }
-   
+
     return $result;
 }
 
@@ -143,7 +143,7 @@ function memberchange_results_table ($opts = NULL) {
     $query_result = array();
     // var_dump_pre($query_end_result);
     // var_dump_pre($query_start_result);
-  
+
     // parse start and end arrays and combine into a single results array
     foreach ($query_end_result as $plan_end ) {
         $query_result[$plan_end['cid']]['enddate'] = $plan_end['enddate'];
@@ -155,7 +155,7 @@ function memberchange_results_table ($opts = NULL) {
     };
 
 //    var_dump_pre($query_result);
-    
+
     // Initialize table
     $table = array(
         'columns' => array(
@@ -178,17 +178,17 @@ function memberchange_results_table ($opts = NULL) {
         $contact = $member['contact'];
         $name = theme('contact_name', $contact['cid'], !$export);
         $row[] = $name;
-        
+
         // Plan Data
         $row[] = $exitdata['endplan'];
         $row[] = $exitdata['enddate'];
         $row[] = $exitdata['startplan'];
         $row[] = $exitdata['startdate'];
-    
 
-        $table['rows'][] = $row;  
 
-    }   
+        $table['rows'][] = $row;
+
+    }
     // Return table
     return $table;
 }

@@ -2,7 +2,7 @@
 
 /*
     Copyright 2009-2013 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     config.inc.php - Sample configuration
 
@@ -30,7 +30,7 @@ $config_site_title = 'i3 Detroit';
 // The name of the organization to insert into templates
 $config_org_name = 'i3 Detroit';
 
-// The currency code for dealing with payments, can be GBP, USD, or EUR 
+// The currency code for dealing with payments, can be GBP, USD, or EUR
 $config_currency_code = 'USD';
 
 // The From: address to use when sending email to members
@@ -88,7 +88,7 @@ $config_modules[] = "amazon_payment";
 // Automated billing
 $config_modules[] = "billing";
 
-// Assign members a mentor 
+// Assign members a mentor
 //$config_modules[] = "mentor";
 
 // Show profile pictures

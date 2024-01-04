@@ -2,7 +2,7 @@
 
 /*
     Copyright 2009-2017 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     key.inc.php - Key tracking module
 
@@ -103,7 +103,7 @@ function key_install($old_revision = 0) {
  * @return The description string.
  */
 function key_description ($kid) {
-    
+
     // Get key data
     if (user_access('key_view')) {
         $data = crm_get_data('key', array('kid' => $kid));
@@ -112,11 +112,11 @@ function key_description ($kid) {
         return '';
     }
     $key = $data[0];
-    
+
     // Construct description
     $description = 'Key ';
     $description .= $key['serial'];
-    
+
     return $description;
 }
 
@@ -131,7 +131,7 @@ function key_description ($kid) {
  *   'filter' An array mapping filter names to filter values;
  *   'join' A list of tables to join to the key table.
  * @return An array with each element representing a single key card assignment.
-*/ 
+*/
 function key_data ($opts = array()) {
     global $db_connect;
     // Query database
@@ -402,13 +402,13 @@ function key_table ($opts) {
  * @return The form structure.
 */
 function key_add_form ($cid) {
-    
+
     // Ensure user is allowed to edit keys
     if (!user_access('key_edit')) {
         error_register('User does not have permission: key_edit');
         return NULL;
     }
-    
+
     // Create form structure
     $form = array(
         'type' => 'form',
@@ -540,20 +540,20 @@ function key_edit_form ($kid) {
  * @return The form structure.
 */
 function key_delete_form ($kid) {
-    
+
     // Ensure user is allowed to delete keys
     if (!user_access('key_delete')) {
         error_register('User does not have permission: key_delete');
         return NULL;
     }
-    
+
     // Get key data
     $data = crm_get_data('key', array('kid'=>$kid));
     $key = $data[0];
-    
+
     // Construct key name
     $key_name = "key:$key[kid] serial:$key[serial] slot:$key[slot] $key[start] -- $key[end]";
-    
+
     // Create form structure
     $form = array(
         'type' => 'form',
@@ -666,26 +666,26 @@ function key_page_list () {
  * @param $options The array of options passed to theme('page').
 */
 function key_page (&$page_data, $page_name, $options) {
-    
+
     switch ($page_name) {
-        
+
         case 'contact':
-            
+
             // Capture contact cid
             $cid = $options['cid'];
             if (empty($cid)) {
                 return;
             }
-            
+
             // Add keys tab
             if (user_access('key_view') || user_access('key_edit') || user_access('key_delete') || $cid == user_id()) {
                 $keys = theme('table', crm_get_table('key', array('cid' => $cid)));
                 $keys .= theme('form', crm_get_form('key_add', $cid));
                 page_add_content_bottom($page_data, $keys, 'Keys');
             }
-            
+
             break;
-        
+
         case 'keys':
             // Set page title
             page_set_title($page_data, 'Keys');
@@ -695,23 +695,23 @@ function key_page (&$page_data, $page_name, $options) {
                 page_add_content_top($page_data, $keys, 'View');
             }
             break;
-        
+
         case 'key':
-            
+
             // Capture key id
             $kid = $options['kid'];
             if (empty($kid)) {
                 return;
             }
-            
+
             // Set page title
             page_set_title($page_data, key_description($kid));
-            
+
             // Add edit tab
             if (user_access('key_view') || user_access('key_edit') || user_access('key_delete')) {
                 page_add_content_top($page_data, theme('form', crm_get_form('key_edit', $kid), 'Edit'));
             }
-            
+
             break;
     }
 }

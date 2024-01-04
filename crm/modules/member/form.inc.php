@@ -2,7 +2,7 @@
 
 /*
     Copyright 2009-2017 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     form.inc.php - Member module - form structures
 
@@ -26,16 +26,16 @@
  * @return The form structure for adding a member.
 */
 function member_add_form () {
-    
+
     // Start with contact form
     $form = crm_get_form('contact');
-    
+
     // Generate default start date, first of current month
     $start = date("Y-m-d");
-    
+
     // Change form command
     $form['command'] = 'member_add';
-    
+
     // Add member data
     $form['fields'][] = array(
         'type' => 'fieldset'
@@ -96,7 +96,7 @@ function member_add_form () {
  * @return The form structure for editing a member.
 */
 function member_edit_form ($cid) {
-    
+
     // Create form
     if ($cid) {
         $memb_data = crm_get_data('member', array('cid'=>$cid));
@@ -112,7 +112,7 @@ function member_edit_form ($cid) {
         , 'fields' => array()
         , 'submit' => 'Update'
     );
-    
+
     // Edit member data
     $form['fields'][] = array(
         'type' => 'fieldset',
@@ -147,12 +147,12 @@ function member_edit_form ($cid) {
  * @return The form structure for adding a membership plan.
 */
 function member_plan_add_form () {
-    
+
     // Ensure user is allowed to edit plans
     if (!user_access('member_plan_edit')) {
         return NULL;
     }
-    
+
     // Create form structure
     $form = array(
         'type' => 'form',
@@ -192,7 +192,7 @@ function member_plan_add_form () {
             )
         )
     );
-    
+
     return $form;
 }
 
@@ -203,19 +203,19 @@ function member_plan_add_form () {
  * @return The form structure.
 */
 function member_plan_edit_form ($pid) {
-    
+
     // Ensure user is allowed to edit plans
     if (!user_access('member_plan_edit')) {
         return NULL;
     }
-    
+
     // Get plan data
     $plans = member_plan_data(array('pid'=>$pid));
     $plan = $plans[0];
     if (!$plan) {
         return NULL;
     }
-    
+
     // Create form structure
     $form = array(
         'type' => 'form',
@@ -261,7 +261,7 @@ function member_plan_edit_form ($pid) {
             )
         )
     );
-    
+
     return $form;
 }
 
@@ -272,15 +272,15 @@ function member_plan_edit_form ($pid) {
  * @return The form structure.
 */
 function member_plan_delete_form ($pid) {
-    
+
     // Ensure user is allowed to edit plans
     if (!user_access('member_plan_edit')) {
         return NULL;
     }
-    
+
     // Get plan description
     $description = theme('member_plan_description', $pid);
-    
+
     // Create form structure
     $form = array(
         'type' => 'form',
@@ -306,7 +306,7 @@ function member_plan_delete_form ($pid) {
             )
         )
     );
-    
+
     return $form;
 }
 
@@ -319,15 +319,15 @@ function member_plan_delete_form ($pid) {
  * @return The form structure.
 */
 function member_membership_add_form ($cid) {
-    
+
     // Ensure user is allowed to edit memberships
     if (!user_access('member_membership_edit')) {
         return NULL;
     }
-    
+
     // Generate default start date, first of current month
     $start = date("Y-m-d");
-    
+
     // Create form structure
     $form = array(
         'type' => 'form',
@@ -378,24 +378,24 @@ function member_membership_add_form ($cid) {
  * @return The form structure.
 */
 function member_membership_edit_form ($sid) {
-    
+
     // Ensure user is allowed to edit memberships
     if (!user_access('member_membership_edit')) {
         return NULL;
     }
-    
+
     // Get membership data
     $data = member_membership_data(array('sid'=>$sid));
     $membership = $data[0];
     if (empty($membership) || count($membership) < 1) {
         return array();
     }
-    
+
     // Construct contact name
     $data = member_contact_data(array('cid'=>$membership['cid']));
     $contact = $data[0];
     $name = theme_contact_name($contact['cid']);
-    
+
     // Create form structure
     $form = array(
         'type' => 'form',
@@ -454,16 +454,16 @@ function member_membership_edit_form ($sid) {
  * @return The form structure.
 */
 function member_membership_delete_form ($sid) {
-    
+
     // Ensure user is allowed to edit memberships
     if (!user_access('member_membership_edit')) {
         return NULL;
     }
-    
+
     // Get membership data
     $data = member_membership_data(array('sid'=>$sid));
     $membership = $data[0];
-    
+
     // Construct member name
     /* TODO
     if (empty($member) || count($member) < 1) {
@@ -475,10 +475,10 @@ function member_membership_delete_form ($sid) {
     }
     $member_name .= ' ' . $member['contact']['lastName'];
     */
-    
+
     // Construct membership name
     $membership_name = "user:$membership[cid] $membership[start] -- $membership[end]";
-    
+
     // Create form structure
     $form = array(
         'type' => 'form',
@@ -511,12 +511,12 @@ function member_membership_delete_form ($sid) {
 
 /**
  * Return the form structure for a member filter.
- * 
+ *
  * @return The form structure.
 */
 function member_filter_form () {
-    
-    // Available filters    
+
+    // Available filters
     $filters = array(
         'all' => 'All',
         'active' => 'Active',
@@ -525,16 +525,16 @@ function member_filter_form () {
         'hiatus' => 'Hiatus',
         'inactive' => 'Inactive'
     );
-    
+
     // Default filter
     $selected = empty($_SESSION['member_filter_option']) ? 'active' : $_SESSION['member_filter_option'];
-    
+
     // Construct hidden fields to pass GET params
     $hidden = array();
     foreach ($_GET as $key => $val) {
         $hidden[$key] = $val;
     }
-    
+
     $form = array(
         'type' => 'form',
         'method' => 'get',

@@ -2,7 +2,7 @@
 
 /*
     Copyright 2009-2014 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     report_planinfo.inc.php - Membership plan reports
     Part of the Reports module
@@ -51,7 +51,7 @@ function get_dupe_storage () {
     global $db_connect;
     $res = mysqli_query($db_connect, $sql);
     if (!$res) crm_error(mysqli_error($db_connect));
- 
+
     $dupes=array();
     $row = mysqli_fetch_assoc($res);
     while (!empty($row)) {
@@ -95,7 +95,7 @@ function dupestorage_table ($opts = NULL) {
         // Add secrets data
         // var_dump_pre($plot);
         $row = array();
-        
+
         // Get info on member
         if ($plot['cid'] == 0) {
             $data = array();
@@ -138,9 +138,9 @@ function dupestorage_table ($opts = NULL) {
         $row[] = $plot['pid'];
         $row[] = $plot['desc'];
 
-        $table['rows'][] = $row;  
+        $table['rows'][] = $row;
 
-    }   
+    }
     // Return table
     return $table;
 }

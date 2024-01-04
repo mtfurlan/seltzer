@@ -2,7 +2,7 @@
 
 /*
     Copyright 2009-2017 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     theme.inc.php - Provides theming for core elements
 
@@ -49,7 +49,7 @@ function theme_logo () {
  * @return The themed html string for user login status.
 */
 function theme_login_status () {
-    
+
     $output = '<div class="login-status">';
     if (user_id()) {
         $output .= 'Welcome, ' . theme('contact_name', user_id(), true) . '. <a href="index.php?command=logout">Log out</a>';
@@ -61,7 +61,7 @@ function theme_login_status () {
         $output .= '<a href='. crm_url('reset') . '>Reset password</a>';
     }
     $output .= '</div>';
-    
+
     return $output;
 }
 
@@ -78,7 +78,7 @@ function theme_navigation () {
         }
     }
     $output .= '</ul>';
-    
+
     return $output;
 }
 
@@ -99,7 +99,7 @@ function theme_navigation_link ($path, $title) {
 
 /**
  * Generate a themed delete confirmation form.
- * 
+ *
  * @param $type The type of element to delete.
  * @param $id The id of the element to delete.
  * @return The themed html for a delete confirmation form.

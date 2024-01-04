@@ -2,7 +2,7 @@
 
 /*
     Copyright 2009-2014 Edward L. Platt <ed@elplatt.com>
-    
+
     This file is part of the Seltzer CRM Project
     report_planinfo.inc.php - Membership plan reports
     Part of the Reports module
@@ -42,7 +42,7 @@ function get_cids_without_keys ($list = array()) {
     // Query contacts who have no plans associated
     $sql = "
     CREATE TEMPORARY TABLE cidlist (
-        `cid` varchar(255) NOT NULL 
+        `cid` varchar(255) NOT NULL
     );";
     global $db_connect;
     $res = mysqli_query($db_connect, $sql);
@@ -51,7 +51,7 @@ function get_cids_without_keys ($list = array()) {
     $sql="INSERT INTO cidlist (cid) VALUES $cidlist;";
     $res = mysqli_query($db_connect, $sql);
     if (!$res) crm_error(mysqli_error($db_connect));
-    
+
     $sql="
     SELECT cid
     FROM cidlist
@@ -81,7 +81,7 @@ function plannokeys_table ($opts = NULL) {
                 break;
         }
     }
-    
+
     $active_members = member_data(array('filter'=>array('active'=>true, 'scholarship'=>true))); // Get inactive members
 
     // build cid index
@@ -100,7 +100,7 @@ function plannokeys_table ($opts = NULL) {
             , array ('title' => 'Key')
             , array ('title' => 'Key Start')
             , array ('title' => 'Key End')
-            
+
         )
         , 'rows' => array()
     );
@@ -109,7 +109,7 @@ function plannokeys_table ($opts = NULL) {
     foreach ($plannokeys as $cid) {
         // Add secrets data
         $row = array();
-        
+
         // Get info on member
         $data = member_data(array('cid'=>$cid));
         $member = $data[0];
@@ -127,10 +127,10 @@ function plannokeys_table ($opts = NULL) {
         $row[] = isset($cid['serial']) ? $cid['serial'] : '';
         $row[] = isset($cid['start']) ? $cid['start'] : '';
         $row[] = isset($cid['end']) ? $cid['end'] : '';
-        
-        $table['rows'][] = $row;  
 
-    }   
+        $table['rows'][] = $row;
+
+    }
     // Return table
     return $table;
 }
