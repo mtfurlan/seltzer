@@ -209,10 +209,11 @@ function member_data_alter ($type, $data = array(), $opts = array()) {
             // Get cids of all contacts passed into $data
             $cids = array();
             foreach ($data as $contact) {
-                $cids[] = $contact['cid'];
+                array_push($cids, strval($contact['cid']));
             }
             // Add the cids to the options
-            $member_opts = $opts;
+            $member_opts = array();
+            array_fill_keys($member_opts, $opts);
             $member_opts['cid'] = $cids;
             // Get an array of member structures for each cid
             $member_data = crm_get_data('member', $member_opts);

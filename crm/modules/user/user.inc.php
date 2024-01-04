@@ -290,10 +290,11 @@ function user_data_alter ($type, $data = array(), $opts = array()) {
             // Get cids of all contacts passed into $data
             $cids = array();
             foreach ($data as $contact) {
-                $cids[] = $contact['cid'];
+                array_push($cids, strval($contact['cid']));
             }
             // Add the cids to the options
-            $user_opts = $opts;
+            $user_opts = array();
+            array_fill_keys($user_opts, $opts);
             $user_opts['cid'] = $cids;
             // Get an array of user structures for each cid
             $user_data = crm_get_data('user', $user_opts);
