@@ -29,7 +29,7 @@
  * Set the page content based on report name. Used for autoinclude
  */
 $report_emaillapsed_theme = 'report_emaillapsed';
-$report_emaillapsed_theme_opts = array('filter'=>array('active'=>false));
+$report_emaillapsed_theme_opts = array('filter'=>array('inactive'=>true));
 $report_emaillapsed_name = "Lapsed Emails";
 $report_emaillapsed_desc = "List of inactive member email addresses";
 /**

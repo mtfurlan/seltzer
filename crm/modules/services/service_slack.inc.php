@@ -51,7 +51,11 @@ function service_slack_getSlackID ($email, $username) {
     $slackID = '';
     $slackName = '';
     $slackStatus = '';
-    $arr_length = count($slackUsers['members']);
+    $arr_length = 0;
+    if(is_array($slackUsers['members']))
+    {
+        $arr_length = count($slackUsers['members']);
+    }
     for( $i = 0; $i < $arr_length; $i++) {
         $checkStatus = false;
         if (array_key_exists('email', $slackUsers['members'][$i]['profile']) &&
