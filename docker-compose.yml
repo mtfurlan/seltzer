@@ -1,0 +1,61 @@
+version: '3.8'
+services:
+  # dns:
+  #   - 8.8.8.8
+  #   - 8.8.4.4
+#### LOCAL DEVELOPMENT
+  nginx:
+    hostname: nginx.lan
+    image: nginx:latest
+    volumes:
+      - "./docker/nginx.template:/etc/nginx/templates/default.conf.template"
+      # - "../:/var/www"
+    ports:
+      - 8088:80
+    environment:
+        - NGINX_PORT=80
+        - PHP_HOST=php
+    links:
+      - php
+    volumes_from:
+      - php
+
+  php:
+    build: ./docker/php/
+    hostname: php.lan
+    expose:
+      - 9000
+    links:
+      - mysql
+      # - maildev
+    volumes:
+      - "./crm/:/var/www/html/crm"
+      - "./docker/index.html/:/var/www/html/index.html"
+      # - ./scripts/sendmail.sh/:~/sendmail.sh
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: i3crm
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: password
+
+  mysql:
+    image: mariadb
+    hostname: mysql.lan
+    expose:
+      - 3306
+    volumes:
+      - './docker/scripts/:/docker-entrypoint-initdb.d/'
+      - './docker/conf/50-server.cnf:/etc/mysql/mariadb.conf.d/50-server.cnf'
+      - /var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: i3crm
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: password
+      MYSQL_PORT: 3306
+
+  #     WHITELIST_FROM: "root@php.localdomain"
+
+# docker exec -i seltzer_mysql_1 mysql -umyuser -ppassword -e "DROP DATABASE mydb; CREATE DATABASE mydb"
+# mysql -umyuser -ppassword i3crm -h 127.0.0.1
