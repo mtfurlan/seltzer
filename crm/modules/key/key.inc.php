@@ -206,10 +206,11 @@ function key_data_alter ($type, $data = array(), $opts = array()) {
             // Get cids of all contacts passed into $data
             $cids = array();
             foreach ($data as $contact) {
-                $cids[] = $contact['cid'];
+                array_push($cids, strval($contact['cid']));
             }
             // Add the cids to the options
-            $key_opts = $opts;
+            $key_opts = array();
+            array_fill_keys($key_opts, $opts);
             $key_opts['cid'] = $cids;
             // Get an array of key structures for each cid
             $key_data = crm_get_data('key', $key_opts);
