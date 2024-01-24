@@ -321,6 +321,14 @@ function member_membership_add_form ($cid) {
         return NULL;
     }
 
+    print $cid;
+
+    $plan = member_membership_data(array('cid'=>$cid));
+    $allowAdd = true;
+    if(count($plan) > 0) {
+        $allowAdd = false;
+    }
+
     // Generate default start date, first of current month
     $start = date("Y-m-d");
 
@@ -364,6 +372,20 @@ function member_membership_add_form ($cid) {
             )
         )
     );
+
+    if(!$allowAdd) {
+        $form = array(
+       'type' => 'form',
+        'method' => 'post',
+        'fields' => array(
+                        array(
+                            'type' => 'message' ,
+                            'value' => '<p>Members cannot have more than one active membership. Delete existing membership to add a new one.</p'
+                        )
+                    )
+        );
+    }
+
     return $form;
 }
 
