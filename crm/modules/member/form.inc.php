@@ -321,8 +321,6 @@ function member_membership_add_form ($cid) {
         return NULL;
     }
 
-    print $cid;
-
     $plan = member_membership_data(array('cid'=>$cid));
     $allowAdd = true;
     if(count($plan) > 0) {
