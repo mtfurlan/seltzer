@@ -162,10 +162,12 @@ function member_install($old_revision = 0) {
     }
     if ($old_revision < 7) {
         // Alter plan table to rename columns
-        $sql = '
-            ALTER TABLE plan CHANGE active enabled tinyint(1);
-            ALTER TABLE plan CHANGE voting active tinyint(1);
-        ';
+        $sql = 'ALTER TABLE plan RENAME COLUMN active TO enabled';
+        // var_dump_pre($sql);
+        $res = mysqli_query($db_connect, $sql);
+        if (!$res) crm_error(mysqli_error($db_connect));
+        $sql = 'ALTER TABLE plan RENAME COLUMN voting TO active';
+        // var_dump_pre($sql);
         $res = mysqli_query($db_connect, $sql);
         if (!$res) crm_error(mysqli_error($db_connect));
     }

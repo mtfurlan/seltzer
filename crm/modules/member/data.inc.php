@@ -105,7 +105,7 @@ function member_data ($opts = array()) {
     $res = mysqli_query($db_connect, $sql);
     // var_dump_pre(mysqli_fetch_assoc($res));
     // var_dump_pre("[EOF]");
-    // if (!$res) crm_error(mysqli_error($db_connect));
+    if (!$res) crm_error(mysqli_error($db_connect));
 
     // Store data
     $members = array();
@@ -401,7 +401,7 @@ function member_plan_save ($plan) {
     global $db_connect;
     $esc_name = mysqli_real_escape_string($db_connect, $plan['name']);
     $esc_price = mysqli_real_escape_string($db_connect, $plan['price']);
-    $esc_voting = mysqli_real_escape_string($db_connect, $plan['active']);
+    $esc_enabled = mysqli_real_escape_string($db_connect, $plan['active']);
     $esc_active = mysqli_real_escape_string($db_connect, $plan['enabled']);
     $esc_pid = mysqli_real_escape_string($db_connect, $plan['pid']);
     if (isset($plan['pid'])) {
@@ -412,7 +412,7 @@ function member_plan_save ($plan) {
                 `name`='$esc_name',
                 `price`='$esc_price',
                 `enabled`='$esc_active',
-                `active`='$esc_voting'
+                `active`='$esc_enabled'
             WHERE `pid`='$esc_pid'
         ";
         $res = mysqli_query($db_connect, $sql);
@@ -424,7 +424,7 @@ function member_plan_save ($plan) {
             INSERT INTO `plan`
             (`name`,`price`, `active`, `enabled`)
             VALUES
-            ('$esc_name', '$esc_price', '$esc_voting', '$esc_active')
+            ('$esc_name', '$esc_price', '$esc_enabled', '$esc_active')
         ";
         $res = mysqli_query($db_connect, $sql);
         if (!$res) crm_error(mysqli_error($db_connect));

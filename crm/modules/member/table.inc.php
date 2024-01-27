@@ -158,11 +158,11 @@ function member_table ($opts = NULL) {
 }
 
 /**
- * Return table structure for all active voting members.
+ * Return table structure for all active members.
  *
  * @return The table structure.
 */
-function member_voting_report_table () {
+function member_active_report_table () {
 
     // Ensure user is allowed to view members
     if (!user_access('member_view')) {
@@ -175,7 +175,7 @@ function member_voting_report_table () {
     // Create table structure
     $table = array(
         'id' => '',
-        'class' => 'member-voting-report',
+        'class' => 'member-active-report',
         'rows' => array()
     );
 
