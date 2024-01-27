@@ -326,8 +326,8 @@ CREATE TABLE `plan` (
   `pid` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `price` varchar(6) NOT NULL,
+  `enabled` tinyint(1) NOT NULL,
   `active` tinyint(1) NOT NULL,
-  `voting` tinyint(1) NOT NULL,
   PRIMARY KEY (`pid`)
 ) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;

@@ -60,8 +60,8 @@ function member_install($old_revision = 0) {
               `pid` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
               `name` varchar(255) NOT NULL,
               `price` varchar(6) NOT NULL,
+              `enabled` tinyint(1) NOT NULL,
               `active` tinyint(1) NOT NULL,
-              `voting` tinyint(1) NOT NULL,
               PRIMARY KEY (`pid`)
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
         ';
@@ -159,5 +159,14 @@ function member_install($old_revision = 0) {
                 }
             }
         }
+    }
+    if ($old_revision < 7) {
+        // Alter plan table to rename columns
+        $sql = '
+            ALTER TABLE plan CHANGE active enabled tinyint(1);
+            ALTER TABLE plan CHANGE voting active tinyint(1);
+        ';
+        $res = mysqli_query($db_connect, $sql);
+        if (!$res) crm_error(mysqli_error($db_connect));
     }
 }

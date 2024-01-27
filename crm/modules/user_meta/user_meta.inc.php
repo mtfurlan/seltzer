@@ -191,7 +191,7 @@ function user_meta_data ($opts = array()) {
     if (!empty($opts['filter'])) {
         foreach ($opts['filter'] as $name => $param) {
             switch ($name) {
-                case 'active':
+                case 'enabled':
                     if ($param) {
                         $sql .= " AND (`start` IS NOT NULL AND `end` IS NULL)";
                     } else {
