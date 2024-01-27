@@ -170,7 +170,7 @@ function member_voting_report_table () {
     }
 
     // Get member data
-    $members = member_data(array('filter'=>array('voting'=>true, 'active'=>true, 'scholarship'=>true)));
+    $members = member_data(array('filter'=>array('active'=>true, 'scholarship'=>true)));
 
     // Create table structure
     $table = array(
@@ -248,8 +248,8 @@ function member_plan_table ($opts = NULL) {
     if (user_access('member_plan_edit')) {
         $table['columns'][] = array('title'=>'Name','class'=>'');
         $table['columns'][] = array('title'=>'Price','class'=>'');
+        $table['columns'][] = array('title'=>'Enabled','class'=>'');
         $table['columns'][] = array('title'=>'Active','class'=>'');
-        $table['columns'][] = array('title'=>'Voting','class'=>'');
         $table['columns'][] = array('title'=>'Ops','class'=>'');
     }
 
@@ -263,8 +263,8 @@ function member_plan_table ($opts = NULL) {
             // Add cells
             $row[] = $plan['name'];
             $row[] = $plan['price'];
+            $row[] = $plan['enabled'] ? 'Yes' : 'No';
             $row[] = $plan['active'] ? 'Yes' : 'No';
-            $row[] = $plan['voting'] ? 'Yes' : 'No';
         }
 
         // Construct ops array

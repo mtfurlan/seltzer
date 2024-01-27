@@ -137,7 +137,7 @@ function user_install ($old_revision = 0) {
         }
     }
 
-    if ($old_revision < 7) {
+    if ($old_revision < 2) {
         // Alter member table
         $sql = '
             ALTER TABLE `user`
