@@ -401,8 +401,8 @@ function member_plan_save ($plan) {
     global $db_connect;
     $esc_name = mysqli_real_escape_string($db_connect, $plan['name']);
     $esc_price = mysqli_real_escape_string($db_connect, $plan['price']);
-    $esc_enabled = mysqli_real_escape_string($db_connect, $plan['active']);
-    $esc_active = mysqli_real_escape_string($db_connect, $plan['enabled']);
+    $esc_enabled = mysqli_real_escape_string($db_connect, $plan['enabled']);
+    $esc_active = mysqli_real_escape_string($db_connect, $plan['active']);
     $esc_pid = mysqli_real_escape_string($db_connect, $plan['pid']);
     if (isset($plan['pid'])) {
         // Update
@@ -411,8 +411,8 @@ function member_plan_save ($plan) {
             SET
                 `name`='$esc_name',
                 `price`='$esc_price',
-                `enabled`='$esc_active',
-                `active`='$esc_enabled'
+                `enabled`='$esc_enabled',
+                `active`='$esc_active'
             WHERE `pid`='$esc_pid'
         ";
         $res = mysqli_query($db_connect, $sql);
@@ -422,7 +422,7 @@ function member_plan_save ($plan) {
         // Insert
         $sql = "
             INSERT INTO `plan`
-            (`name`,`price`, `active`, `enabled`)
+            (`name`,`price`, `enabled`, `active`)
             VALUES
             ('$esc_name', '$esc_price', '$esc_enabled', '$esc_active')
         ";
