@@ -78,7 +78,7 @@ function member_add_form () {
                 , 'label' => 'Plan'
                 , 'name' => 'pid'
                 , 'selected' => ''
-                , 'options' => member_plan_options(array('filter'=>array('active'=>true)))
+                , 'options' => member_plan_options(array('filter'=>array('enabled'=>true)))
             )
             , array(
                 'type' => 'text'
@@ -175,16 +175,16 @@ function member_plan_add_form () {
                     ),
                     array(
                         'type' => 'checkbox',
-                        'label' => 'Voting',
-                        'name' => 'voting'
-                    ),
-                    array(
-                        'type' => 'checkbox',
-                        'label' => 'Active',
-                        'name' => 'active',
+                        'label' => 'Enabled (This is a currently valid plan)',
+                        'name' => 'enabled',
                         'checked' => true
                     ),
                     array(
+                        'type' => 'checkbox',
+                        'label' => 'Active (This plan indicates an active membership)',
+                        'name' => 'active'
+                    ),
+                   array(
                         'type' => 'submit',
                         'value' => 'Add'
                     )
@@ -243,15 +243,14 @@ function member_plan_edit_form ($pid) {
                     ),
                     array(
                         'type' => 'checkbox',
-                        'label' => 'Voting',
-                        'name' => 'voting',
-                        'checked' => $plan['voting']
+                        'label' => 'Enabled (This is a currently valid plan)',
+                        'name' => 'enabled',
+                        'checked' => $plan['enabled']
                     ),
                     array(
                         'type' => 'checkbox',
-                        'label' => 'Active',
-                        'name' => 'active',
-                        'checked' => $plan['active']
+                        'label' => 'Active (This plan indicates an active membership)',
+                        'name' => $plan['active']
                     ),
                     array(
                         'type' => 'submit',
@@ -347,7 +346,7 @@ function member_membership_add_form ($cid) {
                         'type' => 'select',
                         'label' => 'Plan',
                         'name' => 'pid',
-                        'options' => member_plan_options(array('filter'=>array('active'=>true)))
+                        'options' => member_plan_options(array('filter'=>array('enabled'=>true)))
                     ),
                     array(
                         'type' => 'text',
@@ -533,14 +532,14 @@ function member_filter_form () {
     $filters = array(
         'all' => 'All',
         'active' => 'Active',
-        'voting' => 'Voting',
+        'scholarship' => 'Scholarship',
         'onboarding' => 'Onboarding',
         'hiatus' => 'Hiatus',
         'inactive' => 'Inactive'
     );
 
     // Default filter
-    $selected = empty($_SESSION['member_filter_option']) ? 'active' : $_SESSION['member_filter_option'];
+    $selected = empty($_SESSION['member_filter_option']) ? 'enabled' : $_SESSION['member_filter_option'];
 
     // Construct hidden fields to pass GET params
     $hidden = array();
