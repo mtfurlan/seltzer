@@ -297,10 +297,6 @@ function member_plan_delete_form ($pid) {
                     array(
                         'type' => 'message',
                         'value' => '<p>Are you sure you want to delete the plan "' . $description. '"? This cannot be undone.',
-                    ),
-                    array(
-                        'type' => 'submit',
-                        'value' => 'Delete'
                     )
                 )
             )
@@ -323,6 +319,12 @@ function member_membership_add_form ($cid) {
     // Ensure user is allowed to edit memberships
     if (!user_access('member_membership_edit')) {
         return NULL;
+    }
+
+    $plan = member_membership_data(array('cid'=>$cid));
+    $allowAdd = true;
+    if(count($plan) > 0) {
+        $allowAdd = false;
     }
 
     // Generate default start date, first of current month
@@ -368,6 +370,20 @@ function member_membership_add_form ($cid) {
             )
         )
     );
+
+    if(!$allowAdd) {
+        $form = array(
+       'type' => 'form',
+        'method' => 'post',
+        'fields' => array(
+                        array(
+                            'type' => 'message' ,
+                            'value' => '<p>Members cannot have more than one active membership. Delete existing membership to add a new one.</p'
+                        )
+                    )
+        );
+    }
+
     return $form;
 }
 
@@ -484,6 +500,7 @@ function member_membership_delete_form ($sid) {
         'type' => 'form',
         'method' => 'post',
         'command' => 'member_membership_delete',
+        'submit' => 'Delete',
         'hidden' => array(
             'sid' => $membership['sid']
         ),
@@ -495,10 +512,6 @@ function member_membership_delete_form ($sid) {
                     array(
                         'type' => 'message',
                         'value' => '<p>Are you sure you want to delete the membership "' . $membership_name . '"? This cannot be undone.',
-                    ),
-                    array(
-                        'type' => 'submit',
-                        'value' => 'Delete'
                     )
                 )
             )

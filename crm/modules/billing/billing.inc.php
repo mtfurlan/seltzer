@@ -241,6 +241,9 @@ function billing_page (&$page_data, $page_name, $options) {
             }
             break;
         case 'contact':
+            if($options['cid'] == ""){
+                break;
+            }
             if (user_access('payment_view') || $_GET['cid'] == user_id()) {
                 page_add_content_bottom($page_data, theme('billing_account_info', $_GET['cid']), 'Account');
             }

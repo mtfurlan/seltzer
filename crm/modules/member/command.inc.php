@@ -334,17 +334,32 @@ function command_member_membership_update () {
  */
 function command_member_membership_delete () {
     global $esc_post;
-
     // Verify permissions
     if (!user_access('member_membership_edit')) {
         error_register('Permission denied: member_membership_edit');
         return crm_url('members');
     }
 
+    $cid = null;
+
+    if($_POST['cid'] == "")
+    {
+        $membership = member_membership_data(array('sid'=>$esc_post['sid']));
+        if(count($membership) > 0)
+        {
+            $cid = $membership[0]['cid'];
+        }
+        //If no cid can be found, page will reset to empty home page.
+    }
+    else 
+    {    
+        $cid = $_POST['cid'];
+    }
+
     // Delete membership
     member_membership_delete($esc_post['sid']);
 
-    return crm_url("contact&cid=$_POST[cid]&tab=plan");
+    return crm_url("contact&cid=". $cid . "&tab=plan");
 }
 
 /**
