@@ -323,7 +323,7 @@ function member_membership_add_form ($cid) {
     $plans = member_membership_data(array('cid'=>$cid));
     $allowAdd = true;
     foreach ($plans as $p) {
-        if (is_null($p['end'])) { $allowAdd = false; }
+        if (is_null($p['end']) or (strtotime($p['end']) > strtotime(date("Y-m-d")))) { $allowAdd = false; }
       }
       
     // Generate default start date, first of current month
