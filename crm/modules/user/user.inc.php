@@ -746,6 +746,7 @@ function command_login () {
 
     if ($valid) {
         // Initialize user token session
+        $params = session_get_cookie_params();
         setcookie('makepi-token',
             json_web_token($user['makepi-uuid']),
             time() + (1 * 7 * 60 * 60),
