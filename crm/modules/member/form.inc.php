@@ -377,7 +377,7 @@ function member_membership_add_form ($cid) {
         'fields' => array(
                         array(
                             'type' => 'message' ,
-                            'value' => '<p>Members cannot have more than one active membership. End existing membership to add a new one.</p'
+                            'value' => '<p>Members cannot have more than one active membership. End existing membership to add a new one.</p>'
                         )
                     )
         );
