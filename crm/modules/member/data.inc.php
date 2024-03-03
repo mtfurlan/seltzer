@@ -565,10 +565,19 @@ function member_membership_save ($membership) {
         // Insert
         $sql = "
             INSERT INTO `membership`
-            (`cid`, `pid`, `start`)
-            VALUES
-            ('$esc_cid', '$esc_pid', '$esc_start')
-        ";
+            (`cid`, `pid`, ";
+        if ($esc_end) {
+            $sql .= "`start`, `end` ";
+        } else {
+            $sql .= "`start` ";
+        }
+        $sql .= ") VALUES ('$esc_cid', '$esc_pid', ";
+        if ($esc_end) {
+            $sql .= "'$esc_start', '$esc_end' ";
+        } else {
+            $sql .= "'$esc_start' ";
+        }
+        $sql .= ")";
         $res = mysqli_query($db_connect, $sql);
         if (!$res) crm_error(mysqli_error($db_connect));
         $membership['sid'] = mysqli_insert_id($db_connect);
