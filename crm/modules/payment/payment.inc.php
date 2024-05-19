@@ -403,10 +403,10 @@ function payment_save ($payment) {
     if (empty($payment)) {
         return NULL;
     }
-    if (!array_key_exists($payment, 'debit_cid')) {
+    if (!array_key_exists('debit_cid', $payment)) {
         $payment['debit_cid'] = 0;
     }
-    if (!array_key_exists($payment, 'credit_cid')) {
+    if (!array_key_exists('credit_cid', $payment)) {
         $payment['credit_cid'] = 0;
     }
     // Sanitize input
