@@ -1259,6 +1259,12 @@ function command_payment_edit() {
     }
     // Parse and save payment
     $payment = $_POST;
+    if (!is_int($payment['debit_cid'])) {
+        $payment['debit_cid'] = 0;
+    }
+    if (!is_int($payment['credit_cid'])) {
+        $payment['credit_cid'] = 0;
+    }
     $value = payment_parse_currency($_POST['value'], $_POST['code']);
     $payment['code'] = $value['code'];
     $payment['value'] = $value['value'];
