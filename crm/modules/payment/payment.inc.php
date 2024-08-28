@@ -1241,6 +1241,12 @@ function command_payment_add() {
         , 'confirmation' => $_POST['confirmation']
         , 'notes' => $_POST['notes']
     );
+    if (!is_int($payment['debit_cid'])) {
+        $payment['debit_cid'] = 0;
+    }
+    if (!is_int($payment['credit_cid'])) {
+        $payment['credit_cid'] = 0;
+    }
     $payment = payment_save($payment);
     message_register('1 payment added.');
     return crm_url('payments');
