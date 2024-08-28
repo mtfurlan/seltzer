@@ -1241,10 +1241,10 @@ function command_payment_add() {
         , 'confirmation' => $_POST['confirmation']
         , 'notes' => $_POST['notes']
     );
-    if (!is_int($payment['debit_cid'])) {
+    if (empty($payment['debit_cid'])) {
         $payment['debit_cid'] = 0;
     }
-    if (!is_int($payment['credit_cid'])) {
+    if (empty($payment['credit_cid'])) {
         $payment['credit_cid'] = 0;
     }
     $payment = payment_save($payment);
@@ -1265,10 +1265,10 @@ function command_payment_edit() {
     }
     // Parse and save payment
     $payment = $_POST;
-    if (!is_int($payment['debit_cid'])) {
+    if (empty($payment['debit_cid'])) {
         $payment['debit_cid'] = 0;
     }
-    if (!is_int($payment['credit_cid'])) {
+    if (empty($payment['credit_cid'])) {
         $payment['credit_cid'] = 0;
     }
     $value = payment_parse_currency($_POST['value'], $_POST['code']);
