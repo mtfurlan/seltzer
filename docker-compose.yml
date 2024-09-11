@@ -17,9 +17,7 @@ services:
     expose:
       - 9000
     volumes:
-      # TODO: nginx can handle the path rewrite, this container should just host at / not /crm
-      - ./crm/:/var/www/html/crm
-      - ./docker/index.html/:/var/www/html/index.html
+      - ./crm/:/var/www/html/
     environment:
       MYSQL_HOST: mysql
       MYSQL_PORT: 3306

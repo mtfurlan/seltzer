@@ -43,7 +43,7 @@ $config_email_to = 'contact@i3detroit.com';
 $config_host = $_SERVER['SERVER_NAME'];
 
 // The url path of the crm directory
-$config_base_path = '/crm/';
+$config_base_path = '/';
 
 // The name of the theme you want to use
 // (currently there is only one, "inspire".)
