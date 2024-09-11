@@ -13,7 +13,9 @@ services:
       - php
 
   php:
-    build: ./docker/php/
+    build:
+      context: .
+      target: dev
     expose:
       - 9000
     volumes:
