@@ -1,5 +1,4 @@
 error_log
-config_db.inc.php
 php.ini
 .htaccess
 crm/phpinfo.php
@@ -9,7 +8,3 @@ conf/
 docker/
 scripts/
 .env
-docker-compose.yml
-docker-install
-
-
