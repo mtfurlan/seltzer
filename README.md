@@ -34,3 +34,34 @@ For more information on using Seltzer CRM, see the
 [wiki](https://github.com/elplatt/seltzer/wiki).
 Installation instructions are in the INSTALL file and on the wiki
 [here](https://github.com/elplatt/seltzer/wiki/Installing-Seltzer-CRM).
+
+
+## Development ##
+
+The suggested development mode is Docker and Docker Compose.
+
+### Start a server
+
+0. Install Docker
+1. Run `docker compose up -d`
+2. Open http://localhost:8088/
+3. Login with `admin`/`pass`
+
+This should hot reload and not require restarting for most changes.
+
+### Stop the server
+
+1. Run `docker compose down`
+
+### Reset database
+
+1. Run `docker compose down --volumes`
+2. Run `docker compose up -d`
+
+### Open a SQL prompt
+
+1. Run `docker compose exec mysql mysql -psecret i3crm`
+
+### View PHP logs
+
+1. Run `docker compose logs -f php`
