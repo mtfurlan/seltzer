@@ -1,0 +1,47 @@
+services:
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./docker/nginx.template:/etc/nginx/templates/default.conf.template
+      - ../:/var/www
+    ports:
+      - 8088:80
+    environment:
+        - NGINX_PORT=80
+        - PHP_HOST=php
+    links:
+      - php
+    volumes_from:
+      - php
+
+  php:
+    build: ./docker/php/
+    expose:
+      - 9000
+    links:
+      - mysql
+    volumes:
+      # TODO: nginx can handle the path rewrite, this container should just host at / not /crm
+      - ./crm/:/var/www/html/crm
+      - ./docker/index.html/:/var/www/html/index.html
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: i3crm
+      MYSQL_USER: root
+      MYSQL_PASSWORD: secret
+
+  mysql:
+    image: mariadb:10.5.22
+    ports:
+      - 3306:3306
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - seltzer_db:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: i3crm
+volumes:
+  seltzer_db:
+# docker exec -i seltzer-mysql-1 mysql -uroot -psecret -e "DROP DATABASE i3crm; CREATE DATABASE i3crm"
+# mysql -uroot -psecret i3crm -h 127.0.0.1

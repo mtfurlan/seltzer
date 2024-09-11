@@ -21,9 +21,8 @@
 */
 
 // Connect to database server and select database
-$db_connect = mysqli_connect($config_db_host, $config_db_user, $config_db_password, $config_db_db, null, $config_db_socket);
-$res = $db_connect;
-if (!$res) die(mysqli_error($res));
+$db_connect = mysqli_connect($config_db_host, $config_db_user, $config_db_password, $config_db_db, $config_db_port);
+if (!$db_connect) crm_error(mysqli_error($db_connect));
 
 // Connect to session
 session_start();
