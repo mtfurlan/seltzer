@@ -4,3 +4,5 @@ RUN docker-php-ext-configure calendar && docker-php-ext-install calendar
 
 FROM dev AS prod
 COPY crm/ /var/www/html
+
+VOLUME /var/www/html/files

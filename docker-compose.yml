@@ -3,7 +3,6 @@ services:
     image: nginx:latest
     volumes:
       - ./docker/nginx.template:/etc/nginx/templates/default.conf.template
-      - ../:/var/www
     ports:
       - 8088:80
     environment:
@@ -32,7 +31,7 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql
       - seltzer_db:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: secret
