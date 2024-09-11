@@ -9,8 +9,6 @@ services:
     environment:
         - NGINX_PORT=80
         - PHP_HOST=php
-    links:
-      - php
     volumes_from:
       - php
 
@@ -18,8 +16,6 @@ services:
     build: ./docker/php/
     expose:
       - 9000
-    links:
-      - mysql
     volumes:
       # TODO: nginx can handle the path rewrite, this container should just host at / not /crm
       - ./crm/:/var/www/html/crm
