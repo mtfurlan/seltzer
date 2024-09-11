@@ -45,3 +45,16 @@ volumes:
   seltzer_db:
 # docker exec -i seltzer-mysql-1 mysql -uroot -psecret -e "DROP DATABASE i3crm; CREATE DATABASE i3crm"
 # mysql -uroot -psecret i3crm -h 127.0.0.1
+
+
+
+# email stuff from rumplestilzken
+# maildev:
+#   hostname: maildev.rumplestilzken.com
+#   image: pigeosolutions/docker-sendmail
+#   expose:
+#     - "25"
+#   environment:
+#     SUBNET: 192.168
+#     WHITELIST_FROM: "root@php.localdomain"
+
