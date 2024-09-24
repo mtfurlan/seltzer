@@ -6,3 +6,4 @@ FROM dev AS prod
 COPY crm/ /var/www/html
 
 VOLUME /var/www/html/files
+# TODO: send mail via smtp configured by env vars

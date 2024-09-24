@@ -1,4 +1,7 @@
 services:
+  # TODO: container to accept smtp and debug show it and configure php to send to it
+  # * https://github.com/dockage/mailcatcher
+  # * https://github.com/mailhog/MailHog
   nginx:
     image: nginx:latest
     volumes:

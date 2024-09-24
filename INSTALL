@@ -5,9 +5,8 @@ Installation Instructions
 2. edit crm/config.inc.php to match what you're doing
 3. install docker on server
 4. setup watchtower to pull ghcr image
-5. setup mail forwarding thingy
-6. setup db creds
-7. run ghcr image
-8. You can now log in using "admin" as the username and the password 'pass'. Please change the password.
-9. Optionally go to Plans > Import to upload a CSV file of existing members. See https://github.com/elplatt/seltzer/wiki/HOWTO-Import-Plans for more info.
-10. Optionally go to Members > Import to upload a CSV file of existing members. See https://github.com/elplatt/seltzer/wiki/HOWTO-Import-Members for more info.
+5. configure server to accept smtp
+6. run ghcr image with db creds and smtp config
+7. You can now log in using "admin" as the username and the password 'pass'. Please change the password.
+8. Optionally go to Plans > Import to upload a CSV file of existing members. See https://github.com/elplatt/seltzer/wiki/HOWTO-Import-Plans for more info.
+9. Optionally go to Members > Import to upload a CSV file of existing members. See https://github.com/elplatt/seltzer/wiki/HOWTO-Import-Members for more info.
